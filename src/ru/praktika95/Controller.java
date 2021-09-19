@@ -11,12 +11,8 @@ public class Controller {
                         case "hello"-> CommandHandler.hello() ;
                         case "help"->CommandHandler.help();
                         case "show"-> CommandHandler.show();
-                        case "start"-> CommandHandler.start();
-                        default -> {
-                            String firstPartBotAnswer=String.format("Unexpected command: %s",userCommand);
-                            String secondPartBptAnswer="To view the available commands, type \"help\"";
-                            yield firstPartBotAnswer+'\n'+secondPartBptAnswer;
-                        }
+                        case "start"-> CommandHandler.hello();
+                        default -> CommandHandler.other();
                     };
             ConsoleOperations.printBotAnswer(botAnswer);
         }

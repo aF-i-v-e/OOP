@@ -4,10 +4,12 @@ public class Controller {
     public static void getUserCommandsAndGiveAnswer() {
         while(true)
         {
-            String userCommand=ConsoleOperations.readUserCommand();
-            String botAnswer=switch(userCommand)
+            String[] commandAndArgument=ConsoleOperations.readUserCommand();
+            String botCommand=commandAndArgument[0];
+            int selectedEventNumber=Integer.parseInt(commandAndArgument[1]);
+            String botAnswer=switch(botCommand)
                     {
-                        case "choose"-> CommandHandler.choose();
+                        case "choose"-> CommandHandler.choose(selectedEventNumber);
                         case "hello"-> CommandHandler.hello() ;
                         case "help"->CommandHandler.help();
                         case "show"-> CommandHandler.show();

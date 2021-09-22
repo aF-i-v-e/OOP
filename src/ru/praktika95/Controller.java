@@ -1,18 +1,18 @@
 package ru.praktika95;
 
 public class Controller {
-    public static String getBotAnswer() {
+    public static void getBotAnswer() {
         while(true)
         {
             String[] commandAndArgument=ConsoleOperations.getBotCommand();
             String botCommand=commandAndArgument[0];
             int eventNumber=(commandAndArgument.length>1)?Integer.parseInt(commandAndArgument[1]):-1;
-            return CommandHandler.commandHandler(botCommand,eventNumber);
+            String botAnswer= CommandHandler.commandHandler(botCommand,eventNumber);
+            ConsoleOperations.printBotAnswer(botAnswer);
         }
     }
 
     public static void main(String[] args){
-        String botAnswer= getBotAnswer();
-        ConsoleOperations.printBotAnswer(botAnswer);
+        getBotAnswer();
     }
 }

@@ -2,10 +2,9 @@ package ru.praktika95;
 import java.util.Scanner;
 
 public class ConsoleOperations {
-    public static String[] readUserCommand() {
+    public static String[] getBotCommand() {
         String userInput= new Scanner(System.in).nextLine();
-        String[] commandAndArgument=userInput.split(" ");
-        return commandAndArgument;
+        return userInput.split(" ");
     }
 
     public static void printBotAnswer(String botAnswer) {

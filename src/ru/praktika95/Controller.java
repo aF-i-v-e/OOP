@@ -1,26 +1,18 @@
 package ru.praktika95;
 
 public class Controller {
-    public static void getUserCommandsAndGiveAnswer() {
+    public static String getBotAnswer() {
         while(true)
         {
-            String[] commandAndArgument=ConsoleOperations.readUserCommand();
+            String[] commandAndArgument=ConsoleOperations.getBotCommand();
             String botCommand=commandAndArgument[0];
-            int selectedEventNumber=Integer.parseInt(commandAndArgument[1]);
-            String botAnswer=switch(botCommand)
-                    {
-                        case "choose"-> CommandHandler.choose(selectedEventNumber);
-                        case "hello"-> CommandHandler.hello() ;
-                        case "help"->CommandHandler.help();
-                        case "show"-> CommandHandler.show();
-                        case "start"-> CommandHandler.hello();
-                        default -> CommandHandler.other();
-                    };
-            ConsoleOperations.printBotAnswer(botAnswer);
+            int eventNumber=(commandAndArgument.length>1)?Integer.parseInt(commandAndArgument[1]):0;
+            return CommandHandler.commandHandler(botCommand,eventNumber);
         }
     }
 
     public static void main(String[] args){
-        getUserCommandsAndGiveAnswer();
+        String botAnswer= getBotAnswer();
+        ConsoleOperations.printBotAnswer(botAnswer);
     }
 }

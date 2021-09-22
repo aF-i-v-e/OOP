@@ -6,7 +6,7 @@ public class Controller {
         {
             String[] commandAndArgument=ConsoleOperations.getBotCommand();
             String botCommand=commandAndArgument[0];
-            int eventNumber=(commandAndArgument.length>1)?Integer.parseInt(commandAndArgument[1]):0;
+            int eventNumber=(commandAndArgument.length>1)?Integer.parseInt(commandAndArgument[1]):-1;
             return CommandHandler.commandHandler(botCommand,eventNumber);
         }
     }

@@ -1,4 +1,4 @@
-package ru.praktika95;
+package ru.praktika95.bot;
 
 public class Controller {
     public static void getBotAnswer() {

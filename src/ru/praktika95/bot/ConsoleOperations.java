@@ -1,9 +1,9 @@
-package ru.praktika95;
+package ru.praktika95.bot;
 import java.util.Scanner;
 
 public class ConsoleOperations {
     public static String[] getBotCommand() {
-        String userInput= new Scanner(System.in).nextLine();
+        String userInput = new Scanner(System.in).nextLine();
         return userInput.split(" ");
     }
 

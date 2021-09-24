@@ -4,10 +4,10 @@ public class Controller {
     public static void getBotAnswer() {
         while(true)
         {
-            ConsoleOperations consoleOp = new ConsoleOperations();
-            CommandHandler comh = new CommandHandler();
-            String botAnswer= comh.commandHandler(commandAndArgument);
-            consoleOp.printBotAnswer(botAnswer);
+            ConsoleOperations console = new ConsoleOperations();
+            CommandHandler handler = new CommandHandler();
+            String botAnswer= handler.commandHandler(console.getBotCommand());
+            console.printBotAnswer(botAnswer);
         }
     }
 

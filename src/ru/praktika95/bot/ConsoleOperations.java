@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 public class ConsoleOperations {
     public String[] getBotCommand() {
-        String userInput= new Scanner(System.in).nextLine();
+        String userInput = new Scanner(System.in).nextLine();
         return userInput.split(" ");
     }
 

@@ -8,6 +8,6 @@ public class BotRequest {
     }
 
     public void setMessage(String msg){
-        message=msg;
+        message = msg;
     }
 }

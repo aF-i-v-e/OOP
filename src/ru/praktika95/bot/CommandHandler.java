@@ -38,11 +38,11 @@ public class CommandHandler {
 
     private void choose(int numberEvent, BotRequest botRequest) {
         initDictionary();
-        String message="Такого мероприятия не существует.";
+        String message = "Такого мероприятия не существует.";
         if (numberEvent == -1)
-            message="Вы ввели некорректный номер мероприятия.";
+            message = "Вы ввели некорректный номер мероприятия.";
         if (events.containsKey(numberEvent))
-             message=events.get(numberEvent);
+             message = events.get(numberEvent);
         botRequest.setMessage(message);
     }
 

@@ -6,8 +6,8 @@ public class Controller {
         {
             ConsoleOperations console = new ConsoleOperations();
             CommandHandler handler = new CommandHandler();
-            String botAnswer= handler.commandHandler(console.getBotCommand());
-            console.printBotAnswer(botAnswer);
+            BotRequest botRequest = handler.commandHandler(console.getBotCommand());
+            console.printBotAnswer(botRequest.getMessage());
         }
     }
 

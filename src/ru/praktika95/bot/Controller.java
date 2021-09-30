@@ -2,16 +2,16 @@ package ru.praktika95.bot;
 
 public class Controller {
     public static void getBotAnswer() {
+        ConsoleOperations console = new ConsoleOperations();
+        CommandHandler handler = new CommandHandler();
         while(true)
         {
-            ConsoleOperations console = new ConsoleOperations();
-            CommandHandler handler = new CommandHandler();
-            BotRequest botRequest = handler.commandHandler(console.getBotCommand());
-            console.printBotAnswer(botRequest.getMessage());
+            BotResponse botResponse = handler.commandHandler(console.getBotCommand());
+            console.printBotAnswer(botResponse.getMessage());
         }
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         getBotAnswer();
     }
 }

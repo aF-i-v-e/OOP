@@ -2,8 +2,10 @@ package ru.praktika95.bot;
 import java.util.Scanner;
 
 public class ConsoleOperations {
+    private final Scanner scanner = new Scanner(System.in);
+
     public String[] getBotCommand() {
-        String userInput = new Scanner(System.in).nextLine();
+        String userInput = scanner.nextLine();
         return userInput.split(" ");
     }
 

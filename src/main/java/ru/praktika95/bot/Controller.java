@@ -1,17 +1,15 @@
 package ru.praktika95.bot;
 
-public class Controller {
-    public static void getBotAnswer() {
-        ConsoleOperations console = new ConsoleOperations();
-        CommandHandler handler = new CommandHandler();
-        while(true)
-        {
-            BotResponse botResponse = handler.commandHandler(console.getBotCommand());
-            console.printBotAnswer(botResponse.getMessage());
-        }
-    }
+import org.telegram.telegrambots.meta.api.objects.Update;
 
-    public static void main(String[] args) {
-        getBotAnswer();
+public class Controller {
+    public BotResponse getBotAnswer(Update update)
+    {
+        String chatId = update.getMessage().getChatId().toString();
+        String inputText = update.getMessage().getText();
+        CommandHandler comH = new CommandHandler();
+        BotResponse botResponse = comH.commandHandler(inputText);
+        botResponse.setChatId(chatId);
+        return botResponse;
     }
 }

@@ -1,10 +1,10 @@
 package ru.praktika95.bot;
 
 public class ParsingData {
-    private String codeCategory;
+    private int codeCategory;
     private DatePeriod datePeriod;
 
-    public String getCodeCategory(){
+    public int getCodeCategory(){
         return codeCategory;
     }
 
@@ -12,7 +12,7 @@ public class ParsingData {
         return datePeriod;
     }
 
-    public void setCategory(String codeCategory){
+    public void setCategory(int codeCategory){
         this.codeCategory = codeCategory;
     }
 

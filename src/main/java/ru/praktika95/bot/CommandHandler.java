@@ -7,18 +7,26 @@ import java.util.Map;
 public class CommandHandler {
     private final Map<Integer, String> events = new HashMap<>();
 
-    public BotResponse commandHandler(String[] commandAndArgument) {
+    private String[] getCommandAndEventNumber(String inputText) {
+        String[] commandAndArgument = inputText.split(" ");
         String botCommand = commandAndArgument[0];
         int numberEvent = commandAndArgument.length > 1 ? Integer.parseInt(commandAndArgument[1]) : -1;
+        return new String[]{botCommand, Integer.toString(numberEvent)};
+    }
+
+    public BotResponse commandHandler(String input) {
+        String[] commandAndEventNumber = getCommandAndEventNumber(input);
+        String botCommand = commandAndEventNumber[0];
+        int numberEvent = Integer.parseInt(commandAndEventNumber[1]);
         BotResponse botResponse = new BotResponse();
-        String codeCategory = commandAndArgument.length > 1 ? commandAndArgument[1] : "-1";
+        int codeCategory = 0; //Пока что будет ноль
         switch(botCommand) {
-            case "choose"-> choose(numberEvent, botResponse);
-            case "hello", "start" -> hello(botResponse);
-            case "help"-> help(botResponse);
-            case "show"-> show(botResponse);
-            case "chooseCategory"-> botResponse.setCategory(codeCategory);
-            case "choosePeriod"-> choosePeriod(botCommand, botResponse);
+            case "/choose"-> choose(numberEvent, botResponse);
+            case "/hello"-> hello(botResponse) ;
+            case "/help", "/start"-> help(botResponse);
+            case "/show"-> show(botResponse);
+            case "/chooseCategory"-> botResponse.setCategory(codeCategory);
+            case "/choosePeriod"-> choosePeriod(botCommand, botResponse);
             default -> other(botResponse);
         }
         return botResponse;

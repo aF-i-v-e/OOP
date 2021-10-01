@@ -1,31 +1,41 @@
 package ru.praktika95.bot;
 
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
 public class BotResponse {
-    private String message;
+    private SendMessage sendMessage;
     private ParsingData parsingData;
     private Event[] events;
     private boolean error;
 
     public BotResponse() {
-        this.message = null;
+        this.sendMessage = new SendMessage();
         this.parsingData = new ParsingData();
         this.events = new Event[0];
         this.error = false;
     }
 
-    public String getMessage() {
-        return message;
+    public void setMessage(String message)
+    {
+        sendMessage.setText(message);
     }
 
-    public void setMessage(String msg) {
-        message = msg;
+    public void setChatId(String chatId)
+    {
+        sendMessage.setChatId(chatId);
+    }
+
+    public SendMessage getSendMessage()
+    {
+        return sendMessage;
     }
 
     public ParsingData getParsingData() {
         return parsingData;
     }
 
-    public void setCategory(String codeCategory) {
+    public void setCategory(int codeCategory) {
         parsingData.setCategory(codeCategory);
     }
 

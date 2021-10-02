@@ -1,19 +1,26 @@
 package ru.praktika95.bot;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BotResponse {
     private SendMessage sendMessage;
     private ParsingData parsingData;
     private Event[] events;
     private boolean error;
+    private InlineKeyboardMarkup buttonMarkup;
 
     public BotResponse() {
         this.sendMessage = new SendMessage();
         this.parsingData = new ParsingData();
         this.events = new Event[0];
         this.error = false;
+        this.buttonMarkup=new InlineKeyboardMarkup();
     }
 
     public void setMessage(String message)
@@ -57,5 +64,15 @@ public class BotResponse {
 
     public void setError(boolean error) {
         this.error = error;
+    }
+
+    public void setButtonMarkup(List<List<InlineKeyboardButton>> buttons)
+    {
+        buttonMarkup.setKeyboard(buttons);
+    }
+
+    public InlineKeyboardMarkup getButtonMarkup()
+    {
+        return  buttonMarkup;
     }
 }

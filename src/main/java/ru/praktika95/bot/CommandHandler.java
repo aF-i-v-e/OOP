@@ -1,8 +1,10 @@
 package ru.praktika95.bot;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+
+import java.lang.reflect.Method;
+import java.util.*;
 
 public class CommandHandler {
     private final Map<Integer, String> events = new HashMap<>();
@@ -22,8 +24,8 @@ public class CommandHandler {
         int codeCategory = 0; //Пока что будет ноль
         switch(botCommand) {
             case "/choose"-> choose(numberEvent, botResponse);
-            case "/hello"-> hello(botResponse) ;
-            case "/help", "/start"-> help(botResponse);
+            case "/hello","/start"-> hello(botResponse) ;
+            case "/help"-> help(botResponse);
             case "/show"-> show(botResponse);
             case "/chooseCategory"-> botResponse.setCategory(codeCategory);
             case "/choosePeriod"-> choosePeriod(botCommand, botResponse);
@@ -40,7 +42,37 @@ public class CommandHandler {
     private void hello(BotResponse botResponse) {
         initDictionary();
         botResponse.setMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.");
+        InlineKeyboardButton b1= new InlineKeyboardButton();
+        b1.setText("Кино");
+        b1.setCallbackData("Вы выбрали категорию кино");
+
+        InlineKeyboardButton b2= new InlineKeyboardButton();
+        b2.setText("Театр");
+        b2.setCallbackData("Вы выбрали категорию театр");
+
+        InlineKeyboardButton b3= new InlineKeyboardButton();
+        b3.setText("Выставка");
+        b3.setCallbackData("Вы выбрали категорию выставка");
+
+        List<InlineKeyboardButton> buttons1=new ArrayList<>();
+        buttons1.add(b1);
+        buttons1.add(b2);
+        buttons1.add(b3);
+
+        List<InlineKeyboardButton> buttons2=new ArrayList<>();
+        InlineKeyboardButton b4= new InlineKeyboardButton();
+        b3.setText("Помощь");
+        BotResponse helpResponse=new BotResponse();
+        help(helpResponse);
+        b3.setCallbackData(helpResponse.getSendMessage().getText());
+
+        List<List<InlineKeyboardButton>> severalButtons = new ArrayList<>();
+        severalButtons.add(buttons1);
+        severalButtons.add(buttons2);
+
+        botResponse.setButtonMarkup(severalButtons);
     }
+
 
     private void show(BotResponse botResponse) {
         initDictionary();

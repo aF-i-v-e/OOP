@@ -34,7 +34,7 @@ public class CommandHandler {
 
     private void help(BotResponse botResponse) {
         initDictionary();
-        botResponse.setMessage("Доступные команды:\nhelp - узнать список доступных команд.\nhello - получить приветственное сообщение.\nshow - узнать ближайшие мероприятия.\nchoose \"номер мероприятия\" - выбрать мероприятие.");
+        botResponse.setMessage("Доступные команды:\n/help - узнать список доступных команд.\n/hello - получить приветственное сообщение.\n/show - узнать ближайшие мероприятия.\n/choose \"номер мероприятия\" - выбрать мероприятие.");
     }
 
     private void hello(BotResponse botResponse) {
@@ -135,7 +135,7 @@ public class CommandHandler {
 
     private void other(BotResponse botResponse) {
         initDictionary();
-        botResponse.setMessage("Введённой команды не существует, вы можете выполнить команду help, чтобы узнать список доступных команд.");
+        botResponse.setMessage("Введённой команды не существует, вы можете выполнить команду /help, чтобы узнать список доступных команд.");
     }
 
     private void initDictionary(){

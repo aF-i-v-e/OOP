@@ -3,15 +3,14 @@ package ru.praktika95.bot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BotResponse {
     private SendMessage sendMessage;
     private ParsingData parsingData;
     private Event[] events;
+    private Event selectedEvent;
     private boolean error;
     private InlineKeyboardMarkup buttonMarkup;
 
@@ -21,6 +20,7 @@ public class BotResponse {
         this.events = new Event[0];
         this.error = false;
         this.buttonMarkup=new InlineKeyboardMarkup();
+        this.selectedEvent =new Event();
     }
 
     public void setMessage(String message)
@@ -58,6 +58,18 @@ public class BotResponse {
         this.events = events;
     }
 
+    public void setSelectedEvent(Event event)
+    {
+        selectedEvent = event;
+        String textPart1=sendMessage.getText();
+        String textPart2="\n Мероприятие:"+event.getName()+"\n Состоится:"+event.getPlace()+"\n Цена: "+ event.getPrice();
+        sendMessage.setText(textPart1+textPart2);
+
+    }
+    public Event getSelectedEvent()
+    {
+        return selectedEvent;
+    }
     public boolean isError() {
         return error;
     }

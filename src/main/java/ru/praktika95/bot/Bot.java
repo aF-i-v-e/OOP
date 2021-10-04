@@ -2,6 +2,7 @@ package ru.praktika95.bot;
 
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
@@ -25,20 +26,23 @@ public class Bot extends TelegramLongPollingBot {
         {
             Controller controller = new Controller();
             BotResponse botResponse=controller.getBotAnswer(update);
-            botResponse.getSendMessage().setReplyMarkup(botResponse.getButtonMarkup());
+
+            //botResponse.getSendMessage().setReplyMarkup(botResponse.getButtonMarkup());
             executeMessage(botResponse);
+
         }
 
-        else if(update.hasCallbackQuery()) {
-            try {
-                SendMessage message=new SendMessage();
-                message.setText(update.getCallbackQuery().getData());
-                message.setChatId(update.getCallbackQuery().getMessage().getChatId().toString());
-                execute(message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }
+//        else if(update.hasCallbackQuery()) {
+//            try {
+//                SendMessage message=new SendMessage();
+//                message.setText(update.getCallbackQuery().getData());
+//                message.setChatId(update.getCallbackQuery().getMessage().getChatId().toString());
+//                execute(message);
+//               // execute(menu(update.getCallbackQuery().getMessage().getChatId(), update.getCallbackQuery().getData()));
+//            } catch (TelegramApiException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
 

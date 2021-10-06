@@ -3,7 +3,6 @@ package ru.praktika95.bot;
 import java.util.*;
 
 public class CommandHandler {
-    //private final Map<Integer, String> events = new HashMap<>();
 
     private String[] getCommandAndEventNumber(String inputText) {
         String[] commandAndArgument = inputText.split(" ");
@@ -17,6 +16,7 @@ public class CommandHandler {
         String botCommand = commandAndEventNumber[0];
         int numberEvent = Integer.parseInt(commandAndEventNumber[1]);
         BotResponse botResponse = new BotResponse();
+
         int codeCategory = 0; //Пока что будет ноль
         switch(botCommand) {
             case "/choose"-> choose(numberEvent, botResponse);
@@ -37,17 +37,15 @@ public class CommandHandler {
     }
 
     private void help(BotResponse botResponse) {
-        //initDictionary();
         botResponse.setStringMessage("О работе с данным ботом:\nПри вызове команды /show Вам будет предложено 6 мероприятий.\nЧтобы посмотреть больше мероприятий нажмите кнопку \"Показать ещё\".\nЕсли Вас заинтересовало мероприятие, используйте команду /choose № мероприятия.\nДля завершения работы с ботом используйте команду /exit");
         botResponse.setSendPhoto(911);
     }
 
     public static int getRandomIntegerBetweenRange(int min, int max){
-        int x = (int)(Math.random()*((max-min)+1))+min;
+        int x = (int)(Math.random()*((max - min) + 1)) + min;
         return x;
     }
     private void hello(BotResponse botResponse) {
-        //initDictionary();
         botResponse.setStringMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте /help \nДля того, чтобы посмотреть доступные мероприятия используйте /show .");
         botResponse.setSendPhoto(getRandomIntegerBetweenRange(1,5));
 
@@ -85,39 +83,38 @@ public class CommandHandler {
 
 
     private void show(BotResponse botResponse) {
-        //initDictionary();
-        Parsing parsing = new Parsing();
-        parsing.parsing(botResponse);
-        String events="";
-        for(int i = 0; i < 6; i++)
-        {
-            Event event=botResponse.getEvents()[i];
-            events+="\n"+(i+1)+". "+"Мероприятие: "+event.getName()+"\nДата: "+event.getDateTime();
-            if (i!=5)
-                events +="\n \r";
-        }
+        ParsingBotResponse(botResponse);
+        String events = formEventsInfo(0,6, botResponse);
         botResponse.setStringMessage(events);
         botResponse.setSendPhoto(6);
     }
 
+    private String formEventsInfo(int start, int end, BotResponse botResponse){
+        String events="";
+        for(int i = start; i < end; i++)
+        {
+            Event event = botResponse.getEvents()[i];
+            events+="\n"+(i+1)+". "+"Мероприятие: "+event.getName()+"\nДата: "+event.getDateTime();
+            if (i!=end-1)
+                events +="\n \r";
+        }
+        return events;
+    }
+
     private void choose(int numberEvent, BotResponse botResponse) {
-        //initDictionary();
         String message = "Такого мероприятия не существует.";
         if (numberEvent == -1)
             message = "Вы ввели некорректный номер мероприятия.";
+        ParsingBotResponse(botResponse);
+        if (botResponse.getEvents().length >= numberEvent)
+            botResponse.setSelectedEvent(botResponse.getEvents()[numberEvent-1]);
+        else
+            botResponse.setStringMessage(message);
+    }
+
+    private void ParsingBotResponse(BotResponse botResponse){
         Parsing parsing = new Parsing();
         parsing.parsing(botResponse);
-        if (botResponse.getEvents().length >= numberEvent)
-        {
-            botResponse.setSelectedEvent(botResponse.getEvents()[numberEvent-1]);
-            String message1="Вы выбрали мероприятие:\n"+ botResponse.getSelectedEvent().getName();
-            String message2="\nОно состоится: "+ botResponse.getSelectedEvent().getPlace();
-            String message3="\nДата: "+botResponse.getSelectedEvent().getDateTime();
-            String message4="\nВходной билет стоит: "+ botResponse.getSelectedEvent().getPrice();
-            botResponse.setSendPhoto(botResponse.getSelectedEvent().getPhoto());
-            message = message1 + message2 + message3 + message4;
-        }
-        botResponse.setStringMessage(message);
     }
 
     private void choosePeriod(String botCommand, BotResponse botResponse) {
@@ -197,15 +194,6 @@ public class CommandHandler {
     }
 
     private void other(BotResponse botResponse) {
-        //initDictionary();
         botResponse.setStringMessage("Введённой команды не существует, вы можете выполнить команду /help, чтобы узнать как пользоваться ботом.");
     }
-
-//    private void initDictionary(){
-//        if (events.size() == 0){
-//            events.put(1, "Информация первого мероприятия.");
-//            events.put(2, "Информация второго мероприятия.");
-//            events.put(3, "Информация третьего мероприятия.");
-//        }
-//    }
 }

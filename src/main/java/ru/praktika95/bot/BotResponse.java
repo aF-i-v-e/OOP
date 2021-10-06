@@ -19,7 +19,6 @@ public class BotResponse {
     private Event[] events;
     private Event selectedEvent;
     private boolean error;
-    private InlineKeyboardMarkup buttonMarkup;
 
     public BotResponse() {
         this.sendPhoto=new SendPhoto();
@@ -27,7 +26,6 @@ public class BotResponse {
         this.parsingData = new ParsingData();
         this.events = new Event[0];
         this.error = false;
-        this.buttonMarkup=new InlineKeyboardMarkup();
         this.selectedEvent =new Event();
     }
     public void setStringMessage(String message){
@@ -88,10 +86,12 @@ public class BotResponse {
     public void setSelectedEvent(Event event)
     {
         selectedEvent = event;
-        String textPart1=sendMessage.getText();
-        String textPart2="\n Мероприятие:"+event.getName()+"\n Состоится:"+event.getPlace()+"\n Цена: "+ event.getPrice();
-        sendMessage.setText(textPart1+textPart2);
-
+        String eventName="Вы выбрали мероприятие:\n"+event.getName();
+        String eventPlace="\nОно состоится: "+ event.getPlace();
+        String eventTime="\nДата: "+event.getDateTime();
+        String eventPrice="\nВходной билет стоит: "+event.getPrice();
+        this.setSendPhoto(event.getPhoto());
+        message = eventName + eventPlace + eventTime + eventPrice;
     }
     public Event getSelectedEvent()
     {
@@ -103,15 +103,5 @@ public class BotResponse {
 
     public void setError(boolean error) {
         this.error = error;
-    }
-
-    public void setButtonMarkup(List<List<InlineKeyboardButton>> buttons)
-    {
-        buttonMarkup.setKeyboard(buttons);
-    }
-
-    public InlineKeyboardMarkup getButtonMarkup()
-    {
-        return  buttonMarkup;
     }
 }

@@ -1,8 +1,6 @@
 package ru.praktika95.bot;
 
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
@@ -24,10 +22,9 @@ public class Bot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText())
         {
-            Controller controller = new Controller();
-            BotResponse botResponse=controller.getBotAnswer(update);
+            FormBotResponse formBotResponse = new FormBotResponse();
+            BotResponse botResponse= formBotResponse.getBotAnswer(update);
             //botResponse.getSendMessage().setReplyMarkup(botResponse.getButtonMarkup());
-            //executeMessage(botResponse);
             if (botResponse.getSendPhoto().getPhoto()!=null)
                 executePhoto(botResponse);
             else

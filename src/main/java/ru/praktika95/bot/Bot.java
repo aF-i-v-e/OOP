@@ -26,28 +26,26 @@ public class Bot extends TelegramLongPollingBot {
         {
             Controller controller = new Controller();
             BotResponse botResponse=controller.getBotAnswer(update);
-
             //botResponse.getSendMessage().setReplyMarkup(botResponse.getButtonMarkup());
-            executeMessage(botResponse);
-
+            //executeMessage(botResponse);
+            if (botResponse.getSendPhoto().getPhoto()!=null)
+                executePhoto(botResponse);
+            else
+                executeMessage(botResponse);
         }
-
-//        else if(update.hasCallbackQuery()) {
-//            try {
-//                SendMessage message=new SendMessage();
-//                message.setText(update.getCallbackQuery().getData());
-//                message.setChatId(update.getCallbackQuery().getMessage().getChatId().toString());
-//                execute(message);
-//               // execute(menu(update.getCallbackQuery().getMessage().getChatId(), update.getCallbackQuery().getData()));
-//            } catch (TelegramApiException e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
-
+    public void executePhoto(BotResponse botResponse){
+        botResponse.getSendPhoto().setCaption(botResponse.getStringMessage());
+        try{
+            execute(botResponse.getSendPhoto());
+        } catch(TelegramApiException e){
+            e.printStackTrace();
+        }
+    }
 
     public void executeMessage(BotResponse botResponse)
     {
+        botResponse.setSendMessage(botResponse.getStringMessage());
         try {
             execute(botResponse.getSendMessage());
         } catch (TelegramApiException e) {

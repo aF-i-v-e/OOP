@@ -28,12 +28,15 @@ public class BotResponse {
         this.error = false;
         this.selectedEvent =new Event();
     }
+
     public void setStringMessage(String message){
         this.message=message;
     }
+
     public String getStringMessage(){
         return message;
     }
+
     public void setSendMessage(String message)
     {
         sendMessage.setText(message);
@@ -85,7 +88,7 @@ public class BotResponse {
 
     public void setSelectedEvent(Event event)
     {
-        selectedEvent = event;
+        this.selectedEvent = event;
         String eventName="Вы выбрали мероприятие:\n"+event.getName();
         String eventPlace="\nОно состоится: "+ event.getPlace();
         String eventTime="\nДата: "+event.getDateTime();
@@ -93,10 +96,7 @@ public class BotResponse {
         this.setSendPhoto(event.getPhoto());
         message = eventName + eventPlace + eventTime + eventPrice;
     }
-    public Event getSelectedEvent()
-    {
-        return selectedEvent;
-    }
+
     public boolean isError() {
         return error;
     }

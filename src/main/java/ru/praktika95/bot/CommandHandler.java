@@ -106,7 +106,7 @@ public class CommandHandler {
         if (numberEvent == -1)
             message = "Вы ввели некорректный номер мероприятия.";
         ParsingBotResponse(botResponse);
-        if (botResponse.getEvents().length >= numberEvent)
+        if (numberEvent>0 && botResponse.getEvents().length >= numberEvent)
             botResponse.setSelectedEvent(botResponse.getEvents()[numberEvent-1]);
         else
             botResponse.setStringMessage(message);

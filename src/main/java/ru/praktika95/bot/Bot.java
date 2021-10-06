@@ -23,8 +23,7 @@ public class Bot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText())
         {
             FormBotResponse formBotResponse = new FormBotResponse();
-            BotResponse botResponse= formBotResponse.getBotAnswer(update);
-            //botResponse.getSendMessage().setReplyMarkup(botResponse.getButtonMarkup());
+            BotResponse botResponse = formBotResponse.getBotAnswer(update);
             if (botResponse.getSendPhoto().getPhoto()!=null)
                 executePhoto(botResponse);
             else

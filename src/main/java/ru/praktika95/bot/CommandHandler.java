@@ -45,42 +45,11 @@ public class CommandHandler {
         int x = (int)(Math.random()*((max - min) + 1)) + min;
         return x;
     }
+
     private void hello(BotResponse botResponse) {
         botResponse.setStringMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте /help \nДля того, чтобы посмотреть доступные мероприятия используйте /show .");
         botResponse.setSendPhoto(getRandomIntegerBetweenRange(1,5));
-
-//        InlineKeyboardButton b1= new InlineKeyboardButton();
-//        b1.setText("Кино");
-//        b1.setCallbackData("Вы выбрали категорию кино");
-//
-//        InlineKeyboardButton b2= new InlineKeyboardButton();
-//        b2.setText("Театр");
-//        b2.setCallbackData("Вы выбрали категорию театр");
-//
-//        InlineKeyboardButton b3= new InlineKeyboardButton();
-//        b3.setText("Выставка");
-//        b3.setCallbackData("Вы выбрали категорию выставка");
-//
-//        List<InlineKeyboardButton> buttons1=new ArrayList<>();
-//        buttons1.add(b1);
-//        buttons1.add(b2);
-//        buttons1.add(b3);
-//
-//        List<InlineKeyboardButton> buttons2=new ArrayList<>();
-//        InlineKeyboardButton b4= new InlineKeyboardButton();
-//        b4.setText("Помощь");
-//        BotResponse helpResponse=new BotResponse();
-//        help(helpResponse);
-//        b4.setCallbackData(helpResponse.getSendMessage().getText());
-//        buttons2.add(b4);
-//
-//        List<List<InlineKeyboardButton>> severalButtons = new ArrayList<>();
-//        severalButtons.add(buttons1);
-//        severalButtons.add(buttons2);
-//
-//        botResponse.setButtonMarkup(severalButtons);
     }
-
 
     private void show(BotResponse botResponse) {
         ParsingBotResponse(botResponse);

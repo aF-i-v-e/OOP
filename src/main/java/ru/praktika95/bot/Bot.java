@@ -20,12 +20,28 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        Controller controller = new Controller();
-        executeMessage(controller.getBotAnswer(update));
+        if (update.hasMessage() && update.getMessage().hasText())
+        {
+            FormBotResponse formBotResponse = new FormBotResponse();
+            BotResponse botResponse = formBotResponse.getBotAnswer(update);
+            if (botResponse.getSendPhoto().getPhoto()!=null)
+                executePhoto(botResponse);
+            else
+                executeMessage(botResponse);
+        }
+    }
+    public void executePhoto(BotResponse botResponse){
+        botResponse.getSendPhoto().setCaption(botResponse.getStringMessage());
+        try{
+            execute(botResponse.getSendPhoto());
+        } catch(TelegramApiException e){
+            e.printStackTrace();
+        }
     }
 
     public void executeMessage(BotResponse botResponse)
     {
+        botResponse.setSendMessage(botResponse.getStringMessage());
         try {
             execute(botResponse.getSendMessage());
         } catch (TelegramApiException e) {

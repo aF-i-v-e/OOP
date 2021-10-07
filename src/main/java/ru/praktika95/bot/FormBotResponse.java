@@ -2,7 +2,7 @@ package ru.praktika95.bot;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class Controller {
+public class FormBotResponse {
     public BotResponse getBotAnswer(Update update)
     {
         String chatId = update.getMessage().getChatId().toString();

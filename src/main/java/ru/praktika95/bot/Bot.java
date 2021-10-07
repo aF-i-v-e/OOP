@@ -30,6 +30,7 @@ public class Bot extends TelegramLongPollingBot {
                 executeMessage(botResponse);
         }
     }
+
     public void executePhoto(BotResponse botResponse){
         botResponse.getSendPhoto().setCaption(botResponse.getStringMessage());
         try{

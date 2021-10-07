@@ -1,11 +1,16 @@
 package ru.praktika95.bot;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 
 public class CommandHandler {
-    private final Map<Integer, String> events = new HashMap<>();
+    private final Map<String, Function<Calendar, DatePeriod>> commandsHandlers = Map.of(
+            "command", calendar -> null
+    );
+
+    private DatePeriod a(Calendar calendar) {
+        return null;
+    }
 
     private String[] getCommandAndEventNumber(String inputText) {
         String[] commandAndArgument = inputText.split(" ");
@@ -19,42 +24,74 @@ public class CommandHandler {
         String botCommand = commandAndEventNumber[0];
         int numberEvent = Integer.parseInt(commandAndEventNumber[1]);
         BotResponse botResponse = new BotResponse();
+
         int codeCategory = 0; //Пока что будет ноль
         switch(botCommand) {
             case "/choose"-> choose(numberEvent, botResponse);
-            case "/hello"-> hello(botResponse) ;
-            case "/help", "/start"-> help(botResponse);
+            case "/start"-> hello(botResponse) ;
+            case "/help"-> help(botResponse);
             case "/show"-> show(botResponse);
             case "/chooseCategory"-> botResponse.setCategory(codeCategory);
             case "/choosePeriod"-> choosePeriod(botCommand, botResponse);
+            case "/exit"-> exit(botResponse);
             default -> other(botResponse);
         }
         return botResponse;
     }
 
+    private void exit(BotResponse botResponse) {
+        botResponse.setStringMessage("Вы завершили работу с EkbEventsBot. Чтобы начать работу с ботом нажмите\n/start");
+        botResponse.setSendPhoto(1024);
+    }
+
     private void help(BotResponse botResponse) {
-        initDictionary();
-        botResponse.setMessage("Доступные команды:\nhelp - узнать список доступных команд.\nhello - получить приветственное сообщение.\nshow - узнать ближайшие мероприятия.\nchoose \"номер мероприятия\" - выбрать мероприятие.");
+        botResponse.setStringMessage("О работе с данным ботом:\nПри вызове команды /show Вам будет предложено 6 мероприятий.\nЧтобы посмотреть больше мероприятий нажмите кнопку \"Показать ещё\".\nЕсли Вас заинтересовало мероприятие, используйте команду /choose № мероприятия.\nДля завершения работы с ботом используйте команду /exit");
+        botResponse.setSendPhoto(911);
+    }
+
+    public static int getRandomIntegerBetweenRange(int min, int max){
+        int x = (int)(Math.random()*((max - min) + 1)) + min;
+        return x;
     }
 
     private void hello(BotResponse botResponse) {
-        initDictionary();
-        botResponse.setMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.");
+        botResponse.setStringMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте /help \nДля того, чтобы посмотреть доступные мероприятия используйте /show .");
+        botResponse.setSendPhoto(getRandomIntegerBetweenRange(1,5));
     }
 
     private void show(BotResponse botResponse) {
-        initDictionary();
-        botResponse.setMessage("1. Первое мероприятие.\n2. Второе мероприятие.\n3. Третье мероприятие.");
+        ParsingBotResponse(botResponse);
+        String events = formEventsInfo(0,6, botResponse);
+        botResponse.setStringMessage(events);
+        botResponse.setSendPhoto(6);
+    }
+
+    private String formEventsInfo(int start, int end, BotResponse botResponse){
+        String events="";
+        for(int i = start; i < end; i++)
+        {
+            Event event = botResponse.getEvents()[i];
+            events+="\n"+(i+1)+". "+"Мероприятие: "+event.getName()+"\nДата: "+event.getDateTime();
+            if (i!=end-1)
+                events +="\n \r";
+        }
+        return events;
     }
 
     private void choose(int numberEvent, BotResponse botResponse) {
-        initDictionary();
         String message = "Такого мероприятия не существует.";
         if (numberEvent == -1)
             message = "Вы ввели некорректный номер мероприятия.";
-        if (events.containsKey(numberEvent))
-             message = events.get(numberEvent);
-        botResponse.setMessage(message);
+        ParsingBotResponse(botResponse);
+        if (numberEvent>0 && botResponse.getEvents().length >= numberEvent)
+            botResponse.setSelectedEvent(botResponse.getEvents()[numberEvent-1]);
+        else
+            botResponse.setStringMessage(message);
+    }
+
+    private void ParsingBotResponse(BotResponse botResponse){
+        Parsing parsing = new Parsing();
+        parsing.parsing(botResponse);
     }
 
     private void choosePeriod(String botCommand, BotResponse botResponse) {
@@ -63,6 +100,11 @@ public class CommandHandler {
         String dateTo = null;
         int dateWeek = calendar.get(Calendar.DAY_OF_WEEK);
         int dateMonth = calendar.get(Calendar.DATE);
+//        Function<Calendar, DatePeriod> handler = commandsHandlers.get(botCommand);
+//        if (handler == null) {
+//            other(botResponse);
+//        }
+//        DatePeriod period = commandsHandlers.get(botCommand).apply(calendar);
         switch (botCommand) {
             case "today" -> {
                 String currentDate = formatDate(calendar);
@@ -134,15 +176,6 @@ public class CommandHandler {
     }
 
     private void other(BotResponse botResponse) {
-        initDictionary();
-        botResponse.setMessage("Введённой команды не существует, вы можете выполнить команду help, чтобы узнать список доступных команд.");
-    }
-
-    private void initDictionary(){
-        if (events.size() == 0){
-            events.put(1, "Информация первого мероприятия.");
-            events.put(2, "Информация второго мероприятия.");
-            events.put(3, "Информация третьего мероприятия.");
-        }
+        botResponse.setStringMessage("Введённой команды не существует, вы можете выполнить команду /help, чтобы узнать как пользоваться ботом.");
     }
 }

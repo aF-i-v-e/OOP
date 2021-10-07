@@ -1,8 +1,16 @@
 package ru.praktika95.bot;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class CommandHandler {
+    private final Map<String, Function<Calendar, DatePeriod>> commandsHandlers = Map.of(
+            "command", calendar -> null
+    );
+
+    private DatePeriod a(Calendar calendar) {
+        return null;
+    }
 
     private String[] getCommandAndEventNumber(String inputText) {
         String[] commandAndArgument = inputText.split(" ");
@@ -92,6 +100,11 @@ public class CommandHandler {
         String dateTo = null;
         int dateWeek = calendar.get(Calendar.DAY_OF_WEEK);
         int dateMonth = calendar.get(Calendar.DATE);
+//        Function<Calendar, DatePeriod> handler = commandsHandlers.get(botCommand);
+//        if (handler == null) {
+//            other(botResponse);
+//        }
+//        DatePeriod period = commandsHandlers.get(botCommand).apply(calendar);
         switch (botCommand) {
             case "today" -> {
                 String currentDate = formatDate(calendar);

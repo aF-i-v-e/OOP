@@ -7,13 +7,7 @@ public class Event {
     private String place;
     private String price;
 
-    public Event() {
-        this.photo = null;
-        this.name = null;
-        this.dateTime = null;
-        this.place = null;
-        this.price = null;
-    }
+    public Event() { }
 
     public Event(String photo, String name, String dateTime, String place, String price) {
         this.photo = photo;

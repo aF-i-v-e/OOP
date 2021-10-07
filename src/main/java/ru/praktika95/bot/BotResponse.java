@@ -26,11 +26,11 @@ public class BotResponse {
         this.parsingData = new ParsingData();
         this.events = new Event[0];
         this.error = false;
-        this.selectedEvent =new Event();
+        this.selectedEvent = new Event();
     }
 
     public void setStringMessage(String message){
-        this.message=message;
+        this.message = message;
     }
 
     public String getStringMessage(){
@@ -43,7 +43,7 @@ public class BotResponse {
     }
 
     public void setSendPhoto(int photoNumber){
-        File f=new File("C:\\Users\\acer\\OOP\\src\\main\\resources\\"+photoNumber+".jpg");
+        File f = new File("C:\\Users\\acer\\OOP\\src\\main\\resources\\" + photoNumber + ".jpg");
         sendPhoto.setPhoto(new InputFile().setMedia(f));
     }
 
@@ -55,6 +55,7 @@ public class BotResponse {
     {
         return sendPhoto;
     }
+
     public void setChatId(String chatId)
     {
         sendMessage.setChatId(chatId);

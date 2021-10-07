@@ -12,10 +12,10 @@ public class Bot extends TelegramLongPollingBot {
     private String userName;
     private String token;
 
-    public Bot(String botUserName,String token)
+    public Bot(String botUserName, String token)
     {
-        this.userName=botUserName;
-        this.token=token;
+        this.userName = botUserName;
+        this.token = token;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class Bot extends TelegramLongPollingBot {
         {
             FormBotResponse formBotResponse = new FormBotResponse();
             BotResponse botResponse = formBotResponse.getBotAnswer(update);
-            if (botResponse.getSendPhoto().getPhoto()!=null)
+            if (botResponse.getSendPhoto().getPhoto() != null)
                 executePhoto(botResponse);
             else
                 executeMessage(botResponse);

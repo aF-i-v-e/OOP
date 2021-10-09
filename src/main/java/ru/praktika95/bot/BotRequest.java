@@ -22,4 +22,20 @@ public class BotRequest {
     public BotRequest(Update update){
         chatId = update.getMessage().getChatId().toString();
     }
+
+    public String getTypeButtons() {
+        return typeButtons;
+    }
+
+    public void setTypeButtons(String typeButtons) {
+        this.typeButtons = typeButtons;
+    }
+
+    public String getBotCommand() {
+        return botCommand;
+    }
+
+    public void setBotCommand(String botCommand) {
+        this.botCommand = botCommand;
+    }
 }

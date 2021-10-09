@@ -31,9 +31,8 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         System.out.println(update);
-        BotRequestHandler formBotResponse = new BotRequestHandler();
+        BotRequestHandler botRequestHandler = new BotRequestHandler();
         BotRequest botRequest = new BotRequest(update);
-        BotResponse botResponse = formBotResponse.getBotAnswer(botRequest);
         Message message = update.getMessage();
         if (message.hasText())
         {
@@ -41,24 +40,22 @@ public class Bot extends TelegramLongPollingBot {
                 Buttons buttons = new Buttons();
                 InlineKeyboardMarkup inlineButtons = buttons.createButtons("category");
                 SendMessage sendMessage = new SendMessage();
-                sendMessage.setChatId(update.getMessage().getChatId().toString());
+                sendMessage.setChatId(botRequest.chatId);
                 sendMessage.setText("1");
                 sendMessage.setReplyMarkup(inlineButtons);
                 execute(sendMessage);
             }
             else {
                 SendMessage sendMessage = new SendMessage();
-                sendMessage.setChatId(update.getMessage().getChatId().toString());
+                sendMessage.setChatId(botRequest.chatId);
                 sendMessage.setText("Вы ввели несуществующую команду");
                 execute(sendMessage);
             }
         } else {
-            String callbackData = message.getReplyMarkup().getKeyboard().get(0).get(0).getCallbackData();
-            String[] data = callbackData.split(" ");
-            String typeButtons = data[0];
-            String botCommand = data[0];
-            CommandHandler commandHandler = new CommandHandler();
-            commandHandler.commandHandler(typeButtons, botCommand);
+            String[] callbackData = message.getReplyMarkup().getKeyboard().get(0).get(0).getCallbackData().split(" ");
+            botRequest.setTypeButtons(callbackData[0]);
+            botRequest.setBotCommand(callbackData[0]);
+            BotResponse botResponse = botRequestHandler.getBotAnswer(botRequest);
         }
     }
 

@@ -8,22 +8,11 @@ import java.util.*;
 import java.util.function.Function;
 
 public class CommandHandler {
-
     private String[] getCommandAndEventNumber(String inputText) {
         String[] commandAndArgument = inputText.split(" ");
         String botCommand = commandAndArgument[0];
         int numberEvent = commandAndArgument.length > 1 ? Integer.parseInt(commandAndArgument[1]) : -1;
         return new String[]{botCommand, Integer.toString(numberEvent)};
-    }
-
-    public BotResponse commandHandler(String basicCommand){
-        BotResponse botResponse = new BotResponse();
-        switch (basicCommand) {
-            case "help" -> help(botResponse);
-            case "start" ->  hello(botResponse);
-            default -> other(botResponse);
-        }
-        return botResponse;
     }
 
     public BotResponse commandHandler(String typeButtons, String botCommand) {
@@ -33,12 +22,25 @@ public class CommandHandler {
         switch(typeButtons) {
             case  "category" -> {
                 switch (botCommand) {
-                    case "theatre" -> theatre(botResponse);
-                    case "movie" -> movie(botResponse);
-                    case "concert" -> concert(botResponse);
-                    case "allEvents" -> allEvents(botResponse);
+                    case "theatre" -> {
+                        botResponse.getParsingData().setCategory(3009);
+                        category(botResponse, typeButtons);
+                    }
+                    case "movie" -> {
+                        botResponse.getParsingData().setCategory(3031);
+                        category(botResponse, typeButtons);
+                    }
+                    case "concert" -> {
+                        botResponse.getParsingData().setCategory(3000);
+                        category(botResponse, typeButtons);
+                    }
+                    case "allEvents" -> {
+                        botResponse.getParsingData().setCategory(0);
+                        category(botResponse, typeButtons);
+                    }
                 }
             }
+            case "events" -> events(botResponse);
             case "date" -> {
                 switch (botCommand) {
                     case "today" -> today(botResponse);
@@ -51,7 +53,7 @@ public class CommandHandler {
             }
             case "main" -> {
                 switch (botCommand) {
-                    case "show" -> show(botResponse);
+                    case "show" -> events(botResponse);
                     case "help" -> help(botResponse);
                 }
             }
@@ -76,12 +78,12 @@ public class CommandHandler {
         return x;
     }
 
-    public void hello(BotResponse botResponse) {
+    private void hello(BotResponse botResponse) {
         botResponse.setStringMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте /help \nДля того, чтобы посмотреть доступные мероприятия используйте /show .");
         botResponse.setSendPhoto(getRandomIntegerBetweenRange(1,5));
     }
 
-    private void show(BotResponse botResponse) {
+    private void events(BotResponse botResponse) {
         ParsingBotResponse(botResponse);
         String events = formEventsInfo(0,6, botResponse);
         botResponse.setStringMessage(events);
@@ -110,22 +112,10 @@ public class CommandHandler {
             botResponse.setStringMessage(message);
     }
 
-    private void theatre(BotResponse botResponse) {
-        int status = 3;
+    private void category(BotResponse botResponse, String typeButtons) {
+        int status = (int) botResponse.map.get(typeButtons);
         botResponse.setStringMessage("Мероприятия");
-        botResponse.setButtons(createButtons(status++));
-    }
-
-    private void movie(BotResponse botResponse) {
-
-    }
-
-    private void concert(BotResponse botResponse) {
-
-    }
-
-    private void allEvents(BotResponse botResponse) {
-
+        botResponse.setButtons(createButtons(botResponse.map.getKey(++status).toString()));
     }
 
     private void today(BotResponse botResponse) {
@@ -218,10 +208,10 @@ public class CommandHandler {
         botResponse.setPeriod(datePeriod);
     }
 
-    private InlineKeyboardMarkup createButtons(int status){
+    private InlineKeyboardMarkup createButtons(String typeButtons){
         Buttons buttons = new Buttons();
         try {
-            return buttons.createButtons(null);
+            return buttons.createButtons(typeButtons);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e){
             System.out.println(e);
             throw new RuntimeException();

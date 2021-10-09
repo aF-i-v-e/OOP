@@ -15,32 +15,36 @@ public class BotResponse {
     private String message;
     private SendPhoto sendPhoto;
     private SendMessage sendMessage;
+    private InlineKeyboardMarkup buttons;
     private ParsingData parsingData;
     private Event[] events;
     private Event selectedEvent;
     private boolean error;
 
     public BotResponse() {
-        this.sendPhoto=new SendPhoto();
+        this.sendPhoto = new SendPhoto();
         this.sendMessage = new SendMessage();
         this.parsingData = new ParsingData();
         this.events = new Event[0];
         this.error = false;
-        this.selectedEvent =new Event();
+        this.selectedEvent = new Event();
     }
+
     public void setStringMessage(String message){
-        this.message=message;
+        this.message = message;
     }
+
     public String getStringMessage(){
         return message;
     }
+
     public void setSendMessage(String message)
     {
         sendMessage.setText(message);
     }
 
     public void setSendPhoto(int photoNumber){
-        File f=new File("C:\\Users\\acer\\OOP\\src\\main\\resources\\"+photoNumber+".jpg");
+        File f = new File("src\\main\\resources\\" + photoNumber + ".jpg");
         sendPhoto.setPhoto(new InputFile().setMedia(f));
     }
 
@@ -52,6 +56,7 @@ public class BotResponse {
     {
         return sendPhoto;
     }
+
     public void setChatId(String chatId)
     {
         sendMessage.setChatId(chatId);
@@ -65,6 +70,14 @@ public class BotResponse {
 
     public ParsingData getParsingData() {
         return parsingData;
+    }
+
+    public InlineKeyboardMarkup getButtons() {
+        return buttons;
+    }
+
+    public void setButtons(InlineKeyboardMarkup buttons) {
+        this.buttons = buttons;
     }
 
     public void setCategory(int codeCategory) {
@@ -85,23 +98,25 @@ public class BotResponse {
 
     public void setSelectedEvent(Event event)
     {
-        selectedEvent = event;
-        String eventName="Вы выбрали мероприятие:\n"+event.getName();
-        String eventPlace="\nОно состоится: "+ event.getPlace();
-        String eventTime="\nДата: "+event.getDateTime();
-        String eventPrice="\nВходной билет стоит: "+event.getPrice();
+        this.selectedEvent = event;
+        String eventName = "Вы выбрали мероприятие:\n" + event.getName();
+        String eventPlace = "\nОно состоится: " + event.getPlace();
+        String eventTime = "\nДата: " + event.getDateTime();
+        String eventPrice = "\nВходной билет стоит: "+ event.getPrice();
         this.setSendPhoto(event.getPhoto());
         message = eventName + eventPlace + eventTime + eventPrice;
     }
-    public Event getSelectedEvent()
-    {
-        return selectedEvent;
-    }
+
     public boolean isError() {
         return error;
     }
 
     public void setError(boolean error) {
         this.error = error;
+    }
+
+    public void setMarkUp( InlineKeyboardMarkup inlineButtons ){
+        sendPhoto.setReplyMarkup(inlineButtons);
+        sendMessage.setReplyMarkup(inlineButtons);
     }
 }

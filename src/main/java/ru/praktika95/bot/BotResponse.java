@@ -15,6 +15,7 @@ public class BotResponse {
     private String message;
     private SendPhoto sendPhoto;
     private SendMessage sendMessage;
+    private InlineKeyboardMarkup buttons;
     private ParsingData parsingData;
     private Event[] events;
     private Event selectedEvent;
@@ -43,7 +44,7 @@ public class BotResponse {
     }
 
     public void setSendPhoto(int photoNumber){
-        File f = new File("C:\\Users\\acer\\OOP\\src\\main\\resources\\" + photoNumber + ".jpg");
+        File f = new File("src\\main\\resources\\" + photoNumber + ".jpg");
         sendPhoto.setPhoto(new InputFile().setMedia(f));
     }
 
@@ -69,6 +70,14 @@ public class BotResponse {
 
     public ParsingData getParsingData() {
         return parsingData;
+    }
+
+    public InlineKeyboardMarkup getButtons() {
+        return buttons;
+    }
+
+    public void setButtons(InlineKeyboardMarkup buttons) {
+        this.buttons = buttons;
     }
 
     public void setCategory(int codeCategory) {

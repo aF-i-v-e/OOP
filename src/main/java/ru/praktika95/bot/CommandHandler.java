@@ -1,5 +1,9 @@
 package ru.praktika95.bot;
 
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Function;
 
@@ -19,21 +23,21 @@ public class CommandHandler {
         return new String[]{botCommand, Integer.toString(numberEvent)};
     }
 
-    public BotResponse commandHandler(String input) {
-        String[] commandAndEventNumber = getCommandAndEventNumber(input);
-        String botCommand = commandAndEventNumber[0];
-        int numberEvent = Integer.parseInt(commandAndEventNumber[1]);
+    public BotResponse commandHandler(String typeButtons, String botCommand) {
+//        String[] commandAndEventNumber = getCommandAndEventNumber(botCommand);
+//        int numberEvent = Integer.parseInt(commandAndEventNumber[1]);
         BotResponse botResponse = new BotResponse();
 
-        int codeCategory = 0; //Пока что будет ноль
-        switch(botCommand) {
-            case "/choose"-> choose(numberEvent, botResponse);
-            case "/start"-> hello(botResponse) ;
-            case "/help"-> help(botResponse);
-            case "/show"-> show(botResponse);
-            case "/chooseCategory"-> botResponse.setCategory(codeCategory);
-            case "/choosePeriod"-> choosePeriod(botCommand, botResponse);
-            case "/exit"-> exit(botResponse);
+        switch(typeButtons) {
+            case  "category" -> {
+                switch (botCommand) {
+                    case "theatre" -> theatre(botResponse);
+                    case "movie" -> movie(botResponse);
+                    case "concert" -> concert(botResponse);
+                    case "allEvents" -> allEvents(botResponse);
+                }
+            }
+            case  "allEvents" -> allEvents(botResponse);
             default -> other(botResponse);
         }
         return botResponse;
@@ -87,6 +91,34 @@ public class CommandHandler {
             botResponse.setSelectedEvent(botResponse.getEvents()[numberEvent-1]);
         else
             botResponse.setStringMessage(message);
+    }
+
+    private void theatre(BotResponse botResponse) {
+        int status = 3;
+        botResponse.setStringMessage("Мероприятия");
+        botResponse.setButtons(createButtons(status++));
+    }
+
+    private void movie(BotResponse botResponse) {
+
+    }
+
+    private void concert(BotResponse botResponse) {
+
+    }
+
+    private void allEvents(BotResponse botResponse) {
+
+    }
+
+    private InlineKeyboardMarkup createButtons(int status){
+        Buttons buttons = new Buttons();
+        try {
+            return buttons.createButtons(null);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e){
+            System.out.println(e);
+            throw new RuntimeException();
+        }
     }
 
     private void ParsingBotResponse(BotResponse botResponse){

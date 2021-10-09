@@ -15,6 +15,16 @@ public class CommandHandler {
         return new String[]{botCommand, Integer.toString(numberEvent)};
     }
 
+    public BotResponse commandHandler(String basicCommand){
+        BotResponse botResponse = new BotResponse();
+        switch (basicCommand) {
+            case "help" -> help(botResponse);
+            case "start" ->  hello(botResponse);
+            default -> other(botResponse);
+        }
+        return botResponse;
+    }
+
     public BotResponse commandHandler(String typeButtons, String botCommand) {
 //        String[] commandAndEventNumber = getCommandAndEventNumber(botCommand);
 //        int numberEvent = Integer.parseInt(commandAndEventNumber[1]);
@@ -57,7 +67,6 @@ public class CommandHandler {
                     case "help" -> help(botResponse);
                 }
             }
-//            case  "events" -> events(botResponse);
             default -> other(botResponse);
         }
         return botResponse;

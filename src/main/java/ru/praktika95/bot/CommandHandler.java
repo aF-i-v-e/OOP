@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 public class CommandHandler {
     private final Map<String, Function<Calendar, DatePeriod>> commandsHandlers = Map.of(
-            "command", calendar -> null
+            "today", calendar -> null
     );
 
     private DatePeriod a(Calendar calendar) {
@@ -72,11 +72,10 @@ public class CommandHandler {
 
     private String formEventsInfo(int start, int end, BotResponse botResponse){
         String events="";
-        for(int i = start; i < end; i++)
-        {
+        for(int i = start; i < end; i++) {
             Event event = botResponse.getEvents()[i];
-            events+="\n"+(i+1)+". "+"Мероприятие: "+event.getName()+"\nДата: "+event.getDateTime();
-            if (i!=end-1)
+            events+="\n" + (i + 1) + ". "+"Мероприятие: " + event.getName() + "\nДата: " + event.getDateTime();
+            if (i != end - 1)
                 events +="\n \r";
         }
         return events;
@@ -87,8 +86,8 @@ public class CommandHandler {
         if (numberEvent == -1)
             message = "Вы ввели некорректный номер мероприятия.";
         ParsingBotResponse(botResponse);
-        if (numberEvent>0 && botResponse.getEvents().length >= numberEvent)
-            botResponse.setSelectedEvent(botResponse.getEvents()[numberEvent-1]);
+        if (numberEvent > 0 && botResponse.getEvents().length >= numberEvent)
+            botResponse.setSelectedEvent(botResponse.getEvents()[numberEvent - 1]);
         else
             botResponse.setStringMessage(message);
     }
@@ -111,32 +110,17 @@ public class CommandHandler {
 
     }
 
-    private InlineKeyboardMarkup createButtons(int status){
-        Buttons buttons = new Buttons();
-        try {
-            return buttons.createButtons(null);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e){
-            System.out.println(e);
-            throw new RuntimeException();
-        }
-    }
-
-    private void ParsingBotResponse(BotResponse botResponse){
-        Parsing parsing = new Parsing();
-        parsing.parsing(botResponse);
-    }
-
-    private void choosePeriod(String botCommand, BotResponse botResponse) {
+    private void date(String botCommand, BotResponse botResponse) {
         Calendar calendar = Calendar.getInstance();
         String dateFrom = null;
         String dateTo = null;
         int dateWeek = calendar.get(Calendar.DAY_OF_WEEK);
         int dateMonth = calendar.get(Calendar.DATE);
-//        Function<Calendar, DatePeriod> handler = commandsHandlers.get(botCommand);
-//        if (handler == null) {
-//            other(botResponse);
-//        }
-//        DatePeriod period = commandsHandlers.get(botCommand).apply(calendar);
+        Function<Calendar, DatePeriod> handler = commandsHandlers.get(botCommand);
+        if (handler == null) {
+            other(botResponse);
+        }
+        DatePeriod period = commandsHandlers.get(botCommand).apply(calendar);
         switch (botCommand) {
             case "today" -> {
                 String currentDate = formatDate(calendar);
@@ -196,6 +180,111 @@ public class CommandHandler {
         datePeriod.setDateFrom(dateFrom);
         datePeriod.setDateTo(dateTo);
         botResponse.setPeriod(datePeriod);
+//        Parsing parsing = new Parsing();
+//        parsing.parsing(botResponse);
+    }
+
+    private void today(BotResponse botResponse) {
+        Calendar calendar = Calendar.getInstance();
+        String currentDate = formatDate(calendar);
+        DatePeriod datePeriod = new DatePeriod();
+        datePeriod.setDateFrom(currentDate);
+        datePeriod.setDateTo(currentDate);
+        botResponse.setPeriod(datePeriod);
+    }
+
+    private void tomorrow(BotResponse botResponse) {
+        Calendar calendar = Calendar.getInstance();
+        String dateFrom = formatDate(calendar);
+        calendar.add(Calendar.DATE, 1);
+        String dateTo = formatDate(calendar);
+        DatePeriod datePeriod = new DatePeriod();
+        datePeriod.setDateFrom(dateFrom);
+        datePeriod.setDateTo(dateTo);
+        botResponse.setPeriod(datePeriod);
+    }
+
+    private void thisWeek(BotResponse botResponse) {
+        Calendar calendar = Calendar.getInstance();
+        int dateWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        String currentDate = formatDate(calendar);
+        String dateTo;
+        if (dateWeek == 1)
+            dateTo = currentDate;
+        else {
+            calendar.add(Calendar.DATE, 8 - dateWeek);
+            dateTo = formatDate(calendar);
+        }
+        DatePeriod datePeriod = new DatePeriod();
+        datePeriod.setDateFrom(currentDate);
+        datePeriod.setDateTo(dateTo);
+        botResponse.setPeriod(datePeriod);
+    }
+
+    private void nextWeek(BotResponse botResponse) {
+        Calendar calendar = Calendar.getInstance();
+        int dateWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        if (dateWeek == 1)
+            calendar.add(Calendar.DATE, 1);
+        else
+            calendar.add(Calendar.DATE, 9 - dateWeek);
+        String dateFrom = formatDate(calendar);
+        calendar.add(Calendar.DATE, 6);
+        String dateTo = formatDate(calendar);
+        DatePeriod datePeriod = new DatePeriod();
+        datePeriod.setDateFrom(dateFrom);
+        datePeriod.setDateTo(dateTo);
+        botResponse.setPeriod(datePeriod);
+    }
+
+    private void thisMonth(BotResponse botResponse) {
+        Calendar calendar = Calendar.getInstance();
+        int dateMonth = calendar.get(Calendar.DATE);
+        String currentDate = formatDate(calendar);
+        int lastDayMonth = calendar.getActualMaximum(Calendar.DATE);
+        String dateTo;
+        if (dateMonth == lastDayMonth)
+            dateTo = currentDate;
+        else {
+            calendar.add(Calendar.DATE, lastDayMonth - dateMonth);
+            dateTo = formatDate(calendar);
+        }
+        DatePeriod datePeriod = new DatePeriod();
+        datePeriod.setDateFrom(currentDate);
+        datePeriod.setDateTo(dateTo);
+        botResponse.setPeriod(datePeriod);
+    }
+
+    private void nextMonth(BotResponse botResponse) {
+        Calendar calendar = Calendar.getInstance();
+        int dateMonth = calendar.get(Calendar.DATE);
+        int lastDayMonth = calendar.getActualMaximum(Calendar.DATE);
+        if (dateMonth == lastDayMonth)
+            calendar.add(Calendar.DATE, 1);
+        else
+            calendar.add(Calendar.DATE, lastDayMonth - dateMonth + 1);
+        String dateFrom = formatDate(calendar);
+        lastDayMonth = calendar.getActualMaximum(Calendar.DATE);
+        dateMonth = calendar.get(Calendar.DATE);
+        calendar.add(Calendar.DATE, lastDayMonth - dateMonth);
+        String dateTo = formatDate(calendar);
+        DatePeriod datePeriod = new DatePeriod();
+        datePeriod.setDateFrom(dateFrom);
+        datePeriod.setDateTo(dateTo);
+        botResponse.setPeriod(datePeriod);
+    }
+
+    private InlineKeyboardMarkup createButtons(int status){
+        Buttons buttons = new Buttons();
+        try {
+            return buttons.createButtons(null);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e){
+            System.out.println(e);
+            throw new RuntimeException();
+        }
+    }
+
+    private void ParsingBotResponse(BotResponse botResponse){
         Parsing parsing = new Parsing();
         parsing.parsing(botResponse);
     }

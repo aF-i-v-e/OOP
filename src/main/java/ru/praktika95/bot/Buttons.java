@@ -22,6 +22,36 @@ public class Buttons {
         return inlineKeyboardMarkup;
     }
 
+    private List<List<InlineKeyboardButton>> main(String typeButtons){
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
+        Map<String, String> buttons = Map.of(
+                "Мероприятия", "show",
+                "Помощь", "help"
+        );
+        rowList.add(createButton(buttons, typeButtons));
+        return rowList;
+    }
+
+    private List<List<InlineKeyboardButton>> date(String typeButtons){
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
+        Map<String, String> buttons = Map.of(
+                "Сегодня", "today",
+                "Завтра", "tomorrow"
+        );
+        rowList.add(createButton(buttons, typeButtons));
+        buttons = Map.of(
+                "На этой неделе", "thisWeek",
+                "На следующей неделе", "nextWeek"
+        );
+        rowList.add(createButton(buttons, typeButtons));
+        buttons = Map.of(
+                "В этом месяце", "thisMonth",
+                "В следующем месяце", "nextMonth"
+        );
+        rowList.add(createButton(buttons, typeButtons));
+        return rowList;
+    }
+
     private List<List<InlineKeyboardButton>> category(String typeButtons) {
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         Map<String, String> buttons = Map.of(

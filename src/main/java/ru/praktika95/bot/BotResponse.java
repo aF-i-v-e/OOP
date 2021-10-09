@@ -114,4 +114,9 @@ public class BotResponse {
     public void setError(boolean error) {
         this.error = error;
     }
+
+    public void setMarkUp( InlineKeyboardMarkup inlineButtons ){
+        sendPhoto.setReplyMarkup(inlineButtons);
+        sendMessage.setReplyMarkup(inlineButtons);
+    }
 }

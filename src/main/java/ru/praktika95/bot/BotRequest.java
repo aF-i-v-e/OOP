@@ -12,7 +12,7 @@ public class BotRequest {
     String botCommand;
     public final Map<String,Integer> map = Map.of(
             "main", 0,
-            "data", 1,
+            "date", 1,
             "category", 2,
             "events", 3,
             "event", 4,

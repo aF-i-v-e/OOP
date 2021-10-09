@@ -8,11 +8,22 @@ import java.util.*;
 import java.util.function.Function;
 
 public class CommandHandler {
+
     private String[] getCommandAndEventNumber(String inputText) {
         String[] commandAndArgument = inputText.split(" ");
         String botCommand = commandAndArgument[0];
         int numberEvent = commandAndArgument.length > 1 ? Integer.parseInt(commandAndArgument[1]) : -1;
         return new String[]{botCommand, Integer.toString(numberEvent)};
+    }
+
+    public BotResponse commandHandler(String basicCommand){
+        BotResponse botResponse = new BotResponse();
+        switch (basicCommand) {
+            case "help" -> help(botResponse);
+            case "start" ->  hello(botResponse);
+            default -> other(botResponse);
+        }
+        return botResponse;
     }
 
     public BotResponse commandHandler(String typeButtons, String botCommand) {
@@ -26,6 +37,22 @@ public class CommandHandler {
                     case "movie" -> movie(botResponse);
                     case "concert" -> concert(botResponse);
                     case "allEvents" -> allEvents(botResponse);
+                }
+            }
+            case "date" -> {
+                switch (botCommand) {
+                    case "today" -> today(botResponse);
+                    case "tomorrow" -> tomorrow(botResponse);
+                    case "thisWeek" -> thisWeek(botResponse);
+                    case "nextWeek" -> nextWeek(botResponse);
+                    case "thisMonth" -> thisMonth(botResponse);
+                    case "nextMonth" -> nextMonth(botResponse);
+                }
+            }
+            case "main" -> {
+                switch (botCommand) {
+                    case "show" -> show(botResponse);
+                    case "help" -> help(botResponse);
                 }
             }
 //            case  "events" -> events(botResponse);
@@ -49,7 +76,7 @@ public class CommandHandler {
         return x;
     }
 
-    private void hello(BotResponse botResponse) {
+    public void hello(BotResponse botResponse) {
         botResponse.setStringMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте /help \nДля того, чтобы посмотреть доступные мероприятия используйте /show .");
         botResponse.setSendPhoto(getRandomIntegerBetweenRange(1,5));
     }
@@ -65,7 +92,7 @@ public class CommandHandler {
         String events="";
         for(int i = start; i < end; i++) {
             Event event = botResponse.getEvents()[i];
-            events+="\n" + (i + 1) + ". "+"Мероприятие: " + event.getName() + "\nДата: " + event.getDateTime();
+            events+="\n" + (i + 1) + ". " + "Мероприятие: " + event.getName() + "\nДата: " + event.getDateTime();
             if (i != end - 1)
                 events +="\n \r";
         }

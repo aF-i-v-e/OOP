@@ -33,30 +33,32 @@ public class Bot extends TelegramLongPollingBot {
         System.out.println(update);
         BotRequestHandler botRequestHandler = new BotRequestHandler();
         BotRequest botRequest = new BotRequest(update);
+        BotResponse botResponse;
         Message message = update.getMessage();
         if (message.hasText())
         {
             if (Objects.equals(message.getText(), "/start")){
                 Buttons buttons = new Buttons();
-                InlineKeyboardMarkup inlineButtons = buttons.createButtons("category");
-                SendMessage sendMessage = new SendMessage();
-                sendMessage.setChatId(botRequest.chatId);
-                sendMessage.setText("1");
-                sendMessage.setReplyMarkup(inlineButtons);
-                execute(sendMessage);
+                InlineKeyboardMarkup inlineButtons = buttons.createButtons("main");
+                botResponse = botRequestHandler.getBotAnswer("start", botRequest);
+                botResponse.setMarkUp(inlineButtons);
             }
-            else {
-                SendMessage sendMessage = new SendMessage();
-                sendMessage.setChatId(botRequest.chatId);
-                sendMessage.setText("Вы ввели несуществующую команду");
-                execute(sendMessage);
-            }
+            else
+                botResponse = botRequestHandler.getBotAnswer("otherCommand",botRequest);
         } else {
             String[] callbackData = message.getReplyMarkup().getKeyboard().get(0).get(0).getCallbackData().split(" ");
             botRequest.setTypeButtons(callbackData[0]);
             botRequest.setBotCommand(callbackData[0]);
-            BotResponse botResponse = botRequestHandler.getBotAnswer(botRequest);
+            botResponse = botRequestHandler.getBotAnswer(botRequest);
         }
+        executeBotResponse(botResponse);
+    }
+
+    public void executeBotResponse(BotResponse botResponse){
+        if (botResponse.getSendPhoto().getPhoto()!=null)
+            executePhoto(botResponse);
+        else
+            executeMessage(botResponse);
     }
 
     public void executePhoto(BotResponse botResponse){

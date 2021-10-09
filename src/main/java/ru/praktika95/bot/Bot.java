@@ -31,8 +31,9 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         System.out.println(update);
-        FormBotResponse formBotResponse = new FormBotResponse();
-        BotResponse botResponse = formBotResponse.getBotAnswer(update);
+        BotRequestHandler formBotResponse = new BotRequestHandler();
+        BotRequest botRequest = new BotRequest(update);
+        BotResponse botResponse = formBotResponse.getBotAnswer(botRequest);
         Message message = update.getMessage();
         if (message.hasText())
         {

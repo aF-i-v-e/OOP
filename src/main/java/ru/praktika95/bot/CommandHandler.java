@@ -8,14 +8,6 @@ import java.util.*;
 import java.util.function.Function;
 
 public class CommandHandler {
-    private final Map<String, Function<Calendar, DatePeriod>> commandsHandlers = Map.of(
-            "today", calendar -> null
-    );
-
-    private DatePeriod a(Calendar calendar) {
-        return null;
-    }
-
     private String[] getCommandAndEventNumber(String inputText) {
         String[] commandAndArgument = inputText.split(" ");
         String botCommand = commandAndArgument[0];
@@ -27,7 +19,6 @@ public class CommandHandler {
 //        String[] commandAndEventNumber = getCommandAndEventNumber(botCommand);
 //        int numberEvent = Integer.parseInt(commandAndEventNumber[1]);
         BotResponse botResponse = new BotResponse();
-
         switch(typeButtons) {
             case  "category" -> {
                 switch (botCommand) {
@@ -37,7 +28,7 @@ public class CommandHandler {
                     case "allEvents" -> allEvents(botResponse);
                 }
             }
-            case  "allEvents" -> allEvents(botResponse);
+//            case  "events" -> events(botResponse);
             default -> other(botResponse);
         }
         return botResponse;
@@ -108,80 +99,6 @@ public class CommandHandler {
 
     private void allEvents(BotResponse botResponse) {
 
-    }
-
-    private void date(String botCommand, BotResponse botResponse) {
-        Calendar calendar = Calendar.getInstance();
-        String dateFrom = null;
-        String dateTo = null;
-        int dateWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        int dateMonth = calendar.get(Calendar.DATE);
-        Function<Calendar, DatePeriod> handler = commandsHandlers.get(botCommand);
-        if (handler == null) {
-            other(botResponse);
-        }
-        DatePeriod period = commandsHandlers.get(botCommand).apply(calendar);
-        switch (botCommand) {
-            case "today" -> {
-                String currentDate = formatDate(calendar);
-                dateFrom = currentDate;
-                dateTo = currentDate;
-            }
-            case "tomorrow" -> {
-                dateFrom = formatDate(calendar);
-                calendar.add(Calendar.DATE, 1);
-                dateTo = formatDate(calendar);
-            }
-            case "thisWeek" -> {
-                String currentDate = formatDate(calendar);
-                dateFrom = currentDate;
-                if (dateWeek == 1)
-                    dateTo = currentDate;
-                else {
-                    calendar.add(Calendar.DATE, 8 - dateWeek);
-                    dateTo = formatDate(calendar);
-                }
-            }
-            case "nextWeek" -> {
-                if (dateWeek == 1)
-                    calendar.add(Calendar.DATE, 1);
-                else
-                    calendar.add(Calendar.DATE, 9 - dateWeek);
-                dateFrom = formatDate(calendar);
-                calendar.add(Calendar.DATE, 6);
-                dateTo = formatDate(calendar);
-            }
-            case "thisMonth" -> {
-                String currentDate = formatDate(calendar);
-                int lastDayMonth = calendar.getActualMaximum(Calendar.DATE);
-                dateFrom = currentDate;
-                if (dateMonth == lastDayMonth)
-                    dateTo = currentDate;
-                else {
-                    calendar.add(Calendar.DATE, lastDayMonth - dateMonth);
-                    dateTo = formatDate(calendar);
-                }
-            }
-            case "nextMonth" -> {
-                int lastDayMonth = calendar.getActualMaximum(Calendar.DATE);
-                if (dateMonth == lastDayMonth)
-                    calendar.add(Calendar.DATE, 1);
-                else
-                    calendar.add(Calendar.DATE, lastDayMonth - dateMonth + 1);
-                dateFrom = formatDate(calendar);
-                lastDayMonth = calendar.getActualMaximum(Calendar.DATE);
-                dateMonth = calendar.get(Calendar.DATE);
-                calendar.add(Calendar.DATE, lastDayMonth - dateMonth);
-                dateTo = formatDate(calendar);
-            }
-            default -> other(botResponse);
-        }
-        DatePeriod datePeriod = new DatePeriod();
-        datePeriod.setDateFrom(dateFrom);
-        datePeriod.setDateTo(dateTo);
-        botResponse.setPeriod(datePeriod);
-//        Parsing parsing = new Parsing();
-//        parsing.parsing(botResponse);
     }
 
     private void today(BotResponse botResponse) {

@@ -39,7 +39,7 @@
 2. Перенос существующей логики на телеграмм
 
 Замечания:
-5. Сделать BotRequest в FormBotResponse
+5. Сделать BotRequest в FormBotResponse (String botCommand, int status)
 6. переименовать FormBotResponse в BotRequestHandler
 7. Внесение токена и имени бота в bot.properties
 8. переделать switch case в CommandHandler в методе choosePeriod (вынести в Map, в конструкцию ключ - функция).

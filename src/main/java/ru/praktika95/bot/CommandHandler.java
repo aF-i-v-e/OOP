@@ -3,9 +3,7 @@ package ru.praktika95.bot;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
 import java.util.*;
-import java.util.function.Function;
 
 public class CommandHandler {
     private String[] getCommandAndEventNumber(String inputText) {
@@ -22,13 +20,25 @@ public class CommandHandler {
         switch(typeButtons) {
             case  "category" -> {
                 switch (botCommand) {
-                    case "theatre" -> theatre(botResponse);
-                    case "movie" -> movie(botResponse);
-                    case "concert" -> concert(botResponse);
-                    case "allEvents" -> allEvents(botResponse);
+                    case "theatre" -> {
+                        botResponse.getParsingData().setCategory(3009);
+                        category(botResponse, typeButtons);
+                    }
+                    case "movie" -> {
+                        botResponse.getParsingData().setCategory(3031);
+                        category(botResponse, typeButtons);
+                    }
+                    case "concert" -> {
+                        botResponse.getParsingData().setCategory(3000);
+                        category(botResponse, typeButtons);
+                    }
+                    case "allEvents" -> {
+                        botResponse.getParsingData().setCategory(0);
+                        category(botResponse, typeButtons);
+                    }
                 }
             }
-//            case  "events" -> events(botResponse);
+            case "events" -> events(botResponse);
             default -> other(botResponse);
         }
         return botResponse;
@@ -54,7 +64,7 @@ public class CommandHandler {
         botResponse.setSendPhoto(getRandomIntegerBetweenRange(1,5));
     }
 
-    private void show(BotResponse botResponse) {
+    private void events(BotResponse botResponse) {
         ParsingBotResponse(botResponse);
         String events = formEventsInfo(0,6, botResponse);
         botResponse.setStringMessage(events);
@@ -83,22 +93,10 @@ public class CommandHandler {
             botResponse.setStringMessage(message);
     }
 
-    private void theatre(BotResponse botResponse) {
-        int status = 3;
+    private void category(BotResponse botResponse, String typeButtons) {
+        int status = (int) botResponse.map.get(typeButtons);
         botResponse.setStringMessage("Мероприятия");
-        botResponse.setButtons(createButtons(status++));
-    }
-
-    private void movie(BotResponse botResponse) {
-
-    }
-
-    private void concert(BotResponse botResponse) {
-
-    }
-
-    private void allEvents(BotResponse botResponse) {
-
+        botResponse.setButtons(createButtons(botResponse.map.getKey(++status).toString()));
     }
 
     private void today(BotResponse botResponse) {
@@ -191,10 +189,10 @@ public class CommandHandler {
         botResponse.setPeriod(datePeriod);
     }
 
-    private InlineKeyboardMarkup createButtons(int status){
+    private InlineKeyboardMarkup createButtons(String typeButtons){
         Buttons buttons = new Buttons();
         try {
-            return buttons.createButtons(null);
+            return buttons.createButtons(typeButtons);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e){
             System.out.println(e);
             throw new RuntimeException();

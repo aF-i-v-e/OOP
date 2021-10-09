@@ -9,12 +9,17 @@ import java.util.function.Function;
 public class BotRequest {
     String chatId;
     String typeButtons;
-    String button;
     String botCommand;
-    Map<String,Integer> map;
+    public final Map<String,Integer> map = Map.of(
+            "main",0,
+            "data",1,
+            "category",2,
+            "events",3,
+            "event",4,
+            "period",5
+    );
 
     public BotRequest(Update update){
         chatId = update.getMessage().getChatId().toString();
-        map = new HashMap<String, Integer>();
     }
 }

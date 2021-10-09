@@ -11,12 +11,12 @@ public class BotRequest {
     String typeButtons;
     String botCommand;
     public final Map<String,Integer> map = Map.of(
-            "main",0,
-            "data",1,
-            "category",2,
-            "events",3,
-            "event",4,
-            "period",5
+            "main", 0,
+            "data", 1,
+            "category", 2,
+            "events", 3,
+            "event", 4,
+            "period", 5
     );
 
     public BotRequest(Update update){

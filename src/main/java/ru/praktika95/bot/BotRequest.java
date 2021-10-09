@@ -12,7 +12,10 @@ public class BotRequest {
     String botCommand;
 
     public BotRequest(Update update){
-        chatId = update.getMessage().getChatId().toString();
+        if (update.hasCallbackQuery())
+            chatId = update.getCallbackQuery().getMessage().getChatId().toString();
+        else
+            chatId = update.getMessage().getChatId().toString();
     }
 
     public String getTypeButtons() {

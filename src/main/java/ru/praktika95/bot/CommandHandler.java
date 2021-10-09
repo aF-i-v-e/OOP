@@ -16,16 +16,21 @@ public class CommandHandler {
     public BotResponse commandHandler(String typeButtons, String botCommand) {
 //        String[] commandAndEventNumber = getCommandAndEventNumber(botCommand);
 //        int numberEvent = Integer.parseInt(commandAndEventNumber[1]);
+        System.out.println("!");
         BotResponse botResponse = new BotResponse();
-        switch(typeButtons) {
-            case  "category" -> {
+        System.out.println("!");
+        switch (typeButtons) {
+            case "category" -> {
+                System.out.println("!");
                 switch (botCommand) {
                     case "theatre" -> {
                         botResponse.getParsingData().setCategory(3009);
                         category(botResponse, typeButtons);
                     }
                     case "movie" -> {
+                        System.out.println("!");
                         botResponse.getParsingData().setCategory(3031);
+                        System.out.println("!");
                         category(botResponse, typeButtons);
                     }
                     case "concert" -> {
@@ -54,30 +59,30 @@ public class CommandHandler {
         botResponse.setSendPhoto(911);
     }
 
-    public static int getRandomIntegerBetweenRange(int min, int max){
-        int x = (int)(Math.random()*((max - min) + 1)) + min;
+    public static int getRandomIntegerBetweenRange(int min, int max) {
+        int x = (int) (Math.random() * ((max - min) + 1)) + min;
         return x;
     }
 
     private void hello(BotResponse botResponse) {
         botResponse.setStringMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте /help \nДля того, чтобы посмотреть доступные мероприятия используйте /show .");
-        botResponse.setSendPhoto(getRandomIntegerBetweenRange(1,5));
+        botResponse.setSendPhoto(getRandomIntegerBetweenRange(1, 5));
     }
 
     private void events(BotResponse botResponse) {
         ParsingBotResponse(botResponse);
-        String events = formEventsInfo(0,6, botResponse);
+        String events = formEventsInfo(0, 6, botResponse);
         botResponse.setStringMessage(events);
         botResponse.setSendPhoto(6);
     }
 
-    private String formEventsInfo(int start, int end, BotResponse botResponse){
-        String events="";
-        for(int i = start; i < end; i++) {
+    private String formEventsInfo(int start, int end, BotResponse botResponse) {
+        String events = "";
+        for (int i = start; i < end; i++) {
             Event event = botResponse.getEvents()[i];
-            events+="\n" + (i + 1) + ". "+"Мероприятие: " + event.getName() + "\nДата: " + event.getDateTime();
+            events += "\n" + (i + 1) + ". " + "Мероприятие: " + event.getName() + "\nДата: " + event.getDateTime();
             if (i != end - 1)
-                events +="\n \r";
+                events += "\n \r";
         }
         return events;
     }
@@ -94,9 +99,9 @@ public class CommandHandler {
     }
 
     private void category(BotResponse botResponse, String typeButtons) {
-        int status = (int) botResponse.map.get(typeButtons);
-        botResponse.setStringMessage("Мероприятия");
-        botResponse.setButtons(createButtons(botResponse.map.getKey(++status).toString()));
+//        int status = (int) botResponse.map.get(typeButtons);
+//        botResponse.setStringMessage("Мероприятия");
+//        botResponse.setButtons(createButtons(botResponse.map.getKey(++status).toString()));
     }
 
     private void today(BotResponse botResponse) {
@@ -189,17 +194,17 @@ public class CommandHandler {
         botResponse.setPeriod(datePeriod);
     }
 
-    private InlineKeyboardMarkup createButtons(String typeButtons){
+    private InlineKeyboardMarkup createButtons(String typeButtons) {
         Buttons buttons = new Buttons();
         try {
             return buttons.createButtons(typeButtons);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e){
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             System.out.println(e);
             throw new RuntimeException();
         }
     }
 
-    private void ParsingBotResponse(BotResponse botResponse){
+    private void ParsingBotResponse(BotResponse botResponse) {
         Parsing parsing = new Parsing();
         parsing.parsing(botResponse);
     }

@@ -3,6 +3,7 @@ package ru.praktika95.bot;
 import lombok.SneakyThrows;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -31,12 +32,12 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         System.out.println(update);
-        BotRequestHandler botRequestHandler = new BotRequestHandler();
         BotRequest botRequest = new BotRequest(update);
-        Message message = update.getMessage();
-        if (message.hasText())
+        if (update.hasMessage() && update.getMessage().hasText())
         {
+            Message message = update.getMessage();
             if (Objects.equals(message.getText(), "/start")){
+                System.out.println("1");
                 Buttons buttons = new Buttons();
                 InlineKeyboardMarkup inlineButtons = buttons.createButtons("category");
                 SendMessage sendMessage = new SendMessage();
@@ -46,16 +47,24 @@ public class Bot extends TelegramLongPollingBot {
                 execute(sendMessage);
             }
             else {
+                System.out.println("2");
                 SendMessage sendMessage = new SendMessage();
                 sendMessage.setChatId(botRequest.chatId);
                 sendMessage.setText("Вы ввели несуществующую команду");
                 execute(sendMessage);
             }
         } else {
-            String[] callbackData = message.getReplyMarkup().getKeyboard().get(0).get(0).getCallbackData().split(" ");
+            System.out.println("3");
+            CallbackQuery callbackQuery = update.getCallbackQuery();
+            System.out.println(callbackQuery.getMessage());
+            String[] callbackData = callbackQuery.getMessage().getReplyMarkup().getKeyboard().get(0).get(0).getCallbackData().split(" ");
             botRequest.setTypeButtons(callbackData[0]);
-            botRequest.setBotCommand(callbackData[0]);
+            botRequest.setBotCommand(callbackData[1]);
+            BotRequestHandler botRequestHandler = new BotRequestHandler();
+            System.out.println("3");
             BotResponse botResponse = botRequestHandler.getBotAnswer(botRequest);
+            System.out.println("3");
+            execute(botResponse.getSendMessage());
         }
     }
 

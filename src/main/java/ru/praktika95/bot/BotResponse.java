@@ -21,7 +21,7 @@ public class BotResponse {
     private boolean error;
 
     public BotResponse() {
-        this.sendPhoto=new SendPhoto();
+        this.sendPhoto = new SendPhoto();
         this.sendMessage = new SendMessage();
         this.parsingData = new ParsingData();
         this.events = new Event[0];
@@ -43,7 +43,7 @@ public class BotResponse {
     }
 
     public void setSendPhoto(int photoNumber){
-        File f = new File("C:\\Users\\acer\\OOP\\src\\main\\resources\\" + photoNumber + ".jpg");
+        File f = new File("src\\main\\resources\\" + photoNumber + ".jpg");
         sendPhoto.setPhoto(new InputFile().setMedia(f));
     }
 
@@ -90,10 +90,10 @@ public class BotResponse {
     public void setSelectedEvent(Event event)
     {
         this.selectedEvent = event;
-        String eventName="Вы выбрали мероприятие:\n"+event.getName();
-        String eventPlace="\nОно состоится: "+ event.getPlace();
-        String eventTime="\nДата: "+event.getDateTime();
-        String eventPrice="\nВходной билет стоит: "+event.getPrice();
+        String eventName = "Вы выбрали мероприятие:\n" + event.getName();
+        String eventPlace = "\nОно состоится: " + event.getPlace();
+        String eventTime = "\nДата: " + event.getDateTime();
+        String eventPrice = "\nВходной билет стоит: "+ event.getPrice();
         this.setSendPhoto(event.getPhoto());
         message = eventName + eventPlace + eventTime + eventPrice;
     }

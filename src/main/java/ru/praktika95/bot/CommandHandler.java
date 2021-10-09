@@ -68,11 +68,10 @@ public class CommandHandler {
 
     private String formEventsInfo(int start, int end, BotResponse botResponse){
         String events="";
-        for(int i = start; i < end; i++)
-        {
+        for(int i = start; i < end; i++) {
             Event event = botResponse.getEvents()[i];
-            events+="\n"+(i+1)+". "+"Мероприятие: "+event.getName()+"\nДата: "+event.getDateTime();
-            if (i!=end-1)
+            events+="\n" + (i + 1) + ". "+"Мероприятие: " + event.getName() + "\nДата: " + event.getDateTime();
+            if (i != end - 1)
                 events +="\n \r";
         }
         return events;
@@ -83,8 +82,8 @@ public class CommandHandler {
         if (numberEvent == -1)
             message = "Вы ввели некорректный номер мероприятия.";
         ParsingBotResponse(botResponse);
-        if (numberEvent>0 && botResponse.getEvents().length >= numberEvent)
-            botResponse.setSelectedEvent(botResponse.getEvents()[numberEvent-1]);
+        if (numberEvent > 0 && botResponse.getEvents().length >= numberEvent)
+            botResponse.setSelectedEvent(botResponse.getEvents()[numberEvent - 1]);
         else
             botResponse.setStringMessage(message);
     }

@@ -1,6 +1,7 @@
 package ru.praktika95.bot;
 
 import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
@@ -12,18 +13,17 @@ public class Bot extends TelegramLongPollingBot {
     private String userName;
     private String token;
 
-    public Bot(String botUserName, String token)
-    {
+    public Bot(String botUserName, String token) {
         this.userName = botUserName;
         this.token = token;
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText())
-        {
-            FormBotResponse formBotResponse = new FormBotResponse();
-            BotResponse botResponse = formBotResponse.getBotAnswer(update);
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            BotRequest botRequest = new BotRequest(update);
+            BotRequestHandler botRequestHandler = new BotRequestHandler();
+            BotResponse botResponse = botRequestHandler.getBotAnswer(botRequest);
             if (botResponse.getSendPhoto().getPhoto() != null)
                 executePhoto(botResponse);
             else
@@ -40,8 +40,7 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
-    public void executeMessage(BotResponse botResponse)
-    {
+    public void executeMessage(BotResponse botResponse) {
         botResponse.setSendMessage(botResponse.getStringMessage());
         try {
             execute(botResponse.getSendMessage());

@@ -32,41 +32,36 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         System.out.println(update);
+        BotRequestHandler botRequestHandler = new BotRequestHandler();
         BotRequest botRequest = new BotRequest(update);
+        BotResponse botResponse = new BotResponse();
         if (update.hasMessage() && update.getMessage().hasText())
         {
             Message message = update.getMessage();
             if (Objects.equals(message.getText(), "/start")){
-                System.out.println("1");
                 Buttons buttons = new Buttons();
-                InlineKeyboardMarkup inlineButtons = buttons.createButtons("category");
-                SendMessage sendMessage = new SendMessage();
-                sendMessage.setChatId(botRequest.chatId);
-                sendMessage.setText("1");
-                sendMessage.setReplyMarkup(inlineButtons);
-                execute(sendMessage);
+                InlineKeyboardMarkup inlineButtons = buttons.createButtons("main");
+                botResponse = botRequestHandler.getBotAnswer("start", botRequest);
+                botResponse.setMarkUp(inlineButtons);
             }
-            else {
-                System.out.println("2");
-                SendMessage sendMessage = new SendMessage();
-                sendMessage.setChatId(botRequest.chatId);
-                sendMessage.setText("Вы ввели несуществующую команду");
-                execute(sendMessage);
-            }
+            else
+                botResponse = botRequestHandler.getBotAnswer("otherCommand",botRequest);
         } else {
-            System.out.println("3");
             CallbackQuery callbackQuery = update.getCallbackQuery();
             System.out.println(callbackQuery.getMessage());
             String[] callbackData = callbackQuery.getMessage().getReplyMarkup().getKeyboard().get(0).get(0).getCallbackData().split(" ");
             botRequest.setTypeButtons(callbackData[0]);
             botRequest.setBotCommand(callbackData[1]);
-            System.out.println("3");
-            BotRequestHandler botRequestHandler = new BotRequestHandler();
-            BotResponse botResponse = botRequestHandler.getBotAnswer(botRequest);
-            System.out.println("3");
-            System.out.println(botResponse.getSendMessage());
-            execute(botResponse.getSendMessage());
+            botResponse = botRequestHandler.getBotAnswer(botRequest);
         }
+        executeBotResponse(botResponse);
+    }
+
+    public void executeBotResponse(BotResponse botResponse){
+        if (botResponse.getSendPhoto().getPhoto()!=null)
+            executePhoto(botResponse);
+        else
+            executeMessage(botResponse);
     }
 
     public void executePhoto(BotResponse botResponse){

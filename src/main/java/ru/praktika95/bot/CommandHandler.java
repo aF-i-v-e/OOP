@@ -3,9 +3,21 @@ package ru.praktika95.bot;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
 import java.util.*;
+import java.util.function.Function;
 
 public class CommandHandler {
+
+    public BotResponse commandHandler(String basicCommand){
+        BotResponse botResponse = new BotResponse();
+        switch (basicCommand) {
+            case "help" -> help(botResponse);
+            case "start" ->  hello(botResponse);
+            default -> other(botResponse);
+        }
+        return botResponse;
+    }
 
     public BotResponse commandHandler(String typeButtons, String botCommand) {
         BotResponse botResponse = new BotResponse();
@@ -31,6 +43,22 @@ public class CommandHandler {
                 }
             }
             case "events" -> events(botResponse);
+            case "date" -> {
+                switch (botCommand) {
+                    case "today" -> today(botResponse);
+                    case "tomorrow" -> tomorrow(botResponse);
+                    case "thisWeek" -> thisWeek(botResponse);
+                    case "nextWeek" -> nextWeek(botResponse);
+                    case "thisMonth" -> thisMonth(botResponse);
+                    case "nextMonth" -> nextMonth(botResponse);
+                }
+            }
+            case "main" -> {
+                switch (botCommand) {
+                    case "show" -> events(botResponse);
+                    case "help" -> help(botResponse);
+                }
+            }
             default -> other(botResponse);
         }
         return botResponse;

@@ -22,7 +22,7 @@ public class BotResponse {
     private boolean error;
     public final Map<String, Integer> map = Map.of(
             "main", 0,
-            "data", 1,
+            "date", 1,
             "category", 2,
             "events", 3,
             "event", 4,
@@ -109,5 +109,10 @@ public class BotResponse {
 
     public void setError(boolean error) {
         this.error = error;
+    }
+
+    public void setMarkUp( InlineKeyboardMarkup inlineButtons ){
+        sendPhoto.setReplyMarkup(inlineButtons);
+        sendMessage.setReplyMarkup(inlineButtons);
     }
 }

@@ -60,10 +60,11 @@ public class Bot extends TelegramLongPollingBot {
             String[] callbackData = callbackQuery.getMessage().getReplyMarkup().getKeyboard().get(0).get(0).getCallbackData().split(" ");
             botRequest.setTypeButtons(callbackData[0]);
             botRequest.setBotCommand(callbackData[1]);
-            BotRequestHandler botRequestHandler = new BotRequestHandler();
             System.out.println("3");
+            BotRequestHandler botRequestHandler = new BotRequestHandler();
             BotResponse botResponse = botRequestHandler.getBotAnswer(botRequest);
             System.out.println("3");
+            System.out.println(botResponse.getSendMessage());
             execute(botResponse.getSendMessage());
         }
     }

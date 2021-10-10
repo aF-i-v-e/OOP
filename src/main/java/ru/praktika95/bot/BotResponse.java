@@ -14,15 +14,13 @@ import java.util.List;
 import java.util.Map;
 
 public class BotResponse {
-    private String message;
     private SendPhoto sendPhoto;
     private SendMessage sendMessage;
-    private InlineKeyboardMarkup buttons;
     private ParsingData parsingData;
     private Event[] events;
     private Event selectedEvent;
     private boolean error;
-    public final BidiMap map = (BidiMap) Map.of(
+    public final Map<String, Integer> map = Map.of(
             "main", 0,
             "data", 1,
             "category", 2,
@@ -38,14 +36,6 @@ public class BotResponse {
         this.events = new Event[0];
         this.error = false;
         this.selectedEvent = new Event();
-    }
-
-    public void setStringMessage(String message){
-        this.message = message;
-    }
-
-    public String getStringMessage(){
-        return message;
     }
 
     public void setSendMessage(String message)
@@ -82,12 +72,8 @@ public class BotResponse {
         return parsingData;
     }
 
-    public InlineKeyboardMarkup getButtons() {
-        return buttons;
-    }
-
     public void setButtons(InlineKeyboardMarkup buttons) {
-        this.buttons = buttons;
+        this.sendMessage.setReplyMarkup(buttons);
     }
 
     public void setCategory(int codeCategory) {
@@ -114,7 +100,7 @@ public class BotResponse {
         String eventTime = "\nДата: " + event.getDateTime();
         String eventPrice = "\nВходной билет стоит: "+ event.getPrice();
         this.setSendPhoto(event.getPhoto());
-        message = eventName + eventPlace + eventTime + eventPrice;
+        this.sendMessage.setText(eventName + eventPlace + eventTime + eventPrice);
     }
 
     public boolean isError() {

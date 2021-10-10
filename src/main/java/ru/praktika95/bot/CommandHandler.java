@@ -6,39 +6,26 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class CommandHandler {
-    private String[] getCommandAndEventNumber(String inputText) {
-        String[] commandAndArgument = inputText.split(" ");
-        String botCommand = commandAndArgument[0];
-        int numberEvent = commandAndArgument.length > 1 ? Integer.parseInt(commandAndArgument[1]) : -1;
-        return new String[]{botCommand, Integer.toString(numberEvent)};
-    }
 
     public BotResponse commandHandler(String typeButtons, String botCommand) {
-//        String[] commandAndEventNumber = getCommandAndEventNumber(botCommand);
-//        int numberEvent = Integer.parseInt(commandAndEventNumber[1]);
-        System.out.println("!");
         BotResponse botResponse = new BotResponse();
-        System.out.println("!");
         switch (typeButtons) {
             case "category" -> {
-                System.out.println("!");
                 switch (botCommand) {
                     case "theatre" -> {
-                        botResponse.getParsingData().setCategory(3009);
+                        botResponse.setCategory(3009);
                         category(botResponse, typeButtons);
                     }
                     case "movie" -> {
-                        System.out.println("!");
-                        botResponse.getParsingData().setCategory(3031);
-                        System.out.println("!");
+                        botResponse.setCategory(3031);
                         category(botResponse, typeButtons);
                     }
                     case "concert" -> {
-                        botResponse.getParsingData().setCategory(3000);
+                        botResponse.setCategory(3000);
                         category(botResponse, typeButtons);
                     }
                     case "allEvents" -> {
-                        botResponse.getParsingData().setCategory(0);
+                        botResponse.setCategory(0);
                         category(botResponse, typeButtons);
                     }
                 }
@@ -50,12 +37,12 @@ public class CommandHandler {
     }
 
     private void exit(BotResponse botResponse) {
-        botResponse.setStringMessage("Вы завершили работу с EkbEventsBot. Чтобы начать работу с ботом нажмите\n/start");
+        botResponse.setSendMessage("Вы завершили работу с EkbEventsBot. Чтобы начать работу с ботом нажмите\n/start");
         botResponse.setSendPhoto(1024);
     }
 
     private void help(BotResponse botResponse) {
-        botResponse.setStringMessage("О работе с данным ботом:\nПри вызове команды /show Вам будет предложено 6 мероприятий.\nЧтобы посмотреть больше мероприятий нажмите кнопку \"Показать ещё\".\nЕсли Вас заинтересовало мероприятие, используйте команду /choose № мероприятия.\nДля завершения работы с ботом используйте команду /exit");
+        botResponse.setSendMessage("О работе с данным ботом:\nПри вызове команды /show Вам будет предложено 6 мероприятий.\nЧтобы посмотреть больше мероприятий нажмите кнопку \"Показать ещё\".\nЕсли Вас заинтересовало мероприятие, используйте команду /choose № мероприятия.\nДля завершения работы с ботом используйте команду /exit");
         botResponse.setSendPhoto(911);
     }
 
@@ -65,14 +52,14 @@ public class CommandHandler {
     }
 
     private void hello(BotResponse botResponse) {
-        botResponse.setStringMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте /help \nДля того, чтобы посмотреть доступные мероприятия используйте /show .");
+        botResponse.setSendMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте /help \nДля того, чтобы посмотреть доступные мероприятия используйте /show .");
         botResponse.setSendPhoto(getRandomIntegerBetweenRange(1, 5));
     }
 
     private void events(BotResponse botResponse) {
         ParsingBotResponse(botResponse);
         String events = formEventsInfo(0, 6, botResponse);
-        botResponse.setStringMessage(events);
+        botResponse.setSendMessage(events);
         botResponse.setSendPhoto(6);
     }
 
@@ -95,13 +82,13 @@ public class CommandHandler {
         if (numberEvent > 0 && botResponse.getEvents().length >= numberEvent)
             botResponse.setSelectedEvent(botResponse.getEvents()[numberEvent - 1]);
         else
-            botResponse.setStringMessage(message);
+            botResponse.setSendMessage(message);
     }
 
     private void category(BotResponse botResponse, String typeButtons) {
-//        int status = (int) botResponse.map.get(typeButtons);
-//        botResponse.setStringMessage("Мероприятия");
-//        botResponse.setButtons(createButtons(botResponse.map.getKey(++status).toString()));
+        int status = botResponse.map.get(typeButtons);
+        botResponse.setSendMessage("Мероприятия");
+        botResponse.setButtons(createButtons(++status, botResponse.map));
     }
 
     private void today(BotResponse botResponse) {
@@ -194,14 +181,23 @@ public class CommandHandler {
         botResponse.setPeriod(datePeriod);
     }
 
-    private InlineKeyboardMarkup createButtons(String typeButtons) {
+    private InlineKeyboardMarkup createButtons(int status, Map<String, Integer> map) {
         Buttons buttons = new Buttons();
         try {
-            return buttons.createButtons(typeButtons);
+            return buttons.createButtons(getKey(status, map));
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             System.out.println(e);
             throw new RuntimeException();
         }
+    }
+
+    private String getKey(int status, Map<String, Integer> map) {
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            if (entry.getValue() == status) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     private void ParsingBotResponse(BotResponse botResponse) {
@@ -217,6 +213,6 @@ public class CommandHandler {
     }
 
     private void other(BotResponse botResponse) {
-        botResponse.setStringMessage("Введённой команды не существует, вы можете выполнить команду /help, чтобы узнать как пользоваться ботом.");
+        botResponse.setSendMessage("Введённой команды не существует, вы можете выполнить команду /help, чтобы узнать как пользоваться ботом.");
     }
 }

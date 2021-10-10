@@ -210,7 +210,6 @@ public class CommandHandler {
     private InlineKeyboardMarkup createButtons(int status, Map<String, Integer> map) {
         Buttons buttons = new Buttons();
         try {
-            System.out.println(getKey(status, map));
             return buttons.createButtons(getKey(status, map));
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             System.out.println(e);

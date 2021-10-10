@@ -3,9 +3,7 @@ package ru.praktika95.bot;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
 import java.util.*;
-import java.util.function.Function;
 
 public class CommandHandler {
 
@@ -22,6 +20,22 @@ public class CommandHandler {
     public BotResponse commandHandler(String typeButtons, String botCommand) {
         BotResponse botResponse = new BotResponse();
         switch (typeButtons) {
+            case "main" -> {
+                switch (botCommand) {
+                    case "show" -> events(botResponse);
+                    case "help" -> help(botResponse);
+                }
+            }
+            case "date" -> {
+                switch (botCommand) {
+                    case "today" -> today(botResponse);
+                    case "tomorrow" -> tomorrow(botResponse);
+                    case "thisWeek" -> thisWeek(botResponse);
+                    case "nextWeek" -> nextWeek(botResponse);
+                    case "thisMonth" -> thisMonth(botResponse);
+                    case "nextMonth" -> nextMonth(botResponse);
+                }
+            }
             case "category" -> {
                 switch (botCommand) {
                     case "theatre" -> {
@@ -43,34 +57,18 @@ public class CommandHandler {
                 }
             }
             case "events" -> events(botResponse);
-            case "date" -> {
-                switch (botCommand) {
-                    case "today" -> today(botResponse);
-                    case "tomorrow" -> tomorrow(botResponse);
-                    case "thisWeek" -> thisWeek(botResponse);
-                    case "nextWeek" -> nextWeek(botResponse);
-                    case "thisMonth" -> thisMonth(botResponse);
-                    case "nextMonth" -> nextMonth(botResponse);
-                }
-            }
-            case "main" -> {
-                switch (botCommand) {
-                    case "show" -> events(botResponse);
-                    case "help" -> help(botResponse);
-                }
-            }
             default -> other(botResponse);
         }
         return botResponse;
     }
 
     private void exit(BotResponse botResponse) {
-        botResponse.setSendMessage("Вы завершили работу с EkbEventsBot. Чтобы начать работу с ботом нажмите\n/start");
+        botResponse.setMessage("Вы завершили работу с EkbEventsBot. Чтобы начать работу с ботом нажмите\n/start");
         botResponse.setSendPhoto(1024);
     }
 
     private void help(BotResponse botResponse) {
-        botResponse.setSendMessage("О работе с данным ботом:\nПри вызове команды /show Вам будет предложено 6 мероприятий.\nЧтобы посмотреть больше мероприятий нажмите кнопку \"Показать ещё\".\nЕсли Вас заинтересовало мероприятие, используйте команду /choose № мероприятия.\nДля завершения работы с ботом используйте команду /exit");
+        botResponse.setMessage("О работе с данным ботом:\nПри вызове команды /show Вам будет предложено 6 мероприятий.\nЧтобы посмотреть больше мероприятий нажмите кнопку \"Показать ещё\".\nЕсли Вас заинтересовало мероприятие, используйте команду /choose № мероприятия.\nДля завершения работы с ботом используйте команду /exit");
         botResponse.setSendPhoto(911);
     }
 
@@ -80,14 +78,14 @@ public class CommandHandler {
     }
 
     private void hello(BotResponse botResponse) {
-        botResponse.setSendMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте /help \nДля того, чтобы посмотреть доступные мероприятия используйте /show .");
+        botResponse.setMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте /help \nДля того, чтобы посмотреть доступные мероприятия используйте /show .");
         botResponse.setSendPhoto(getRandomIntegerBetweenRange(1, 5));
     }
 
     private void events(BotResponse botResponse) {
         ParsingBotResponse(botResponse);
         String events = formEventsInfo(0, 6, botResponse);
-        botResponse.setSendMessage(events);
+        botResponse.setMessage(events);
         botResponse.setSendPhoto(6);
     }
 
@@ -110,12 +108,12 @@ public class CommandHandler {
         if (numberEvent > 0 && botResponse.getEvents().length >= numberEvent)
             botResponse.setSelectedEvent(botResponse.getEvents()[numberEvent - 1]);
         else
-            botResponse.setSendMessage(message);
+            botResponse.setMessage(message);
     }
 
     private void category(BotResponse botResponse, String typeButtons) {
         int status = botResponse.map.get(typeButtons);
-        botResponse.setSendMessage("Мероприятия");
+        botResponse.setMessage("Мероприятия");
         botResponse.setButtons(createButtons(++status, botResponse.map));
     }
 
@@ -212,6 +210,7 @@ public class CommandHandler {
     private InlineKeyboardMarkup createButtons(int status, Map<String, Integer> map) {
         Buttons buttons = new Buttons();
         try {
+            System.out.println(getKey(status, map));
             return buttons.createButtons(getKey(status, map));
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             System.out.println(e);
@@ -241,6 +240,6 @@ public class CommandHandler {
     }
 
     private void other(BotResponse botResponse) {
-        botResponse.setSendMessage("Введённой команды не существует, вы можете выполнить команду /help, чтобы узнать как пользоваться ботом.");
+        botResponse.setMessage("Введённой команды не существует, вы можете выполнить команду /help, чтобы узнать как пользоваться ботом.");
     }
 }

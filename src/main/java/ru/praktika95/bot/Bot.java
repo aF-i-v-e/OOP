@@ -31,10 +31,9 @@ public class Bot extends TelegramLongPollingBot {
     @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
-        System.out.println(update);
         BotRequestHandler botRequestHandler = new BotRequestHandler();
         BotRequest botRequest = new BotRequest(update);
-        BotResponse botResponse = new BotResponse();
+        BotResponse botResponse;
         if (update.hasMessage() && update.getMessage().hasText())
         {
             Message message = update.getMessage();
@@ -48,8 +47,7 @@ public class Bot extends TelegramLongPollingBot {
                 botResponse = botRequestHandler.getBotAnswer("otherCommand",botRequest);
         } else {
             CallbackQuery callbackQuery = update.getCallbackQuery();
-            System.out.println(callbackQuery.getMessage());
-            String[] callbackData = callbackQuery.getMessage().getReplyMarkup().getKeyboard().get(0).get(0).getCallbackData().split(" ");
+            String[] callbackData = callbackQuery.getData().split(" ");
             botRequest.setTypeButtons(callbackData[0]);
             botRequest.setBotCommand(callbackData[1]);
             botResponse = botRequestHandler.getBotAnswer(botRequest);
@@ -65,7 +63,6 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     public void executePhoto(BotResponse botResponse){
-        botResponse.getSendPhoto().setCaption(botResponse.getStringMessage());
         try{
             execute(botResponse.getSendPhoto());
         } catch(TelegramApiException e){
@@ -75,7 +72,6 @@ public class Bot extends TelegramLongPollingBot {
 
     public void executeMessage(BotResponse botResponse)
     {
-        botResponse.setSendMessage(botResponse.getStringMessage());
         try {
             execute(botResponse.getSendMessage());
         } catch (TelegramApiException e) {

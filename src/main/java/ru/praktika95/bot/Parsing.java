@@ -32,12 +32,12 @@ public class Parsing {
         }
         catch (Exception e) {
             botResponse.setError(true);
-            botResponse.setSendMessage("Ошибка подключения, попробуйте повторить позже");
+            botResponse.setMessage("Ошибка подключения, попробуйте повторить позже");
             return;
         }
         if (document == null){
             botResponse.setError(true);
-            botResponse.setSendMessage("Ошибка обработки, попробуйте повторить позже");
+            botResponse.setMessage("Ошибка обработки, попробуйте повторить позже");
             return;
         }
         Elements elements = document.select(".events .col-xs-2 .event");

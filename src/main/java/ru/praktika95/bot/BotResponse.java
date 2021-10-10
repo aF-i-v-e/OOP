@@ -38,9 +38,9 @@ public class BotResponse {
         this.selectedEvent = new Event();
     }
 
-    public void setSendMessage(String message)
-    {
+    public void setMessage(String message) {
         sendMessage.setText(message);
+        sendPhoto.setCaption(message);
     }
 
     public void setSendPhoto(int photoNumber){
@@ -74,6 +74,7 @@ public class BotResponse {
 
     public void setButtons(InlineKeyboardMarkup buttons) {
         this.sendMessage.setReplyMarkup(buttons);
+        this.sendPhoto.setReplyMarkup(buttons);
     }
 
     public void setCategory(int codeCategory) {
@@ -112,7 +113,7 @@ public class BotResponse {
     }
 
     public void setMarkUp( InlineKeyboardMarkup inlineButtons ){
-        sendPhoto.setReplyMarkup(inlineButtons);
         sendMessage.setReplyMarkup(inlineButtons);
+        sendPhoto.setReplyMarkup(inlineButtons);
     }
 }

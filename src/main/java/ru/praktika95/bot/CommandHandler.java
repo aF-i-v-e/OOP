@@ -22,7 +22,7 @@ public class CommandHandler {
         switch (typeButtons) {
             case "main" -> {
                 switch (botCommand) {
-                    case "show" -> events(botResponse);
+                    case "show" -> date(botResponse, typeButtons);
                     case "help" -> help(botResponse);
                 }
             }
@@ -240,5 +240,11 @@ public class CommandHandler {
 
     private void other(BotResponse botResponse) {
         botResponse.setMessage("Введённой команды не существует, вы можете выполнить команду /help, чтобы узнать как пользоваться ботом.");
+    }
+
+    private void date(BotResponse botResponse, String typeButtons){
+        int status = botResponse.map.get(typeButtons);
+        botResponse.setMessage("Выберите дату: ");
+        botResponse.setButtons(createButtons(++status, botResponse.map));
     }
 }

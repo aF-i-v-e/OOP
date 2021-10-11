@@ -1,5 +1,6 @@
 package ru.praktika95.bot;
 
+import org.apache.commons.collections.BidiMap;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -10,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.Map;
 
 public class BotResponse {
     private String message;
@@ -20,6 +22,14 @@ public class BotResponse {
     private Event[] events;
     private Event selectedEvent;
     private boolean error;
+    public final BidiMap map = (BidiMap) Map.of(
+            "main", 0,
+            "date", 1,
+            "category", 2,
+            "events", 3,
+            "event", 4,
+            "period", 5
+    );
 
     public BotResponse() {
         this.sendPhoto = new SendPhoto();

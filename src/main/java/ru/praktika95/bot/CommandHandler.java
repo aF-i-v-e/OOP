@@ -28,12 +28,12 @@ public class CommandHandler {
             }
             case "date" -> {
                 switch (botCommand) {
-                    case "today" -> today(botResponse);
-                    case "tomorrow" -> tomorrow(botResponse);
-                    case "thisWeek" -> thisWeek(botResponse);
-                    case "nextWeek" -> nextWeek(botResponse);
-                    case "thisMonth" -> thisMonth(botResponse);
-                    case "nextMonth" -> nextMonth(botResponse);
+                    case "today" -> today(botResponse, typeButtons);
+                    case "tomorrow" -> tomorrow(botResponse, typeButtons);
+                    case "thisWeek" -> thisWeek(botResponse, typeButtons);
+                    case "nextWeek" -> nextWeek(botResponse, typeButtons);
+                    case "thisMonth" -> thisMonth(botResponse, typeButtons);
+                    case "nextMonth" -> nextMonth(botResponse, typeButtons);
                 }
             }
             case "category" -> {
@@ -68,7 +68,7 @@ public class CommandHandler {
     }
 
     private void help(BotResponse botResponse) {
-        botResponse.setMessage("О работе с данным ботом:\nПри вызове команды /show Вам будет предложено 6 мероприятий.\nЧтобы посмотреть больше мероприятий нажмите кнопку \"Показать ещё\".\nЕсли Вас заинтересовало мероприятие, используйте команду /choose № мероприятия.\nДля завершения работы с ботом используйте команду /exit");
+        botResponse.setMessage("О работе с данным ботом:\nДля того, чтобы выбрать категорию мероприятия и подходящий период времени, используйте соответствующие кнопки.\nПосле, Вам на выбор будет представлено 6 мероприятий.\nКогда Вы выберете конкретное мероприятие, Вы сможете либо подписаться на мероприятие, либо сразу приобрести билеты.\nПри подписке на мероприятие, бот уведомит Вас о выбранном событии за определенный период времени.");
         botResponse.setSendPhoto(911);
     }
 
@@ -78,7 +78,7 @@ public class CommandHandler {
     }
 
     private void hello(BotResponse botResponse) {
-        botResponse.setMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте /help \nДля того, чтобы посмотреть доступные мероприятия используйте /show .");
+        botResponse.setMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте кнопку \"Помощь\"\nДля того, чтобы посмотреть доступные мероприятия, выбрать подходящее время используйте кнопку \"Мероприятия\".");
         botResponse.setSendPhoto(getRandomIntegerBetweenRange(1, 5));
     }
 
@@ -112,21 +112,20 @@ public class CommandHandler {
     }
 
     private void category(BotResponse botResponse, String typeButtons) {
-        int status = botResponse.map.get(typeButtons);
-        botResponse.setMessage("Мероприятия");
-        botResponse.setButtons(createButtons(++status, botResponse.map));
+        setMessageAndButtons("Мероприятия", botResponse, typeButtons);
     }
 
-    private void today(BotResponse botResponse) {
+    private void today(BotResponse botResponse, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
         String currentDate = formatDate(calendar);
         DatePeriod datePeriod = new DatePeriod();
         datePeriod.setDateFrom(currentDate);
         datePeriod.setDateTo(currentDate);
         botResponse.setPeriod(datePeriod);
+        setMessageAndButtons("Выберите категорию мероприятия, которое состоится сегодня:", botResponse, typeButtons);
     }
 
-    private void tomorrow(BotResponse botResponse) {
+    private void tomorrow(BotResponse botResponse, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
         String dateFrom = formatDate(calendar);
         calendar.add(Calendar.DATE, 1);
@@ -135,9 +134,10 @@ public class CommandHandler {
         datePeriod.setDateFrom(dateFrom);
         datePeriod.setDateTo(dateTo);
         botResponse.setPeriod(datePeriod);
+        setMessageAndButtons("Выберите категорию мероприятия, которое состится завтра:", botResponse, typeButtons);
     }
 
-    private void thisWeek(BotResponse botResponse) {
+    private void thisWeek(BotResponse botResponse, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
         int dateWeek = calendar.get(Calendar.DAY_OF_WEEK);
         String currentDate = formatDate(calendar);
@@ -152,9 +152,10 @@ public class CommandHandler {
         datePeriod.setDateFrom(currentDate);
         datePeriod.setDateTo(dateTo);
         botResponse.setPeriod(datePeriod);
+        setMessageAndButtons("Выберите категорию мероприятия, которое состоится на этой неделе:", botResponse, typeButtons);
     }
 
-    private void nextWeek(BotResponse botResponse) {
+    private void nextWeek(BotResponse botResponse, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
         int dateWeek = calendar.get(Calendar.DAY_OF_WEEK);
         if (dateWeek == 1)
@@ -168,9 +169,10 @@ public class CommandHandler {
         datePeriod.setDateFrom(dateFrom);
         datePeriod.setDateTo(dateTo);
         botResponse.setPeriod(datePeriod);
+        setMessageAndButtons("Выберите категорию мероприятия, которое состоится на следующей неделе:", botResponse, typeButtons);
     }
 
-    private void thisMonth(BotResponse botResponse) {
+    private void thisMonth(BotResponse botResponse, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
         int dateMonth = calendar.get(Calendar.DATE);
         String currentDate = formatDate(calendar);
@@ -186,9 +188,10 @@ public class CommandHandler {
         datePeriod.setDateFrom(currentDate);
         datePeriod.setDateTo(dateTo);
         botResponse.setPeriod(datePeriod);
+        setMessageAndButtons("Выберите категорию мероприятия, которое состоится в этом месяце:", botResponse, typeButtons);
     }
 
-    private void nextMonth(BotResponse botResponse) {
+    private void nextMonth(BotResponse botResponse, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
         int dateMonth = calendar.get(Calendar.DATE);
         int lastDayMonth = calendar.getActualMaximum(Calendar.DATE);
@@ -205,6 +208,7 @@ public class CommandHandler {
         datePeriod.setDateFrom(dateFrom);
         datePeriod.setDateTo(dateTo);
         botResponse.setPeriod(datePeriod);
+        setMessageAndButtons("Выберите категорию мероприятия, которое состоится в следующем месяце:", botResponse, typeButtons);
     }
 
     private InlineKeyboardMarkup createButtons(int status, Map<String, Integer> map) {
@@ -239,12 +243,16 @@ public class CommandHandler {
     }
 
     private void other(BotResponse botResponse) {
-        botResponse.setMessage("Введённой команды не существует, вы можете выполнить команду /help, чтобы узнать как пользоваться ботом.");
+        botResponse.setMessage("Введённой команды не существует, вы можете выполнить команду /start, чтобы начать работу с ботом.");
     }
 
     private void date(BotResponse botResponse, String typeButtons){
+        setMessageAndButtons("Выберите дату", botResponse, typeButtons);
+    }
+
+    private void setMessageAndButtons(String message, BotResponse botResponse, String typeButtons){
         int status = botResponse.map.get(typeButtons);
-        botResponse.setMessage("Выберите дату: ");
+        botResponse.setMessage(message);
         botResponse.setButtons(createButtons(++status, botResponse.map));
     }
 }

@@ -39,30 +39,37 @@ public class Bot extends TelegramLongPollingBot {
             Message message = update.getMessage();
             if (Objects.equals(message.getText(), "/start")){
                 Buttons buttons = new Buttons();
-                InlineKeyboardMarkup inlineButtons = buttons.createButtons("main");
+                InlineKeyboardMarkup inlineButtons = buttons.createButtons("main", null, null);
                 botResponse = botRequestHandler.getBotAnswer("start", botRequest);
                 botResponse.setMarkUp(inlineButtons);
             }
             else
                 botResponse = botRequestHandler.getBotAnswer("otherCommand",botRequest);
+            executeBotResponse(botResponse);
         } else {
             CallbackQuery callbackQuery = update.getCallbackQuery();
             String[] callbackData = callbackQuery.getData().split(" ");
             botRequest.setTypeButtons(callbackData[0]);
             botRequest.setBotCommand(callbackData[1]);
+            /*if (callbackData.length > 2){
+                botRequest.setStartEvent(callbackData[2]);
+            } else {
+                botResponse = botRequestHandler.getBotAnswer(botRequest);
+                executeBotResponse(botResponse);
+            }*/
             botResponse = botRequestHandler.getBotAnswer(botRequest);
+            executeBotResponse(botResponse);
         }
-        executeBotResponse(botResponse);
     }
 
     public void executeBotResponse(BotResponse botResponse){
-        if (botResponse.getSendPhoto().getPhoto()!=null)
+        if (botResponse.getSendPhoto().getPhoto() != null)
             executePhoto(botResponse);
         else
             executeMessage(botResponse);
     }
 
-    public void executePhoto(BotResponse botResponse){
+    private void executePhoto(BotResponse botResponse){
         try{
             execute(botResponse.getSendPhoto());
         } catch(TelegramApiException e){
@@ -70,7 +77,7 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
-    public void executeMessage(BotResponse botResponse)
+    private void executeMessage(BotResponse botResponse)
     {
         try {
             execute(botResponse.getSendMessage());

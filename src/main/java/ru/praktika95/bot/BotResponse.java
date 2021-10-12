@@ -77,7 +77,7 @@ public class BotResponse {
         this.sendPhoto.setReplyMarkup(buttons);
     }
 
-    public void setCategory(int codeCategory) {
+    public void setCategory(String codeCategory) {
         parsingData.setCategory(codeCategory);
     }
 

@@ -10,7 +10,6 @@ public class BotRequest {
     private String chatId;
     private String typeButtons;
     private String botCommand;
-    private int startEvent;
     public final Map<String,Integer> map = Map.of(
             "main", 0,
             "date", 1,
@@ -49,13 +48,5 @@ public class BotRequest {
 
     public String getChatId(){
         return chatId;
-    }
-
-    public int getStartEvent() {
-        return startEvent;
-    }
-
-    public void setStartEvent(int startEvent) {
-        this.startEvent = startEvent;
     }
 }

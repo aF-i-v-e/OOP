@@ -21,11 +21,13 @@ public class Bot extends TelegramLongPollingBot {
 
     private final String userName;
     private final String token;
+    private final BotResponse botResponse;
 
     public Bot(String botUserName, String token)
     {
         this.userName = botUserName;
         this.token = token;
+        this.botResponse = new BotResponse();
     }
 
     @SneakyThrows
@@ -33,43 +35,37 @@ public class Bot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         BotRequestHandler botRequestHandler = new BotRequestHandler();
         BotRequest botRequest = new BotRequest(update);
-        BotResponse botResponse;
         if (update.hasMessage() && update.getMessage().hasText())
         {
             Message message = update.getMessage();
             if (Objects.equals(message.getText(), "/start")){
                 Buttons buttons = new Buttons();
                 InlineKeyboardMarkup inlineButtons = buttons.createButtons("main", null, null);
-                botResponse = botRequestHandler.getBotAnswer("start", botRequest);
+                botRequestHandler.getBotAnswer("start", botRequest, botResponse);
                 botResponse.setMarkUp(inlineButtons);
             }
             else
-                botResponse = botRequestHandler.getBotAnswer("otherCommand",botRequest);
-            executeBotResponse(botResponse);
+                botRequestHandler.getBotAnswer("otherCommand", botRequest, botResponse);
+            executeBotResponse();
         } else {
             CallbackQuery callbackQuery = update.getCallbackQuery();
             String[] callbackData = callbackQuery.getData().split(" ");
             botRequest.setTypeButtons(callbackData[0]);
             botRequest.setBotCommand(callbackData[1]);
-            /*if (callbackData.length > 2){
-                botRequest.setStartEvent(callbackData[2]);
-            } else {
-                botResponse = botRequestHandler.getBotAnswer(botRequest);
-                executeBotResponse(botResponse);
-            }*/
-            botResponse = botRequestHandler.getBotAnswer(botRequest);
-            executeBotResponse(botResponse);
+            botRequestHandler.getBotAnswer(botRequest, botResponse);
+            executeBotResponse();
         }
+        botResponse.setNullPhoto();
     }
 
-    public void executeBotResponse(BotResponse botResponse){
+    public void executeBotResponse(){
         if (botResponse.getSendPhoto().getPhoto() != null)
-            executePhoto(botResponse);
+            executePhoto();
         else
-            executeMessage(botResponse);
+            executeMessage();
     }
 
-    private void executePhoto(BotResponse botResponse){
+    private void executePhoto(){
         try{
             execute(botResponse.getSendPhoto());
         } catch(TelegramApiException e){
@@ -77,7 +73,7 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
-    private void executeMessage(BotResponse botResponse)
+    private void executeMessage()
     {
         try {
             execute(botResponse.getSendMessage());

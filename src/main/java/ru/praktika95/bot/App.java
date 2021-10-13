@@ -23,8 +23,8 @@ public class App {
             String passBase = property.getProperty("db.password");
             DataBase dataBase = new DataBase();
             dataBase.connect(urlBase, userBase, passBase);
-            dataBase.createTable();
-        } catch (IOException | SQLException e) {
+//            dataBase.createTable();
+        } catch (IOException e) {
             System.err.println(e);
         }
     }

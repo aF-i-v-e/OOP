@@ -10,7 +10,6 @@ import java.util.Map;
 
 public class Parsing {
     public void parsing(BotResponse botResponse) {
-        System.out.println("!");
         ParsingData parsingData = botResponse.getParsingData();
         DatePeriod date = parsingData.getDatePeriod();
         Map<String,String> query = new HashMap<>() {{
@@ -43,6 +42,7 @@ public class Parsing {
         }
         Elements elements = document.select(".events .col-xs-2 .event");
         int count = elements.size();
+        botResponse.setCountEvent(count);
         Event[] events = new Event[count];
         for (int i = 0; i < count; i++){
             Element element = elements.get(i);

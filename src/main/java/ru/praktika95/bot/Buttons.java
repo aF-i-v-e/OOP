@@ -18,6 +18,8 @@ public class Buttons {
         List<List<InlineKeyboardButton>> rowList;
         if (Objects.equals(typeButtons, "events"))
             rowList = events(typeButtons, number);
+        else if (Objects.equals(typeButtons, "nextEvents"))
+            rowList = nextEvents(typeButtons, number);
 //        else if (Objects.equals(typeButtons, "event"))
 //            rowList = event(typeButtons, url);
         else {
@@ -79,6 +81,13 @@ public class Buttons {
     private List<List<InlineKeyboardButton>> events(String typeButtons, String number) {
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         Map<String, String> buttons = Map.of("Просмотреть мероприятие", "event" + number);
+        rowList.add(createButton(buttons, typeButtons, null));
+        return rowList;
+    }
+
+    private List<List<InlineKeyboardButton>> nextEvents(String typeButtons, String number) {
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
+        Map<String, String> buttons = Map.of("Показать ещё", "next");
         rowList.add(createButton(buttons, typeButtons, null));
         return rowList;
     }

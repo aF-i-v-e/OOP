@@ -7,11 +7,13 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public class BotResponse {
     private SendPhoto sendPhoto;
@@ -19,7 +21,10 @@ public class BotResponse {
     private ParsingData parsingData;
     private Event[] events;
     private Event selectedEvent;
+    private int startEvent;
+    private int countEvent;
     private boolean error;
+    private Function execute;
     public final Map<String, Integer> map = Map.of(
             "main", 0,
             "date", 1,
@@ -50,6 +55,10 @@ public class BotResponse {
 
     public void setSendPhoto(String path){
         sendPhoto.setPhoto(new InputFile().setMedia(path));
+    }
+
+    public void setNullPhoto(){
+        sendPhoto.setPhoto(null);
     }
 
     public SendPhoto getSendPhoto()
@@ -115,5 +124,29 @@ public class BotResponse {
     public void setMarkUp( InlineKeyboardMarkup inlineButtons ){
         sendMessage.setReplyMarkup(inlineButtons);
         sendPhoto.setReplyMarkup(inlineButtons);
+    }
+
+    public int getStartEvent() {
+        return startEvent;
+    }
+
+    public void setStartEvent(int startEvent) {
+        this.startEvent = startEvent;
+    }
+
+    public int getCountEvent() {
+        return countEvent;
+    }
+
+    public void setCountEvent(int countEvent) {
+        this.countEvent = countEvent;
+    }
+
+    public Function getExecute() {
+        return execute;
+    }
+
+    public void setExecute(Function execute) {
+        this.execute = execute;
     }
 }

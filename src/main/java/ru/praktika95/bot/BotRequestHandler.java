@@ -2,17 +2,15 @@ package ru.praktika95.bot;
 
 public class BotRequestHandler {
 
-    public BotResponse getBotAnswer(BotRequest botRequest) {
+    public void getBotAnswer(BotRequest botRequest, BotResponse botResponse) {
         CommandHandler comH = new CommandHandler();
-        BotResponse botResponse = comH.commandHandler(botRequest.getTypeButtons(), botRequest.getBotCommand(), botRequest.getStartEvent());
+        comH.commandHandler(botRequest.getTypeButtons(), botRequest.getBotCommand(), botResponse);
         botResponse.setChatId(botRequest.getChatId());
-        return botResponse;
     }
 
-    public BotResponse getBotAnswer(String command, BotRequest botRequest) {
+    public void getBotAnswer(String command, BotRequest botRequest, BotResponse botResponse) {
         CommandHandler comH = new CommandHandler();
-        BotResponse botResponse = comH.commandHandler(command);
+        comH.commandHandler(command, botResponse);
         botResponse.setChatId(botRequest.getChatId());
-        return botResponse;
     }
 }

@@ -8,18 +8,15 @@ import java.util.*;
 public class CommandHandler {
     private final String dateText = "Выберите категорию мероприятия, которое состоится";
 
-    public BotResponse commandHandler(String basicCommand){
-        BotResponse botResponse = new BotResponse();
+    public void commandHandler(String basicCommand, BotResponse botResponse){
         switch (basicCommand) {
             case "help" -> help(botResponse);
             case "start" ->  hello(botResponse);
             default -> other(botResponse);
         }
-        return botResponse;
     }
 
-    public BotResponse commandHandler(String typeButtons, String botCommand, int start) {
-        BotResponse botResponse = new BotResponse();
+    public void commandHandler(String typeButtons, String botCommand, BotResponse botResponse) {
         switch (typeButtons) {
             case "main" -> {
                 switch (botCommand) {
@@ -41,26 +38,25 @@ public class CommandHandler {
                 switch (botCommand) {
                     case "theatre" -> {
                         botResponse.setCategory("3009");
-                        category(botResponse, typeButtons);
+                        events(botResponse, typeButtons);
                     }
                     case "museum" -> {
                         botResponse.setCategory("4093");
-                        events(botResponse/*, typeButtons*/);
+                        events(botResponse, typeButtons);
                     }
                     case "concert" -> {
                         botResponse.setCategory("3000");
-                        category(botResponse, typeButtons);
+                        events(botResponse, typeButtons);
                     }
                     case "allEvents" -> {
                         botResponse.setCategory("0");
-                        category(botResponse, typeButtons);
+                        events(botResponse, typeButtons);
                     }
                 }
             }
-            case "events" -> events(botResponse/*, typeButtons, start*/);
+            case "events" -> events(botResponse, typeButtons);
             default -> other(botResponse);
         }
-        return botResponse;
     }
 
     private void exit(BotResponse botResponse) {
@@ -68,19 +64,19 @@ public class CommandHandler {
         botResponse.setSendPhoto(1024);
     }
 
+    private void hello(BotResponse botResponse) {
+        botResponse.setMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте кнопку \"Помощь\"\nДля того, чтобы посмотреть доступные мероприятия, выбрать подходящее время используйте кнопку \"Мероприятия\".");
+        botResponse.setSendPhoto(getRandomIntegerBetweenRange(1, 5));
+    }
+
     private void help(BotResponse botResponse) {
         botResponse.setMessage("О работе с данным ботом:\nДля того, чтобы выбрать категорию мероприятия и подходящий период времени, используйте соответствующие кнопки.\nПосле, Вам на выбор будет представлено 6 мероприятий.\nКогда Вы выберете конкретное мероприятие, Вы сможете либо подписаться на мероприятие, либо сразу приобрести билеты.\nПри подписке на мероприятие, бот уведомит Вас о выбранном событии за определенный период времени.");
         botResponse.setSendPhoto(911);
     }
 
-    public static int getRandomIntegerBetweenRange(int min, int max) {
+    private static int getRandomIntegerBetweenRange(int min, int max) {
         int x = (int) (Math.random() * ((max - min) + 1)) + min;
         return x;
-    }
-
-    private void hello(BotResponse botResponse) {
-        botResponse.setMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте кнопку \"Помощь\"\nДля того, чтобы посмотреть доступные мероприятия, выбрать подходящее время используйте кнопку \"Мероприятия\".");
-        botResponse.setSendPhoto(getRandomIntegerBetweenRange(1, 5));
     }
 
     private void choose(int numberEvent, BotResponse botResponse) {
@@ -191,31 +187,14 @@ public class CommandHandler {
         return botResponse;
     }
 
-    private void category(BotResponse botResponse, String typeButtons) {
-        setMessageAndButtons("Мероприятия", botResponse, typeButtons);
-    }
-
-    private void events(BotResponse botResponse) {
+    private void events(BotResponse botResponse, String typeButtons) {
         ParsingBotResponse(botResponse);
-        String events = formEventsInfo(0, 6, botResponse);
-        botResponse.setMessage(events);
-        botResponse.setSendPhoto(6);
-    }
-
-    private String formEventsInfo(int start, int end, BotResponse botResponse) {
-        String events = "";
-        for (int i = start; i < end; i++) {
-            Event event = botResponse.getEvents()[i];
-            events += "\n" + (i + 1) + ". " + "Мероприятие: " + event.getName() + "\nДата: " + event.getDateTime();
-            if (i != end - 1)
-                events += "\n \r";
-        }
-        return events;
-    }
-
-    /*private void events(BotResponse botResponse, String typeButtons, int start) {
-        ParsingBotResponse(botResponse);
-        createEvents(start, start + 6, botResponse, typeButtons);
+        int start = botResponse.getStartEvent();
+        int end = start + 6;
+        int countEvent = botResponse.getCountEvent();
+        if (end > countEvent)
+            end = countEvent % 6;
+        createEvents(start, end, botResponse, typeButtons);
     }
 
     private void createEvents(int start, int end, BotResponse botResponse, String typeButtons) {
@@ -230,7 +209,7 @@ public class CommandHandler {
             botResponse.setSendPhoto(event.getPhoto());
             botResponse.setButtons(createButtons(++status, botResponse.map, Integer.toString(i), event.getUrl()));
         }
-    }*/
+    }
 
     private void ParsingBotResponse(BotResponse botResponse){
         Parsing parsing = new Parsing();
@@ -240,6 +219,7 @@ public class CommandHandler {
     private void setMessageAndButtons(String message, BotResponse botResponse, String typeButtons){
         int status = botResponse.map.get(typeButtons);
         botResponse.setMessage(message);
+        botResponse.setSendPhoto(getRandomIntegerBetweenRange(1, 5));
         botResponse.setButtons(createButtons(++status, botResponse.map, null, null));
     }
 
@@ -247,6 +227,16 @@ public class CommandHandler {
         Buttons buttons = new Buttons();
         try {
             return buttons.createButtons(getKey(status, map), number, url);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            System.out.println(e);
+            throw new RuntimeException();
+        }
+    }
+
+    private InlineKeyboardMarkup createButtonsNextEvents(String number, String url) {
+        Buttons buttons = new Buttons();
+        try {
+            return buttons.createButtons("nextEvents", number, url);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             System.out.println(e);
             throw new RuntimeException();

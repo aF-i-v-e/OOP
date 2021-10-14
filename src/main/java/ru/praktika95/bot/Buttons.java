@@ -23,6 +23,7 @@ public class Buttons {
 //        else if (Objects.equals(typeButtons, "event"))
 //            rowList = event(typeButtons, url);
         else {
+            E.findValue(typeButtons).handle();
             Method method = Buttons.class.getDeclaredMethod(typeButtons, String.class);
             rowList = (List<List<InlineKeyboardButton>>) method.invoke(new Buttons(), typeButtons);
         }

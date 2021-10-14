@@ -6,6 +6,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class CommandHandler {
+//    private final Map<String, Handler> commandsHandlers = Map.of(
+//            "show", this::date
+//    );
+
     private final String dateText = "Выберите категорию мероприятия, которое состоится";
 
     public void commandHandler(String basicCommand, BotResponse botResponse){
@@ -19,6 +23,7 @@ public class CommandHandler {
     public void commandHandler(String typeButtons, String botCommand, BotResponse botResponse) {
         switch (typeButtons) {
             case "main" -> {
+//                commandsHandlers.get(botCommand).handle(botResponse, typeButtons);
                 switch (botCommand) {
                     case "show" -> date(botResponse, typeButtons);
                     case "help" -> help(botResponse);

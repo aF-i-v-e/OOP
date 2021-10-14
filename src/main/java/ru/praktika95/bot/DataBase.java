@@ -30,7 +30,7 @@ public class DataBase {
     }
 
     public void deleteTable() throws SQLException {
-        statement.executeUpdate("DROP TABLE users-notice");
+        statement.executeUpdate("DROP TABLE users");
     }
 
     public void create() throws SQLException {

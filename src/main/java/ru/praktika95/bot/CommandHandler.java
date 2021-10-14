@@ -1,14 +1,12 @@
 package ru.praktika95.bot;
 
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class CommandHandler {
-//    private final Map<String, Handler> commandsHandlers = Map.of(
-//            "show", this::date
-//    );
 
     private final String dateText = "Выберите категорию мероприятия, которое состоится";
 
@@ -23,7 +21,6 @@ public class CommandHandler {
     public void commandHandler(String typeButtons, String botCommand, BotResponse botResponse) {
         switch (typeButtons) {
             case "main" -> {
-//                commandsHandlers.get(botCommand).handle(botResponse, typeButtons);
                 switch (botCommand) {
                     case "show" -> date(botResponse, typeButtons);
                     case "help" -> help(botResponse);
@@ -43,23 +40,27 @@ public class CommandHandler {
                 switch (botCommand) {
                     case "theatre" -> {
                         botResponse.setCategory("3009");
-                        events(botResponse, typeButtons);
+                        events(botResponse, false);
                     }
                     case "museum" -> {
                         botResponse.setCategory("4093");
-                        events(botResponse, typeButtons);
+                        events(botResponse, false);
                     }
                     case "concert" -> {
                         botResponse.setCategory("3000");
-                        events(botResponse, typeButtons);
+                        events(botResponse, false);
                     }
                     case "allEvents" -> {
                         botResponse.setCategory("0");
-                        events(botResponse, typeButtons);
+                        events(botResponse, false);
                     }
                 }
             }
-            case "events" -> events(botResponse, typeButtons);
+            case "events" -> {
+                switch (botCommand) {
+                    case "next" -> events(botResponse, true);
+                }
+            }
             default -> other(botResponse);
         }
     }
@@ -108,11 +109,10 @@ public class CommandHandler {
 
     private void tomorrow(BotResponse botResponse, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
-        String dateFrom = formatDate(calendar);
         calendar.add(Calendar.DATE, 1);
-        String dateTo = formatDate(calendar);
+        String tomorrow = formatDate(calendar);
         setMessageAndButtons(dateText + " завтра:",
-                createDatePeriod(botResponse, dateFrom, dateTo), typeButtons);
+                createDatePeriod(botResponse, tomorrow, tomorrow), typeButtons);
     }
 
     private void thisWeek(BotResponse botResponse, String typeButtons) {
@@ -179,8 +179,8 @@ public class CommandHandler {
 
     private String formatDate(Calendar calendar) {
         String date = Integer.toString(calendar.get(Calendar.DATE));
-        String month = Integer.toString(calendar.get(Calendar.DATE));
-        String year = Integer.toString(calendar.get(Calendar.DATE));
+        String month = Integer.toString(calendar.get(Calendar.MONTH) + 1);
+        String year = Integer.toString(calendar.get(Calendar.YEAR));
         return date + '.' + month + '.' + year;
     }
 
@@ -192,28 +192,18 @@ public class CommandHandler {
         return botResponse;
     }
 
-    private void events(BotResponse botResponse, String typeButtons) {
-        ParsingBotResponse(botResponse);
+    private void events(BotResponse botResponse, boolean isNext) {
+        if (!isNext)
+            ParsingBotResponse(botResponse);
         int start = botResponse.getStartEvent();
         int end = start + 6;
+        System.out.println(start);
+        System.out.println(end);
         int countEvent = botResponse.getCountEvent();
         if (end > countEvent)
             end = countEvent % 6;
-        createEvents(start, end, botResponse, typeButtons);
-    }
-
-    private void createEvents(int start, int end, BotResponse botResponse, String typeButtons) {
-        String message;
-        for (int i = start; i < end; i++) {
-            Event event = botResponse.getEvents()[i];
-            message = "\n" + (i + 1) + ". " + "Мероприятие: " + event.getName() + "\nДата: " + event.getDateTime();
-            if (i != end - 1)
-                message += "\n \r";
-            int status = botResponse.map.get(typeButtons);
-            botResponse.setMessage(message);
-            botResponse.setSendPhoto(event.getPhoto());
-            botResponse.setButtons(createButtons(++status, botResponse.map, Integer.toString(i), event.getUrl()));
-        }
+        botResponse.setStartEvent(start);
+        botResponse.setEndEvent(end);
     }
 
     private void ParsingBotResponse(BotResponse botResponse){
@@ -221,31 +211,11 @@ public class CommandHandler {
         parsing.parsing(botResponse);
     }
 
-    private void setMessageAndButtons(String message, BotResponse botResponse, String typeButtons){
+    private void setMessageAndButtons(String message, BotResponse botResponse, String typeButtons) {
         int status = botResponse.map.get(typeButtons);
         botResponse.setMessage(message);
         botResponse.setSendPhoto(getRandomIntegerBetweenRange(1, 5));
-        botResponse.setButtons(createButtons(++status, botResponse.map, null, null));
-    }
-
-    private InlineKeyboardMarkup createButtons(int status, Map<String, Integer> map, String number, String url) {
-        Buttons buttons = new Buttons();
-        try {
-            return buttons.createButtons(getKey(status, map), number, url);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            System.out.println(e);
-            throw new RuntimeException();
-        }
-    }
-
-    private InlineKeyboardMarkup createButtonsNextEvents(String number, String url) {
-        Buttons buttons = new Buttons();
-        try {
-            return buttons.createButtons("nextEvents", number, url);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            System.out.println(e);
-            throw new RuntimeException();
-        }
+        botResponse.createButtons(getKey(++status, botResponse.map), null, false);
     }
 
     private String getKey(int status, Map<String, Integer> map) {

@@ -18,11 +18,11 @@ public class App {
             String token = property.getProperty("bot.token");
             Bot bot = new Bot(name, token);
             bot.botConnect();
-            String urlBase = property.getProperty("db.host");
-            String userBase = property.getProperty("db.login");
-            String passBase = property.getProperty("db.password");
-            DataBase dataBase = new DataBase();
-            dataBase.connect(urlBase, userBase, passBase);
+//            String urlBase = property.getProperty("db.host");
+//            String userBase = property.getProperty("db.login");
+//            String passBase = property.getProperty("db.password");
+//            DataBase dataBase = new DataBase();
+//            dataBase.connect(urlBase, userBase, passBase);
 //            dataBase.createTable();
         } catch (IOException e) {
             System.err.println(e);

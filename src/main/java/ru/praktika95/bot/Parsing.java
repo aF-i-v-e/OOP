@@ -29,8 +29,7 @@ public class Parsing {
                 .data(query)
                 .execute()
                 .parse();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             botResponse.setError(true);
             botResponse.setMessage("Ошибка подключения, попробуйте повторить позже");
             return;

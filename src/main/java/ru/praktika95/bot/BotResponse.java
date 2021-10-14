@@ -1,19 +1,14 @@
 package ru.praktika95.bot;
 
-import org.apache.commons.collections.BidiMap;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
-import javax.swing.*;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 public class BotResponse {
     private SendPhoto sendPhoto;
@@ -22,9 +17,9 @@ public class BotResponse {
     private Event[] events;
     private Event selectedEvent;
     private int startEvent;
+    private int endEvent;
     private int countEvent;
     private boolean error;
-    private Function execute;
     public final Map<String, Integer> map = Map.of(
             "main", 0,
             "date", 1,
@@ -48,17 +43,18 @@ public class BotResponse {
         sendPhoto.setCaption(message);
     }
 
-    public void setSendPhoto(int photoNumber){
+    public void setSendPhoto(int photoNumber) {
         File f = new File("src\\main\\resources\\" + photoNumber + ".jpg");
         sendPhoto.setPhoto(new InputFile().setMedia(f));
     }
 
-    public void setSendPhoto(String path){
+    public void setSendPhoto(String path) {
         sendPhoto.setPhoto(new InputFile().setMedia(path));
     }
 
-    public void setNullPhoto(){
-        sendPhoto.setPhoto(null);
+    public void setNull() {
+        sendPhoto = new SendPhoto();
+        sendMessage = new SendMessage();
     }
 
     public SendPhoto getSendPhoto()
@@ -79,11 +75,6 @@ public class BotResponse {
 
     public ParsingData getParsingData() {
         return parsingData;
-    }
-
-    public void setButtons(InlineKeyboardMarkup buttons) {
-        this.sendMessage.setReplyMarkup(buttons);
-        this.sendPhoto.setReplyMarkup(buttons);
     }
 
     public void setCategory(String codeCategory) {
@@ -110,7 +101,7 @@ public class BotResponse {
         String eventTime = "\nДата: " + event.getDateTime();
         String eventPrice = "\nВходной билет стоит: "+ event.getPrice();
         this.setSendPhoto(event.getPhoto());
-        this.sendMessage.setText(eventName + eventPlace + eventTime + eventPrice);
+        sendMessage.setText(eventName + eventPlace + eventTime + eventPrice);
     }
 
     public boolean isError() {
@@ -121,17 +112,20 @@ public class BotResponse {
         this.error = error;
     }
 
-    public void setMarkUp( InlineKeyboardMarkup inlineButtons ){
-        sendMessage.setReplyMarkup(inlineButtons);
-        sendPhoto.setReplyMarkup(inlineButtons);
-    }
-
     public int getStartEvent() {
         return startEvent;
     }
 
     public void setStartEvent(int startEvent) {
         this.startEvent = startEvent;
+    }
+
+    public int getEndEvent() {
+        return endEvent;
+    }
+
+    public void setEndEvent(int endEvent) {
+        this.endEvent = endEvent;
     }
 
     public int getCountEvent() {
@@ -142,11 +136,11 @@ public class BotResponse {
         this.countEvent = countEvent;
     }
 
-    public Function getExecute() {
-        return execute;
-    }
-
-    public void setExecute(Function execute) {
-        this.execute = execute;
+    public void createButtons(String typeButtons, String number, boolean isEnd) {
+        List<List<InlineKeyboardButton>> rowList = ReplyMarkup.findButtons(typeButtons).handler(typeButtons, number, isEnd);
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.setKeyboard(rowList);
+        sendMessage.setReplyMarkup(inlineKeyboardMarkup);
+        sendPhoto.setReplyMarkup(inlineKeyboardMarkup);
     }
 }

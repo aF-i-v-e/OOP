@@ -43,7 +43,6 @@ public class Parsing {
         }
         Elements elements = document.select(".events .col-xs-2 .event");
         int count = elements.size();
-        botResponse.setCountEvent(count);
         List<Event> events = botResponse.getEvents();
         for (Element element : elements) {
             Elements div = element.select(".caption");

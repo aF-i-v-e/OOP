@@ -46,25 +46,25 @@ public class CommandHandler {
                 switch (botCommand) {
                     case "theatre" -> {
                         botResponse.setCategory("3009");
-                        events(botResponse);
+                        events(botResponse, false);
                     }
                     case "museum" -> {
                         botResponse.setCategory("4093");
-                        events(botResponse);
+                        events(botResponse, false);
                     }
                     case "concert" -> {
                         botResponse.setCategory("3000");
-                        events(botResponse);
+                        events(botResponse, false);
                     }
                     case "allEvents" -> {
                         botResponse.setCategory("0");
-                        events(botResponse);
+                        events(botResponse, false);
                     }
                 }
             }
             case "events" -> {
                 switch (botCommand) {
-//                    case "next" -> next(botResponse);
+                    case "next" -> events(botResponse, true);
                 }
             }
             default -> other(botResponse);
@@ -198,26 +198,25 @@ public class CommandHandler {
         return botResponse;
     }
 
-    private void events(BotResponse botResponse) {
-        int start = botResponse.getStartEvent();
+    private void events(BotResponse botResponse, boolean isNext) {
+        int start;
+        int countEvent = botResponse.getEvents().size();
+        if (!isNext){
+            ParsingBotResponse(botResponse);
+            start = countEvent;
+        }
+        else
+            start = botResponse.getStartEvent();
         int end = start + 6;
-        int countEvent = botResponse.getCountEvent();
+        countEvent = botResponse.getEvents().size();
         if (end > countEvent)
-            end = countEvent % 6;
+            end = countEvent;
         botResponse.setStartEvent(start);
         botResponse.setEndEvent(end);
-        System.out.println(botResponse.getStartEvent());
-        System.out.println(botResponse.getEvents().size());
+//        System.out.println(botResponse.getStartEvent());
+//        System.out.println(botResponse.getEndEvent());
+//        System.out.println(botResponse.getEvents().size());
     }
-
-    /*private void next(BotResponse botResponse) {
-
-        int countEvent = botResponse.getCountEvent();
-        if (end > countEvent)
-            end = countEvent % 6;
-        botResponse.setStartEvent(start);
-        botResponse.setEndEvent(end);
-    }*/
 
     private void ParsingBotResponse(BotResponse botResponse){
         Parsing parsing = new Parsing();

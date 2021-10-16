@@ -5,7 +5,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Parsing {
@@ -42,18 +44,17 @@ public class Parsing {
         Elements elements = document.select(".events .col-xs-2 .event");
         int count = elements.size();
         botResponse.setCountEvent(count);
-        Event[] events = new Event[count];
-        for (int i = 0; i < count; i++){
-            Element element = elements.get(i);
+        List<Event> events = botResponse.getEvents();
+        for (Element element : elements) {
             Elements div = element.select(".caption");
-            events[i] = new Event(
+            events.add(new Event(
                     element.select("img").attr("data-src"),
                     div.select(".title").text(),
                     div.select(".date").text(),
                     div.select(".place").text(),
                     div.select(".cost.rub").text(),
                     div.select(".buy.hover a").attr("href")
-            );
+            ));
         }
         botResponse.setEvents(events);
     }

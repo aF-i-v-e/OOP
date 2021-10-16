@@ -11,6 +11,7 @@ public class CommandHandler {
     private final String dateText = "Выберите категорию мероприятия, которое состоится";
 
     public void commandHandler(String basicCommand, BotResponse botResponse){
+        botResponse.setNullEvents();
         switch (basicCommand) {
             case "help" -> help(botResponse);
             case "start" ->  hello(botResponse);
@@ -18,15 +19,20 @@ public class CommandHandler {
         }
     }
 
-    public void commandHandler(String typeButtons, String botCommand, BotResponse botResponse) {
+    public void commandHandler(BotRequest botRequest, BotResponse botResponse) {
+        String typeButtons = botRequest.getTypeButtons();
+        String botCommand = botRequest.getBotCommand();
+        String selectedEvent = botRequest.getSelectedEvent();
         switch (typeButtons) {
             case "main" -> {
+                botResponse.setNullEvents();
                 switch (botCommand) {
                     case "show" -> date(botResponse, typeButtons);
                     case "help" -> help(botResponse);
                 }
             }
             case "date" -> {
+                botResponse.setNullEvents();
                 switch (botCommand) {
                     case "today" -> today(botResponse, typeButtons);
                     case "tomorrow" -> tomorrow(botResponse, typeButtons);
@@ -40,25 +46,25 @@ public class CommandHandler {
                 switch (botCommand) {
                     case "theatre" -> {
                         botResponse.setCategory("3009");
-                        events(botResponse, false);
+                        events(botResponse);
                     }
                     case "museum" -> {
                         botResponse.setCategory("4093");
-                        events(botResponse, false);
+                        events(botResponse);
                     }
                     case "concert" -> {
                         botResponse.setCategory("3000");
-                        events(botResponse, false);
+                        events(botResponse);
                     }
                     case "allEvents" -> {
                         botResponse.setCategory("0");
-                        events(botResponse, false);
+                        events(botResponse);
                     }
                 }
             }
             case "events" -> {
                 switch (botCommand) {
-                    case "next" -> events(botResponse, true);
+                    case "next" -> next(botResponse);
                 }
             }
             default -> other(botResponse);
@@ -85,16 +91,16 @@ public class CommandHandler {
         return x;
     }
 
-    private void choose(int numberEvent, BotResponse botResponse) {
-        String message = "Такого мероприятия не существует.";
-        if (numberEvent == -1)
-            message = "Вы ввели некорректный номер мероприятия.";
+//    private void choose(int numberEvent, BotResponse botResponse) {
+//        String message = "Такого мероприятия не существует.";
+//        if (numberEvent == -1)
+//            message = "Вы ввели некорректный номер мероприятия.";
 //        ParsingBotResponse(botResponse);
-        if (numberEvent > 0 && botResponse.getEvents().length >= numberEvent)
-            botResponse.setSelectedEvent(botResponse.getEvents()[numberEvent - 1]);
-        else
-            botResponse.setMessage(message);
-    }
+//        if (numberEvent > 0 && botResponse.getEvents().length >= numberEvent)
+//            botResponse.setSelectedEvent(botResponse.getEvents()[numberEvent - 1]);
+//        else
+//            botResponse.setMessage(message);
+//    }
 
     private void date(BotResponse botResponse, String typeButtons){
         setMessageAndButtons("Выберите дату", botResponse, typeButtons);
@@ -192,19 +198,26 @@ public class CommandHandler {
         return botResponse;
     }
 
-    private void events(BotResponse botResponse, boolean isNext) {
-        if (!isNext)
-            ParsingBotResponse(botResponse);
+    private void events(BotResponse botResponse) {
         int start = botResponse.getStartEvent();
         int end = start + 6;
-        System.out.println(start);
-        System.out.println(end);
         int countEvent = botResponse.getCountEvent();
         if (end > countEvent)
             end = countEvent % 6;
         botResponse.setStartEvent(start);
         botResponse.setEndEvent(end);
+        System.out.println(botResponse.getStartEvent());
+        System.out.println(botResponse.getEvents().size());
     }
+
+    /*private void next(BotResponse botResponse) {
+
+        int countEvent = botResponse.getCountEvent();
+        if (end > countEvent)
+            end = countEvent % 6;
+        botResponse.setStartEvent(start);
+        botResponse.setEndEvent(end);
+    }*/
 
     private void ParsingBotResponse(BotResponse botResponse){
         Parsing parsing = new Parsing();

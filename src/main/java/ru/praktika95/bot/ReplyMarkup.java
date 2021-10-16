@@ -59,7 +59,7 @@ public enum ReplyMarkup {
     EVENTS("events") {
         public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd){
             List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-            Map<String, String> buttons = Map.of("Просмотреть мероприятие", "event" + number);
+            Map<String, String> buttons = Map.of("Просмотреть мероприятие", "event" + " " + number);
             rowList.add(createButton(buttons, typeButtons, null));
             if (isEnd){
                 buttons = Map.of("Показать ещё", "next");

@@ -53,18 +53,18 @@ public class Bot extends TelegramLongPollingBot {
             String[] callbackData = callbackQuery.getData().split(" ");
             botRequest.setTypeButtons(callbackData[0]);
             botRequest.setBotCommand(callbackData[1]);
+            if (callbackData.length > 2)
+                botRequest.setSelectedEvent(callbackData[2]);
             botRequestHandler.getBotAnswer(botRequest, botResponse);
-            System.out.println(botResponse.getStartEvent());
             System.out.println(botRequest.getTypeButtons());
             System.out.println(botRequest.getBotCommand());
+            System.out.println(botRequest.getSelectedEvent());
             boolean isNext = Objects.equals(botRequest.getBotCommand(), "next");
             if (Objects.equals(botRequest.getTypeButtons(), "category") || isNext){
                 createEvents(botRequest, isNext);
                 botResponse.setNull();
-                System.out.println(1);
                 return;
             }
-            System.out.println(2);
             executeBotResponse();
         }
         botResponse.setNull();
@@ -74,23 +74,25 @@ public class Bot extends TelegramLongPollingBot {
         String message;
         int start = botResponse.getStartEvent();
         int end = botResponse.getEndEvent();
-        System.out.println(botResponse.getStartEvent());
-        System.out.println(end);
-        for (int i = start; i < end; i++) {
-            Event event = botResponse.getEvents()[i];
-            message = "\n" + (i + 1) + ". " + "Мероприятие: " + event.getName() + "\nДата: " + event.getDateTime();
-            int status = botResponse.map.get(botRequest.getTypeButtons());
-            botResponse.setMessage(message);
-            botResponse.setSendPhoto(event.getPhoto());
-            boolean isEnd = i == end - 1;
-            System.out.println(isEnd);
-            if (!isNext)
-                ++status;
-            botResponse.createButtons(getKey(status, botResponse.map), Integer.toString(i), isEnd);
+        if (start == end){
+            botResponse.setMessage("Больше мероприятий по выбранным параметрам нет");
             executeBotResponse();
         }
-        botResponse.setStartEvent(end);
-        System.out.println(botResponse.getStartEvent());
+        else{
+            for (int i = start; i < end; i++) {
+                Event event = botResponse.getEvents().get(i);
+                message = "\n" + (i + 1) + ". " + "Мероприятие: " + event.getName() + "\nДата: " + event.getDateTime();
+                int status = botResponse.map.get(botRequest.getTypeButtons());
+                botResponse.setMessage(message);
+                botResponse.setSendPhoto(event.getPhoto());
+                boolean isEnd = i == end - 1;
+                if (!isNext)
+                    ++status;
+                botResponse.createButtons(getKey(status, botResponse.map), Integer.toString(i), isEnd);
+                executeBotResponse();
+            }
+            botResponse.setStartEvent(end);
+        }
     }
 
     private String getKey(int status, Map<String, Integer> map) {

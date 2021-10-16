@@ -1,5 +1,6 @@
 package ru.praktika95.bot;
 
+import org.checkerframework.checker.units.qual.A;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
@@ -7,6 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +16,7 @@ public class BotResponse {
     private SendPhoto sendPhoto;
     private SendMessage sendMessage;
     private ParsingData parsingData;
-    private Event[] events;
+    private List<Event> events;
     private Event selectedEvent;
     private int startEvent;
     private int endEvent;
@@ -33,7 +35,7 @@ public class BotResponse {
         this.sendPhoto = new SendPhoto();
         this.sendMessage = new SendMessage();
         this.parsingData = new ParsingData();
-        this.events = new Event[0];
+        this.events = new ArrayList<>();
         this.error = false;
         this.selectedEvent = new Event();
     }
@@ -85,12 +87,17 @@ public class BotResponse {
         parsingData.setPeriod(period);
     }
 
-    public Event[] getEvents() {
+    public List<Event> getEvents() {
         return events;
     }
 
-    public void setEvents(Event[] events) {
+    public void setEvents(List<Event> events) {
         this.events = events;
+    }
+
+    public void setNullEvents() {
+        this.startEvent = 0;
+        this.events = new ArrayList<>();
     }
 
     public void setSelectedEvent(Event event)

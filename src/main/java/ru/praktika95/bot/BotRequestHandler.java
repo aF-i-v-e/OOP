@@ -4,7 +4,7 @@ public class BotRequestHandler {
 
     public void getBotAnswer(BotRequest botRequest, BotResponse botResponse) {
         CommandHandler comH = new CommandHandler();
-        comH.commandHandler(botRequest.getTypeButtons(), botRequest.getBotCommand(), botResponse);
+        comH.commandHandler(botRequest, botResponse);
         botResponse.setChatId(botRequest.getChatId());
     }
 

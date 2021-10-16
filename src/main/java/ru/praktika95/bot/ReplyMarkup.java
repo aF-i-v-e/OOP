@@ -2,70 +2,46 @@ package ru.praktika95.bot;
 
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public enum ReplyMarkup {
     MAIN("main") {
         public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd) {
-            List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-            Map<String, String> buttons = Map.of(
-                    "Мероприятия", "show",
-                    "Помощь", "help"
-            );
-            rowList.add(createButton(buttons, typeButtons, null));
-            return rowList;
+            String[] stringButtons = new String[] {
+                    "Мероприятия", "show", "Помощь", "help"
+            };
+            return createRowList(typeButtons,stringButtons);
         }
     },
     DATE("date") {
         public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd){
-            List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-            Map<String, String> buttons = Map.of(
-                    "Сегодня", "today",
-                    "Завтра", "tomorrow"
-            );
-            rowList.add(createButton(buttons, typeButtons, null));
-            buttons = Map.of(
-                    "На этой неделе", "thisWeek",
-                    "На следующей неделе", "nextWeek"
-            );
-            rowList.add(createButton(buttons, typeButtons, null));
-            buttons = Map.of(
-                    "В этом месяце", "thisMonth",
-                    "В следующем месяце", "nextMonth"
-            );
-            rowList.add(createButton(buttons, typeButtons, null));
-            return rowList;
+            String[] stringButtons = new String[] {
+                    "Сегодня", "today", "Завтра", "tomorrow",
+                    "На этой неделе", "thisWeek", "На следующей неделе", "nextWeek",
+                    "В этом месяце", "thisMonth", "В следующем месяце", "nextMonth"
+            };
+            return createRowList(typeButtons,stringButtons);
         }
     },
     CATEGORY("category") {
         public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd){
-            List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-            Map<String, String> buttons = Map.of(
+            String[] stringButtons = new String[] {
                     "Театр", "theatre",
-                    "Музеи", "museum"
-            );
-            rowList.add(createButton(buttons, typeButtons, null));
-            buttons = Map.of(
+                    "Музеи", "museum",
                     "Концерт", "concert",
                     "Все мероприятия", "allEvents"
-            );
-            rowList.add(createButton(buttons, typeButtons, null));
-            return rowList;
+            };
+            return createRowList(typeButtons,stringButtons);
         }
     },
     EVENTS("events") {
         public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd){
-            List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-            Map<String, String> buttons = Map.of("Просмотреть мероприятие", "event" + " " + number);
-            rowList.add(createButton(buttons, typeButtons, null));
-            if (isEnd){
-                buttons = Map.of("Показать ещё", "next");
-                rowList.add(createButton(buttons, typeButtons, null));
-            }
-            return rowList;
+            String[] stringButtons = new String[] {
+                    "Просмотреть мероприятие", "event" + " " + number
+            };
+            if (isEnd)
+                stringButtons = new String[] { "Показать ещё", "next" };
+            return createRowList(typeButtons, stringButtons);
         }
     };
 
@@ -84,6 +60,17 @@ public enum ReplyMarkup {
             }
         }
         return null;
+    }
+
+    List<List<InlineKeyboardButton>> createRowList(String typeButtons, String[] stringButtons){
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
+        for(int i = 0; i < stringButtons.length; i+=4) {
+            LinkedHashMap<String, String> buttons = new LinkedHashMap<>();
+            buttons.put(stringButtons[i], stringButtons[i+1]);
+            buttons.put(stringButtons[i+2], stringButtons[i+3]);
+            rowList.add(createButton(buttons, typeButtons, null));
+        }
+        return rowList;
     }
 
     List<InlineKeyboardButton> createButton(Map<String, String> buttons, String typeButtons, String url) {

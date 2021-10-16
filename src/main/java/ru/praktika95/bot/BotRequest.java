@@ -7,9 +7,9 @@ import java.util.*;
 import java.util.function.Function;
 
 public class BotRequest {
-    String chatId;
-    String typeButtons;
-    String botCommand;
+    private String chatId;
+    private String typeButtons;
+    private String botCommand;
     public final Map<String,Integer> map = Map.of(
             "main", 0,
             "date", 1,
@@ -20,7 +20,10 @@ public class BotRequest {
     );
 
     public BotRequest(Update update){
-        chatId = update.getMessage().getChatId().toString();
+        if (update.hasCallbackQuery())
+            chatId = update.getCallbackQuery().getMessage().getChatId().toString();
+        else
+            chatId = update.getMessage().getChatId().toString();
     }
 
     public String getTypeButtons() {
@@ -37,5 +40,13 @@ public class BotRequest {
 
     public void setBotCommand(String botCommand) {
         this.botCommand = botCommand;
+    }
+
+    public void setChatId(String chatId){
+        this.chatId=chatId;
+    }
+
+    public String getChatId(){
+        return chatId;
     }
 }

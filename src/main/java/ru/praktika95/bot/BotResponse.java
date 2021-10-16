@@ -14,15 +14,13 @@ import java.util.List;
 import java.util.Map;
 
 public class BotResponse {
-    private String message;
     private SendPhoto sendPhoto;
     private SendMessage sendMessage;
-    private InlineKeyboardMarkup buttons;
     private ParsingData parsingData;
     private Event[] events;
     private Event selectedEvent;
     private boolean error;
-    public final BidiMap map = (BidiMap) Map.of(
+    public final Map<String, Integer> map = Map.of(
             "main", 0,
             "date", 1,
             "category", 2,
@@ -40,17 +38,9 @@ public class BotResponse {
         this.selectedEvent = new Event();
     }
 
-    public void setStringMessage(String message){
-        this.message = message;
-    }
-
-    public String getStringMessage(){
-        return message;
-    }
-
-    public void setSendMessage(String message)
-    {
+    public void setMessage(String message) {
         sendMessage.setText(message);
+        sendPhoto.setCaption(message);
     }
 
     public void setSendPhoto(int photoNumber){
@@ -82,12 +72,9 @@ public class BotResponse {
         return parsingData;
     }
 
-    public InlineKeyboardMarkup getButtons() {
-        return buttons;
-    }
-
     public void setButtons(InlineKeyboardMarkup buttons) {
-        this.buttons = buttons;
+        this.sendMessage.setReplyMarkup(buttons);
+        this.sendPhoto.setReplyMarkup(buttons);
     }
 
     public void setCategory(int codeCategory) {
@@ -114,7 +101,7 @@ public class BotResponse {
         String eventTime = "\nДата: " + event.getDateTime();
         String eventPrice = "\nВходной билет стоит: "+ event.getPrice();
         this.setSendPhoto(event.getPhoto());
-        message = eventName + eventPlace + eventTime + eventPrice;
+        this.sendMessage.setText(eventName + eventPlace + eventTime + eventPrice);
     }
 
     public boolean isError() {
@@ -126,7 +113,7 @@ public class BotResponse {
     }
 
     public void setMarkUp( InlineKeyboardMarkup inlineButtons ){
-        sendPhoto.setReplyMarkup(inlineButtons);
         sendMessage.setReplyMarkup(inlineButtons);
+        sendPhoto.setReplyMarkup(inlineButtons);
     }
 }

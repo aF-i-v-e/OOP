@@ -3,17 +3,9 @@ package ru.praktika95.bot;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
 import java.util.*;
-import java.util.function.Function;
 
 public class CommandHandler {
-    private String[] getCommandAndEventNumber(String inputText) {
-        String[] commandAndArgument = inputText.split(" ");
-        String botCommand = commandAndArgument[0];
-        int numberEvent = commandAndArgument.length > 1 ? Integer.parseInt(commandAndArgument[1]) : -1;
-        return new String[]{botCommand, Integer.toString(numberEvent)};
-    }
 
     public BotResponse commandHandler(String basicCommand){
         BotResponse botResponse = new BotResponse();
@@ -26,86 +18,84 @@ public class CommandHandler {
     }
 
     public BotResponse commandHandler(String typeButtons, String botCommand) {
-//        String[] commandAndEventNumber = getCommandAndEventNumber(botCommand);
-//        int numberEvent = Integer.parseInt(commandAndEventNumber[1]);
         BotResponse botResponse = new BotResponse();
-        switch(typeButtons) {
-            case  "category" -> {
+        switch (typeButtons) {
+            case "main" -> {
+                switch (botCommand) {
+                    case "show" -> date(botResponse, typeButtons);
+                    case "help" -> help(botResponse);
+                }
+            }
+            case "date" -> {
+                switch (botCommand) {
+                    case "today" -> today(botResponse, typeButtons);
+                    case "tomorrow" -> tomorrow(botResponse, typeButtons);
+                    case "thisWeek" -> thisWeek(botResponse, typeButtons);
+                    case "nextWeek" -> nextWeek(botResponse, typeButtons);
+                    case "thisMonth" -> thisMonth(botResponse, typeButtons);
+                    case "nextMonth" -> nextMonth(botResponse, typeButtons);
+                }
+            }
+            case "category" -> {
                 switch (botCommand) {
                     case "theatre" -> {
-                        botResponse.getParsingData().setCategory(3009);
+                        botResponse.setCategory(3009);
                         category(botResponse, typeButtons);
                     }
                     case "movie" -> {
-                        botResponse.getParsingData().setCategory(3031);
+                        botResponse.setCategory(3031);
                         category(botResponse, typeButtons);
                     }
                     case "concert" -> {
-                        botResponse.getParsingData().setCategory(3000);
+                        botResponse.setCategory(3000);
                         category(botResponse, typeButtons);
                     }
                     case "allEvents" -> {
-                        botResponse.getParsingData().setCategory(0);
+                        botResponse.setCategory(0);
                         category(botResponse, typeButtons);
                     }
                 }
             }
             case "events" -> events(botResponse);
-            case "date" -> {
-                switch (botCommand) {
-                    case "today" -> today(botResponse);
-                    case "tomorrow" -> tomorrow(botResponse);
-                    case "thisWeek" -> thisWeek(botResponse);
-                    case "nextWeek" -> nextWeek(botResponse);
-                    case "thisMonth" -> thisMonth(botResponse);
-                    case "nextMonth" -> nextMonth(botResponse);
-                }
-            }
-            case "main" -> {
-                switch (botCommand) {
-                    case "show" -> events(botResponse);
-                    case "help" -> help(botResponse);
-                }
-            }
             default -> other(botResponse);
         }
         return botResponse;
     }
 
     private void exit(BotResponse botResponse) {
-        botResponse.setStringMessage("Вы завершили работу с EkbEventsBot. Чтобы начать работу с ботом нажмите\n/start");
+        botResponse.setMessage("Вы завершили работу с EkbEventsBot. Чтобы начать работу с ботом нажмите\n/start");
         botResponse.setSendPhoto(1024);
     }
 
     private void help(BotResponse botResponse) {
-        botResponse.setStringMessage("О работе с данным ботом:\nПри вызове команды /show Вам будет предложено 6 мероприятий.\nЧтобы посмотреть больше мероприятий нажмите кнопку \"Показать ещё\".\nЕсли Вас заинтересовало мероприятие, используйте команду /choose № мероприятия.\nДля завершения работы с ботом используйте команду /exit");
+        botResponse.setMessage("О работе с данным ботом:\nДля того, чтобы выбрать категорию мероприятия и подходящий период времени, используйте соответствующие кнопки.\nПосле, Вам на выбор будет представлено 6 мероприятий.\nКогда Вы выберете конкретное мероприятие, Вы сможете либо подписаться на мероприятие, либо сразу приобрести билеты.\nПри подписке на мероприятие, бот уведомит Вас о выбранном событии за определенный период времени.");
         botResponse.setSendPhoto(911);
     }
 
-    public static int getRandomIntegerBetweenRange(int min, int max){
-        int x = (int)(Math.random()*((max - min) + 1)) + min;
+    public static int getRandomIntegerBetweenRange(int min, int max) {
+        int x = (int) (Math.random() * ((max - min) + 1)) + min;
         return x;
     }
 
     private void hello(BotResponse botResponse) {
-        botResponse.setStringMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте /help \nДля того, чтобы посмотреть доступные мероприятия используйте /show .");
-        botResponse.setSendPhoto(getRandomIntegerBetweenRange(1,5));
+        botResponse.setMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте кнопку \"Помощь\"\nДля того, чтобы посмотреть доступные мероприятия, выбрать подходящее время используйте кнопку \"Мероприятия\".");
+        botResponse.setSendPhoto(getRandomIntegerBetweenRange(1, 5));
     }
 
     private void events(BotResponse botResponse) {
         ParsingBotResponse(botResponse);
-        String events = formEventsInfo(0,6, botResponse);
-        botResponse.setStringMessage(events);
+        String events = formEventsInfo(0, 6, botResponse);
+        botResponse.setMessage(events);
         botResponse.setSendPhoto(6);
     }
 
-    private String formEventsInfo(int start, int end, BotResponse botResponse){
-        String events="";
-        for(int i = start; i < end; i++) {
+    private String formEventsInfo(int start, int end, BotResponse botResponse) {
+        String events = "";
+        for (int i = start; i < end; i++) {
             Event event = botResponse.getEvents()[i];
-            events+="\n" + (i + 1) + ". " + "Мероприятие: " + event.getName() + "\nДата: " + event.getDateTime();
+            events += "\n" + (i + 1) + ". " + "Мероприятие: " + event.getName() + "\nДата: " + event.getDateTime();
             if (i != end - 1)
-                events +="\n \r";
+                events += "\n \r";
         }
         return events;
     }
@@ -118,25 +108,24 @@ public class CommandHandler {
         if (numberEvent > 0 && botResponse.getEvents().length >= numberEvent)
             botResponse.setSelectedEvent(botResponse.getEvents()[numberEvent - 1]);
         else
-            botResponse.setStringMessage(message);
+            botResponse.setMessage(message);
     }
 
     private void category(BotResponse botResponse, String typeButtons) {
-        int status = (int) botResponse.map.get(typeButtons);
-        botResponse.setStringMessage("Мероприятия");
-        botResponse.setButtons(createButtons(botResponse.map.getKey(++status).toString()));
+        setMessageAndButtons("Мероприятия", botResponse, typeButtons);
     }
 
-    private void today(BotResponse botResponse) {
+    private void today(BotResponse botResponse, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
         String currentDate = formatDate(calendar);
         DatePeriod datePeriod = new DatePeriod();
         datePeriod.setDateFrom(currentDate);
         datePeriod.setDateTo(currentDate);
         botResponse.setPeriod(datePeriod);
+        setMessageAndButtons("Выберите категорию мероприятия, которое состоится сегодня:", botResponse, typeButtons);
     }
 
-    private void tomorrow(BotResponse botResponse) {
+    private void tomorrow(BotResponse botResponse, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
         String dateFrom = formatDate(calendar);
         calendar.add(Calendar.DATE, 1);
@@ -145,9 +134,10 @@ public class CommandHandler {
         datePeriod.setDateFrom(dateFrom);
         datePeriod.setDateTo(dateTo);
         botResponse.setPeriod(datePeriod);
+        setMessageAndButtons("Выберите категорию мероприятия, которое состится завтра:", botResponse, typeButtons);
     }
 
-    private void thisWeek(BotResponse botResponse) {
+    private void thisWeek(BotResponse botResponse, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
         int dateWeek = calendar.get(Calendar.DAY_OF_WEEK);
         String currentDate = formatDate(calendar);
@@ -162,9 +152,10 @@ public class CommandHandler {
         datePeriod.setDateFrom(currentDate);
         datePeriod.setDateTo(dateTo);
         botResponse.setPeriod(datePeriod);
+        setMessageAndButtons("Выберите категорию мероприятия, которое состоится на этой неделе:", botResponse, typeButtons);
     }
 
-    private void nextWeek(BotResponse botResponse) {
+    private void nextWeek(BotResponse botResponse, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
         int dateWeek = calendar.get(Calendar.DAY_OF_WEEK);
         if (dateWeek == 1)
@@ -178,9 +169,10 @@ public class CommandHandler {
         datePeriod.setDateFrom(dateFrom);
         datePeriod.setDateTo(dateTo);
         botResponse.setPeriod(datePeriod);
+        setMessageAndButtons("Выберите категорию мероприятия, которое состоится на следующей неделе:", botResponse, typeButtons);
     }
 
-    private void thisMonth(BotResponse botResponse) {
+    private void thisMonth(BotResponse botResponse, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
         int dateMonth = calendar.get(Calendar.DATE);
         String currentDate = formatDate(calendar);
@@ -196,9 +188,10 @@ public class CommandHandler {
         datePeriod.setDateFrom(currentDate);
         datePeriod.setDateTo(dateTo);
         botResponse.setPeriod(datePeriod);
+        setMessageAndButtons("Выберите категорию мероприятия, которое состоится в этом месяце:", botResponse, typeButtons);
     }
 
-    private void nextMonth(BotResponse botResponse) {
+    private void nextMonth(BotResponse botResponse, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
         int dateMonth = calendar.get(Calendar.DATE);
         int lastDayMonth = calendar.getActualMaximum(Calendar.DATE);
@@ -215,19 +208,29 @@ public class CommandHandler {
         datePeriod.setDateFrom(dateFrom);
         datePeriod.setDateTo(dateTo);
         botResponse.setPeriod(datePeriod);
+        setMessageAndButtons("Выберите категорию мероприятия, которое состоится в следующем месяце:", botResponse, typeButtons);
     }
 
-    private InlineKeyboardMarkup createButtons(String typeButtons){
+    private InlineKeyboardMarkup createButtons(int status, Map<String, Integer> map) {
         Buttons buttons = new Buttons();
         try {
-            return buttons.createButtons(typeButtons);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e){
+            return buttons.createButtons(getKey(status, map));
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             System.out.println(e);
             throw new RuntimeException();
         }
     }
 
-    private void ParsingBotResponse(BotResponse botResponse){
+    private String getKey(int status, Map<String, Integer> map) {
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+            if (entry.getValue() == status) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    private void ParsingBotResponse(BotResponse botResponse) {
         Parsing parsing = new Parsing();
         parsing.parsing(botResponse);
     }
@@ -240,6 +243,16 @@ public class CommandHandler {
     }
 
     private void other(BotResponse botResponse) {
-        botResponse.setStringMessage("Введённой команды не существует, вы можете выполнить команду /help, чтобы узнать как пользоваться ботом.");
+        botResponse.setMessage("Введённой команды не существует, вы можете выполнить команду /start, чтобы начать работу с ботом.");
+    }
+
+    private void date(BotResponse botResponse, String typeButtons){
+        setMessageAndButtons("Выберите дату", botResponse, typeButtons);
+    }
+
+    private void setMessageAndButtons(String message, BotResponse botResponse, String typeButtons){
+        int status = botResponse.map.get(typeButtons);
+        botResponse.setMessage(message);
+        botResponse.setButtons(createButtons(++status, botResponse.map));
     }
 }

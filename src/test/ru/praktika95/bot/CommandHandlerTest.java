@@ -7,58 +7,114 @@ import org.junit.jupiter.api.Test;
 
 class CommandHandlerTest {
     private CommandHandler commandHandler;
+    private BotResponse botResponse;
+    private final String dateText = "Выберите категорию мероприятия, которое состоится";
 
     @BeforeEach
     public void setUp() {
         commandHandler = new CommandHandler();
+        botResponse = new BotResponse();
+    }
+
+    private void comparatorExtendedCommand(String typeButtons, String botCommand, String correctAnswer){
+        commandHandler.commandHandler(typeButtons, botCommand, botResponse);
+        assertEquals(correctAnswer, botResponse.getSendMessage().getText());
+    }
+
+    private void comparatorBasicCommand(String basicCommand, String correctAnswer){
+        commandHandler.commandHandler(basicCommand, botResponse);
+        assertEquals(correctAnswer, botResponse.getSendMessage().getText());
     }
 
     @Test
     void testCorrectHelpMessage() {
-        String correctAnswer = "Доступные команды:\n/help - узнать список доступных команд.\n/hello - получить приветственное сообщение.\n/show - узнать ближайшие мероприятия.\n/choose \"номер мероприятия\" - выбрать мероприятие.";
-        BotResponse botResponse = commandHandler.commandHandler("/help 0");
-        assertEquals(correctAnswer, botResponse.getSendMessage().getText());
+        comparatorBasicCommand("help", "О работе с данным ботом:\n" +
+                "Для того, чтобы выбрать категорию мероприятия и подходящий период времени, используйте соответствующие кнопки.\n" +
+                "После, Вам на выбор будет представлено 6 мероприятий.\nКогда Вы выберете конкретное мероприятие, Вы сможете либо подписаться на мероприятие, либо сразу приобрести билеты.\n" +
+                "При подписке на мероприятие, бот уведомит Вас о выбранном событии за определенный период времени.");
     }
 
     @Test
-    void testCorrectHelloMessage() {
-        String correctAnswer = "Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.";
-        BotResponse botResponse = commandHandler.commandHandler("/hello 0");
-        assertEquals(correctAnswer, botResponse.getSendMessage().getText());
-    }
+    void testCorrectStartMessage() {
+        comparatorBasicCommand("start", "Привет!\nЯ бот, которые может показать ближайшие мероприятия. " +
+                "Вы можете подписаться на их уведомление и вы точно про него не забудете.\n" +
+                "Для того, чтобы узнать больше о работе с данным ботом используйте кнопку \"Помощь\"\n" +
+                "Для того, чтобы посмотреть доступные мероприятия, выбрать подходящее время используйте кнопку \"Мероприятия\".");
 
-    @Test
-    void testCorrectShowMessage() {
-        String correctAnswer = "1. Первое мероприятие.\n2. Второе мероприятие.\n3. Третье мероприятие.";
-        BotResponse botResponse = commandHandler.commandHandler("/show 0");
-        assertEquals(correctAnswer, botResponse.getSendMessage().getText());
-    }
-
-    @Test
-    void testCorrectChooseMessage() {
-        String correctAnswer = "Информация второго мероприятия.";
-        BotResponse botResponse = commandHandler.commandHandler("/choose 2");
-        assertEquals(correctAnswer, botResponse.getSendMessage().getText());
-    }
-
-    @Test
-    void testNotExistsNumberEventChooseMessage() {
-        String correctAnswer = "Такого мероприятия не существует.";
-        BotResponse botResponse = commandHandler.commandHandler("/choose 0");
-        assertEquals(correctAnswer, botResponse.getSendMessage().getText());
-    }
-
-    @Test
-    void testIncorrectNumberEventMessage() {
-        String correctAnswer = "Вы ввели некорректный номер мероприятия.";
-        BotResponse botResponse = commandHandler.commandHandler("/choose -1");
-        assertEquals(correctAnswer, botResponse.getSendMessage().getText());
     }
 
     @Test
     void testIncorrectMessage() {
-        String correctAnswer = "Введённой команды не существует, вы можете выполнить команду /help, чтобы узнать список доступных команд.";
-        BotResponse botResponse = commandHandler.commandHandler("/read 0");
-        assertEquals(correctAnswer, botResponse.getSendMessage().getText());
+        comparatorBasicCommand("read", "Введённой команды не существует, вы можете выполнить команду " +
+                "/start, чтобы начать работу с ботом.");
     }
+
+    @Test
+    void testCorrectShowCommand() {
+        comparatorExtendedCommand("main", "show", "Выберите дату");
+    }
+
+    @Test
+    void testCorrectHelpCommand() {
+        comparatorExtendedCommand("main", "help", "О работе с данным ботом:\n" +
+                "Для того, чтобы выбрать категорию мероприятия и подходящий период времени, используйте соответствующие кнопки.\n" +
+                "После, Вам на выбор будет представлено 6 мероприятий.\n" +
+                "Когда Вы выберете конкретное мероприятие, Вы сможете либо подписаться на мероприятие, либо сразу приобрести билеты.\n" +
+                "При подписке на мероприятие, бот уведомит Вас о выбранном событии за определенный период времени.");
+    }
+
+    @Test
+    void testCorrectTodayCommand() {
+        comparatorExtendedCommand("date", "today", dateText + " сегодня:");
+    }
+
+    @Test
+    void testCorrectTomorrowCommand() {
+        comparatorExtendedCommand("date", "tomorrow", dateText + " завтра:");
+    }
+
+    @Test
+    void testCorrectThisWeekCommand() {
+        comparatorExtendedCommand("date", "thisWeek", dateText + " на этой неделе:");
+    }
+
+    @Test
+    void testCorrectNextWeekCommand() {
+        comparatorExtendedCommand("date", "nextWeek", dateText + " на слудующей неделе:");
+    }
+
+    @Test
+    void testCorrectThisMonthCommand() {
+        comparatorExtendedCommand("date", "thisMonth", dateText + "в этом месяце:");
+    }
+
+    @Test
+    void testCorrectNextMonthCommand() {
+        comparatorExtendedCommand("date", "nextMonth", dateText + " в следующем месяце:");
+    }
+
+    @Test
+    void testCorrectTheatreCommand() {
+        comparatorExtendedCommand("category", "theatre", "");
+    }
+
+    @Test
+    void testCorrectMuseumCommand() {
+        comparatorExtendedCommand("category", "museum", "");
+    }
+
+    @Test
+    void testCorrectConcertCommand() {
+        comparatorExtendedCommand("category", "concert", "");
+    }
+
+    @Test
+    void testCorrectAllEventsCommand() {
+        comparatorExtendedCommand("category", "allEvents", "");
+    }
+
+
+
+
+
 }

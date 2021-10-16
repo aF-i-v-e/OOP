@@ -64,7 +64,7 @@ public class CommandHandler {
             }
             case "events" -> {
                 switch (botCommand) {
-                    case "next" -> next(botResponse);
+//                    case "next" -> next(botResponse);
                 }
             }
             default -> other(botResponse);

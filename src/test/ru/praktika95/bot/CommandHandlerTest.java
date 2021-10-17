@@ -16,8 +16,8 @@ class CommandHandlerTest {
         botResponse = new BotResponse();
     }
 
-    private void comparatorExtendedCommand(String typeButtons, String botCommand, String correctAnswer){
-        commandHandler.commandHandler(typeButtons, botCommand, botResponse);
+    private void comparatorExtendedCommand(String botCommand, String correctAnswer){
+        commandHandler.commandHandler(botCommand, botResponse);
         assertEquals(correctAnswer, botResponse.getSendMessage().getText());
     }
 
@@ -51,6 +51,7 @@ class CommandHandlerTest {
 
     @Test
     void testCorrectShowCommand() {
+
         comparatorExtendedCommand("main", "show", "Выберите дату");
     }
 

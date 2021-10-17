@@ -74,7 +74,7 @@ public class Bot extends TelegramLongPollingBot {
         String message;
         int start = botResponse.getStartEvent();
         int end = botResponse.getEndEvent();
-        if (start == end){
+        if (start == end || end == 0){
             botResponse.setMessage("Больше мероприятий по выбранным параметрам нет");
             executeBotResponse();
         }

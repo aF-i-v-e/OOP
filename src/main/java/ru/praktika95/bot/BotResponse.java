@@ -20,7 +20,6 @@ public class BotResponse {
     private Event selectedEvent;
     private int startEvent;
     private int endEvent;
-    private int countEvent;
     private boolean error;
     public final Map<String, Integer> map = Map.of(
             "main", 0,
@@ -133,14 +132,6 @@ public class BotResponse {
 
     public void setEndEvent(int endEvent) {
         this.endEvent = endEvent;
-    }
-
-    public int getCountEvent() {
-        return countEvent;
-    }
-
-    public void setCountEvent(int countEvent) {
-        this.countEvent = countEvent;
     }
 
     public void createButtons(String typeButtons, String number, boolean isEnd) {

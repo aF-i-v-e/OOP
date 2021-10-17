@@ -4,10 +4,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Chat;
+import org.telegram.telegrambots.meta.api.objects.Update;
 
 class CommandHandlerTest {
     private CommandHandler commandHandler;
     private BotResponse botResponse;
+    private BotRequest botRequest;
     private final String dateText = "Выберите категорию мероприятия, которое состоится";
 
     @BeforeEach
@@ -16,8 +20,26 @@ class CommandHandlerTest {
         botResponse = new BotResponse();
     }
 
-    private void comparatorExtendedCommand(String botCommand, String correctAnswer){
-        commandHandler.commandHandler(botCommand, botResponse);
+    private void setBotRequest(String typeButtons, String botCommand){
+//        Update update = new Update();
+//        update.setMessage("");
+//        Chat chat = new Chat();
+//        chat.setLinkedChatId(123467890l);
+//        update.getMessage().setChat(chat);
+
+
+//        if (update.hasCallbackQuery())
+//            chatId = update.getCallbackQuery().getMessage().getChatId().toString();
+//        else
+//            chatId = update.getMessage().getChatId().toString();
+
+       // botRequest = new BotRequest(update);
+        botRequest.setTypeButtons(typeButtons);
+        botRequest.setBotCommand(botCommand);
+    }
+
+    private void comparatorExtendedCommand(String correctAnswer){
+        commandHandler.commandHandler(botRequest, botResponse);
         assertEquals(correctAnswer, botResponse.getSendMessage().getText());
     }
 
@@ -40,7 +62,6 @@ class CommandHandlerTest {
                 "Вы можете подписаться на их уведомление и вы точно про него не забудете.\n" +
                 "Для того, чтобы узнать больше о работе с данным ботом используйте кнопку \"Помощь\"\n" +
                 "Для того, чтобы посмотреть доступные мероприятия, выбрать подходящее время используйте кнопку \"Мероприятия\".");
-
     }
 
     @Test
@@ -51,67 +72,79 @@ class CommandHandlerTest {
 
     @Test
     void testCorrectShowCommand() {
-
-        comparatorExtendedCommand("main", "show", "Выберите дату");
+        setBotRequest("main", "show");
+        comparatorExtendedCommand("Выберите дату");
     }
 
     @Test
     void testCorrectHelpCommand() {
-        comparatorExtendedCommand("main", "help", "О работе с данным ботом:\n" +
+        setBotRequest("main", "help");
+        String correctAns = "О работе с данным ботом:\n" +
                 "Для того, чтобы выбрать категорию мероприятия и подходящий период времени, используйте соответствующие кнопки.\n" +
                 "После, Вам на выбор будет представлено 6 мероприятий.\n" +
                 "Когда Вы выберете конкретное мероприятие, Вы сможете либо подписаться на мероприятие, либо сразу приобрести билеты.\n" +
-                "При подписке на мероприятие, бот уведомит Вас о выбранном событии за определенный период времени.");
+                "При подписке на мероприятие, бот уведомит Вас о выбранном событии за определенный период времени.";
+        comparatorExtendedCommand(correctAns);
     }
 
     @Test
     void testCorrectTodayCommand() {
-        comparatorExtendedCommand("date", "today", dateText + " сегодня:");
+        setBotRequest("date", "today");
+        comparatorExtendedCommand(dateText + " сегодня:");
     }
 
     @Test
     void testCorrectTomorrowCommand() {
-        comparatorExtendedCommand("date", "tomorrow", dateText + " завтра:");
+        setBotRequest("date", "tomorrow");
+        comparatorExtendedCommand( dateText + " завтра:");
     }
 
     @Test
     void testCorrectThisWeekCommand() {
-        comparatorExtendedCommand("date", "thisWeek", dateText + " на этой неделе:");
+        setBotRequest("date", "thisWeek");
+        comparatorExtendedCommand(dateText + " на этой неделе:");
     }
 
     @Test
     void testCorrectNextWeekCommand() {
-        comparatorExtendedCommand("date", "nextWeek", dateText + " на слудующей неделе:");
+        setBotRequest("date", "nextWeek");
+        comparatorExtendedCommand(dateText + " на слудующей неделе:");
     }
 
     @Test
     void testCorrectThisMonthCommand() {
-        comparatorExtendedCommand("date", "thisMonth", dateText + "в этом месяце:");
+        setBotRequest("date", "thisMonth");
+        comparatorExtendedCommand(dateText + "в этом месяце:");
     }
 
     @Test
     void testCorrectNextMonthCommand() {
-        comparatorExtendedCommand("date", "nextMonth", dateText + " в следующем месяце:");
+        setBotRequest("date", "nextMonth");
+        comparatorExtendedCommand(dateText + " в следующем месяце:");
     }
 
     @Test
     void testCorrectTheatreCommand() {
-        comparatorExtendedCommand("category", "theatre", "");
+        setBotRequest("category", "theatre");
+        comparatorExtendedCommand( "");
     }
 
     @Test
     void testCorrectMuseumCommand() {
-        comparatorExtendedCommand("category", "museum", "");
+        setBotRequest("category", "museum");
+        comparatorExtendedCommand("");
     }
 
     @Test
     void testCorrectConcertCommand() {
-        comparatorExtendedCommand("category", "concert", "");
+        setBotRequest("category", "concert");
+        comparatorExtendedCommand("");
     }
 
     @Test
     void testCorrectAllEventsCommand() {
-        comparatorExtendedCommand("category", "allEvents", "");
+        setBotRequest("category", "allEvents");
+        comparatorExtendedCommand("");
     }
 
 

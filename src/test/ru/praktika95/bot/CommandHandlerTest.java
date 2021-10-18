@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Chat;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 class CommandHandlerTest {
@@ -21,19 +21,8 @@ class CommandHandlerTest {
     }
 
     private void setBotRequest(String typeButtons, String botCommand){
-//        Update update = new Update();
-//        update.setMessage("");
-//        Chat chat = new Chat();
-//        chat.setLinkedChatId(123467890l);
-//        update.getMessage().setChat(chat);
-
-
-//        if (update.hasCallbackQuery())
-//            chatId = update.getCallbackQuery().getMessage().getChatId().toString();
-//        else
-//            chatId = update.getMessage().getChatId().toString();
-
-       // botRequest = new BotRequest(update);
+        Update update = new Update();
+        botRequest = new BotRequest(update);
         botRequest.setTypeButtons(typeButtons);
         botRequest.setBotCommand(botCommand);
     }
@@ -78,6 +67,7 @@ class CommandHandlerTest {
 
     @Test
     void testCorrectHelpCommand() {
+
         setBotRequest("main", "help");
         String correctAns = "О работе с данным ботом:\n" +
                 "Для того, чтобы выбрать категорию мероприятия и подходящий период времени, используйте соответствующие кнопки.\n" +
@@ -147,8 +137,23 @@ class CommandHandlerTest {
         comparatorExtendedCommand("");
     }
 
+//    @Test
+//    void test(){
+//        Update update = creator("/start");
+//        botRequest.setTypeButtons("");
+//        botRequest.setBotCommand();
+//        commandHandler.commandHandler(botRequest, botResponse);
+//    }
 
+    private Update createUpdate(String text){
+        Chat chat = new Chat(123456789l, "type");
+        Message message = new Message();
+        message.setChat(chat);
+        message.setText(text);
 
-
+        Update update = new Update();
+        update.setMessage(message);
+        return update;
+    }
 
 }

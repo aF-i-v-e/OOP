@@ -71,6 +71,37 @@ public class CommandHandler {
         }
     }
 
+
+    public LinkedList<BotResponse> createEvents(BotRequest botRequest, BotResponse botResponse, boolean isNext) {
+        LinkedList<BotResponse> botResponses = new LinkedList<>();
+        String message;
+        int start = botResponse.getStartEvent();
+        int end = botResponse.getEndEvent();
+        if (start == end || end == 0){
+            botResponse.setMessage("Больше мероприятий по выбранным параметрам нет");
+            botResponses.add(botResponse);
+            return botResponses;
+            //executeBotResponse();
+        }
+        else{
+            for (int i = start; i < end; i++) {
+                Event event = botResponse.getEvents().get(i);
+                message = "\n" + (i + 1) + ". " + "Мероприятие: " + event.getName() + "\nДата: " + event.getDateTime();
+                int status = botResponse.map.get(botRequest.getTypeButtons());
+                botResponse.setMessage(message);
+                botResponse.setSendPhoto(event.getPhoto());
+                boolean isEnd = i == end - 1;
+                if (!isNext)
+                    ++status;
+                botResponse.createButtons(getKey(status, botResponse.map), Integer.toString(i), isEnd);
+                BotResponse helpBot = new BotResponse(botResponse);
+                botResponses.add(helpBot);
+            }
+            botResponse.setStartEvent(end);
+            return botResponses;
+        }
+    }
+
     private void exit(BotResponse botResponse) {
         botResponse.setMessage("Вы завершили работу с EkbEventsBot. Чтобы начать работу с ботом нажмите\n/start");
         botResponse.setSendPhoto(1024);

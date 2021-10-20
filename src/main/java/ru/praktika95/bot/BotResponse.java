@@ -39,6 +39,20 @@ public class BotResponse {
         this.selectedEvent = new Event();
     }
 
+    public BotResponse(BotResponse superBot){
+        SendPhoto sendPhoto = new SendPhoto();
+        sendPhoto.setPhoto(superBot.getSendPhoto().getPhoto());
+        sendPhoto.setCaption(superBot.getSendPhoto().getCaption());
+        sendPhoto.setChatId(superBot.getSendPhoto().getChatId());
+        sendPhoto.setReplyMarkup(superBot.getSendMessage().getReplyMarkup());
+        this.sendPhoto =  sendPhoto;
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setText(superBot.getSendMessage().getText());
+        sendMessage.setChatId(superBot.getSendMessage().getText());
+        sendMessage.setReplyMarkup(superBot.getSendMessage().getReplyMarkup());
+        this.sendMessage = sendMessage;
+    }
+
     public void setMessage(String message) {
         sendMessage.setText(message);
         sendPhoto.setCaption(message);
@@ -54,8 +68,14 @@ public class BotResponse {
     }
 
     public void setNull() {
-        sendPhoto = new SendPhoto();
-        sendMessage = new SendMessage();
+        SendPhoto photo = new SendPhoto();
+        photo.setCaption("");
+        photo.setChatId(this.getSendPhoto().getChatId());
+        SendMessage message = new SendMessage();
+        message.setText("");
+        message.setChatId(this.getSendMessage().getChatId());
+        this.sendPhoto = photo;
+        sendMessage = message;
     }
 
     public SendPhoto getSendPhoto()

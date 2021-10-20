@@ -15,10 +15,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class Bot extends TelegramLongPollingBot {
 
@@ -47,73 +44,41 @@ public class Bot extends TelegramLongPollingBot {
             }
             else
                 botRequestHandler.getBotAnswer("otherCommand", botRequest, botResponse);
-            executeBotResponse();
+            executeBotResponse(botResponse);
         } else {
             botRequestHandler.getBotAnswer(botRequest, botResponse);
-            boolean isNext = Objects.equals(botRequest.getBotCommand(), "next");
-            if (Objects.equals(botRequest.getTypeButtons(), "category") || isNext){
-                createEvents(botRequest, isNext);
-                botResponse.setNull();
-                return;
+            LinkedList<BotResponse> list = botRequestHandler.getNextAnswer(botRequest, botResponse);
+            if (list.size()!=0) {
+                for (int i = 0; i < list.size(); i++) {
+                    executeBotResponse(list.get(i));
+                    //botResponse.setNull();
+                }
             }
-            executeBotResponse();
+            else
+                executeBotResponse(botResponse);
         }
-        botResponse.setNull();
+        //botResponse.setNull();
     }
 
-    private void createEvents(BotRequest botRequest, boolean isNext) {
-        String message;
-        int start = botResponse.getStartEvent();
-        int end = botResponse.getEndEvent();
-        if (start == end || end == 0){
-            botResponse.setMessage("Больше мероприятий по выбранным параметрам нет");
-            executeBotResponse();
-        }
-        else{
-            for (int i = start; i < end; i++) {
-                Event event = botResponse.getEvents().get(i);
-                message = "\n" + (i + 1) + ". " + "Мероприятие: " + event.getName() + "\nДата: " + event.getDateTime();
-                int status = botResponse.map.get(botRequest.getTypeButtons());
-                botResponse.setMessage(message);
-                botResponse.setSendPhoto(event.getPhoto());
-                boolean isEnd = i == end - 1;
-                if (!isNext)
-                    ++status;
-                botResponse.createButtons(getKey(status, botResponse.map), Integer.toString(i), isEnd);
-                executeBotResponse();
-            }
-            botResponse.setStartEvent(end);
-        }
-    }
-
-    private String getKey(int status, Map<String, Integer> map) {
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            if (entry.getValue() == status) {
-                return entry.getKey();
-            }
-        }
-        return null;
-    }
-
-    public void executeBotResponse(){
-        if (botResponse.getSendPhoto().getPhoto() != null)
-            executePhoto();
+    public void executeBotResponse(BotResponse botR){
+        if (botR.getSendPhoto().getPhoto() != null)
+            executePhoto(botR);
         else
-            executeMessage();
+            executeMessage(botR);
     }
 
-    private void executePhoto(){
+    private void executePhoto(BotResponse botR){
         try{
-            execute(botResponse.getSendPhoto());
+            execute(botR.getSendPhoto());
         } catch(TelegramApiException e){
             e.printStackTrace();
         }
     }
 
-    private void executeMessage()
+    private void executeMessage(BotResponse botR)
     {
         try {
-            execute(botResponse.getSendMessage());
+            execute(botR.getSendMessage());
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

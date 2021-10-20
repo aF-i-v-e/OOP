@@ -6,54 +6,40 @@ public class Event {
     private String dateTime;
     private String place;
     private String price;
+    private String url;
 
     public Event() { }
 
-    public Event(String photo, String name, String dateTime, String place, String price) {
+    public Event(String photo, String name, String dateTime, String place, String price, String url) {
         this.photo = photo;
         this.name = name;
         this.dateTime = dateTime;
         this.place = place;
         this.price = price;
+        this.url = url;
     }
 
     public String getPhoto(){
         return photo;
     }
 
-    public void setPhoto(String photo){
-        this.photo = photo;
-    }
-
     public String getName(){
         return name;
-    }
-
-    public void setName(String name){
-        this.name = name;
     }
 
     public String getDateTime(){
         return dateTime;
     }
 
-    public void setDateTime(String dateTime){
-        this.dateTime = dateTime;
-    }
-
     public String getPlace(){
         return place;
-    }
-
-    public void setPlace(String place){
-        this.place = place;
     }
 
     public String getPrice(){
         return price;
     }
 
-    public void setPrice(String price){
-        this.price = price;
+    public String getUrl() {
+        return url;
     }
 }

@@ -10,6 +10,7 @@ public class BotRequest {
     private String chatId;
     private String typeButtons;
     private String botCommand;
+    private String selectedEvent;
     public final Map<String,Integer> map = Map.of(
             "main", 0,
             "date", 1,
@@ -48,5 +49,13 @@ public class BotRequest {
 
     public String getChatId(){
         return chatId;
+    }
+
+    public String getSelectedEvent() {
+        return selectedEvent;
+    }
+
+    public void setSelectedEvent(String selectedEvent) {
+        this.selectedEvent = selectedEvent;
     }
 }

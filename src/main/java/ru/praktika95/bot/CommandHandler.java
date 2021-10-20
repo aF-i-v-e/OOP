@@ -1,32 +1,38 @@
 package ru.praktika95.bot;
 
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class CommandHandler {
 
-    public BotResponse commandHandler(String basicCommand){
-        BotResponse botResponse = new BotResponse();
+    private final String dateText = "Выберите категорию мероприятия, которое состоится";
+
+    public void commandHandler(String basicCommand, BotResponse botResponse){
+        botResponse.setNullEvents();
         switch (basicCommand) {
             case "help" -> help(botResponse);
             case "start" ->  hello(botResponse);
             default -> other(botResponse);
         }
-        return botResponse;
     }
 
-    public BotResponse commandHandler(String typeButtons, String botCommand) {
-        BotResponse botResponse = new BotResponse();
+    public void commandHandler(BotRequest botRequest, BotResponse botResponse) {
+        String typeButtons = botRequest.getTypeButtons();
+        String botCommand = botRequest.getBotCommand();
+        String selectedEvent = botRequest.getSelectedEvent();
         switch (typeButtons) {
             case "main" -> {
+                botResponse.setNullEvents();
                 switch (botCommand) {
                     case "show" -> date(botResponse, typeButtons);
                     case "help" -> help(botResponse);
                 }
             }
             case "date" -> {
+                botResponse.setNullEvents();
                 switch (botCommand) {
                     case "today" -> today(botResponse, typeButtons);
                     case "tomorrow" -> tomorrow(botResponse, typeButtons);
@@ -39,27 +45,30 @@ public class CommandHandler {
             case "category" -> {
                 switch (botCommand) {
                     case "theatre" -> {
-                        botResponse.setCategory(3009);
-                        category(botResponse, typeButtons);
+                        botResponse.setCategory("3009");
+                        events(botResponse, false);
                     }
-                    case "movie" -> {
-                        botResponse.setCategory(3031);
-                        category(botResponse, typeButtons);
+                    case "museum" -> {
+                        botResponse.setCategory("4093");
+                        events(botResponse, false);
                     }
                     case "concert" -> {
-                        botResponse.setCategory(3000);
-                        category(botResponse, typeButtons);
+                        botResponse.setCategory("3000");
+                        events(botResponse, false);
                     }
                     case "allEvents" -> {
-                        botResponse.setCategory(0);
-                        category(botResponse, typeButtons);
+                        botResponse.setCategory("0");
+                        events(botResponse, false);
                     }
                 }
             }
-            case "events" -> events(botResponse);
+            case "events" -> {
+                switch (botCommand) {
+                    case "next" -> events(botResponse, true);
+                }
+            }
             default -> other(botResponse);
         }
-        return botResponse;
     }
 
     private void exit(BotResponse botResponse) {
@@ -67,74 +76,49 @@ public class CommandHandler {
         botResponse.setSendPhoto(1024);
     }
 
-    private void help(BotResponse botResponse) {
-        botResponse.setMessage("О работе с данным ботом:\nДля того, чтобы выбрать категорию мероприятия и подходящий период времени, используйте соответствующие кнопки.\nПосле, Вам на выбор будет представлено 6 мероприятий.\nКогда Вы выберете конкретное мероприятие, Вы сможете либо подписаться на мероприятие, либо сразу приобрести билеты.\nПри подписке на мероприятие, бот уведомит Вас о выбранном событии за определенный период времени.");
-        botResponse.setSendPhoto(911);
-    }
-
-    public static int getRandomIntegerBetweenRange(int min, int max) {
-        int x = (int) (Math.random() * ((max - min) + 1)) + min;
-        return x;
-    }
-
     private void hello(BotResponse botResponse) {
         botResponse.setMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте кнопку \"Помощь\"\nДля того, чтобы посмотреть доступные мероприятия, выбрать подходящее время используйте кнопку \"Мероприятия\".");
         botResponse.setSendPhoto(getRandomIntegerBetweenRange(1, 5));
     }
 
-    private void events(BotResponse botResponse) {
-        ParsingBotResponse(botResponse);
-        String events = formEventsInfo(0, 6, botResponse);
-        botResponse.setMessage(events);
-        botResponse.setSendPhoto(6);
+    private void help(BotResponse botResponse) {
+        botResponse.setMessage("О работе с данным ботом:\nДля того, чтобы выбрать категорию мероприятия и подходящий период времени, используйте соответствующие кнопки.\nПосле, Вам на выбор будет представлено 6 мероприятий.\nКогда Вы выберете конкретное мероприятие, Вы сможете либо подписаться на мероприятие, либо сразу приобрести билеты.\nПри подписке на мероприятие, бот уведомит Вас о выбранном событии за определенный период времени.");
+        botResponse.setSendPhoto(911);
     }
 
-    private String formEventsInfo(int start, int end, BotResponse botResponse) {
-        String events = "";
-        for (int i = start; i < end; i++) {
-            Event event = botResponse.getEvents()[i];
-            events += "\n" + (i + 1) + ". " + "Мероприятие: " + event.getName() + "\nДата: " + event.getDateTime();
-            if (i != end - 1)
-                events += "\n \r";
-        }
-        return events;
+    private static int getRandomIntegerBetweenRange(int min, int max) {
+        int x = (int) (Math.random() * ((max - min) + 1)) + min;
+        return x;
     }
 
-    private void choose(int numberEvent, BotResponse botResponse) {
-        String message = "Такого мероприятия не существует.";
-        if (numberEvent == -1)
-            message = "Вы ввели некорректный номер мероприятия.";
-        ParsingBotResponse(botResponse);
-        if (numberEvent > 0 && botResponse.getEvents().length >= numberEvent)
-            botResponse.setSelectedEvent(botResponse.getEvents()[numberEvent - 1]);
-        else
-            botResponse.setMessage(message);
-    }
+//    private void choose(int numberEvent, BotResponse botResponse) {
+//        String message = "Такого мероприятия не существует.";
+//        if (numberEvent == -1)
+//            message = "Вы ввели некорректный номер мероприятия.";
+//        ParsingBotResponse(botResponse);
+//        if (numberEvent > 0 && botResponse.getEvents().length >= numberEvent)
+//            botResponse.setSelectedEvent(botResponse.getEvents()[numberEvent - 1]);
+//        else
+//            botResponse.setMessage(message);
+//    }
 
-    private void category(BotResponse botResponse, String typeButtons) {
-        setMessageAndButtons("Мероприятия", botResponse, typeButtons);
+    private void date(BotResponse botResponse, String typeButtons){
+        setMessageAndButtons("Выберите дату", botResponse, typeButtons);
     }
 
     private void today(BotResponse botResponse, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
         String currentDate = formatDate(calendar);
-        DatePeriod datePeriod = new DatePeriod();
-        datePeriod.setDateFrom(currentDate);
-        datePeriod.setDateTo(currentDate);
-        botResponse.setPeriod(datePeriod);
-        setMessageAndButtons("Выберите категорию мероприятия, которое состоится сегодня:", botResponse, typeButtons);
+        setMessageAndButtons(dateText + " сегодня:",
+                createDatePeriod(botResponse, currentDate, currentDate), typeButtons);
     }
 
     private void tomorrow(BotResponse botResponse, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
-        String dateFrom = formatDate(calendar);
         calendar.add(Calendar.DATE, 1);
-        String dateTo = formatDate(calendar);
-        DatePeriod datePeriod = new DatePeriod();
-        datePeriod.setDateFrom(dateFrom);
-        datePeriod.setDateTo(dateTo);
-        botResponse.setPeriod(datePeriod);
-        setMessageAndButtons("Выберите категорию мероприятия, которое состится завтра:", botResponse, typeButtons);
+        String tomorrow = formatDate(calendar);
+        setMessageAndButtons(dateText + " завтра:",
+                createDatePeriod(botResponse, tomorrow, tomorrow), typeButtons);
     }
 
     private void thisWeek(BotResponse botResponse, String typeButtons) {
@@ -148,11 +132,8 @@ public class CommandHandler {
             calendar.add(Calendar.DATE, 8 - dateWeek);
             dateTo = formatDate(calendar);
         }
-        DatePeriod datePeriod = new DatePeriod();
-        datePeriod.setDateFrom(currentDate);
-        datePeriod.setDateTo(dateTo);
-        botResponse.setPeriod(datePeriod);
-        setMessageAndButtons("Выберите категорию мероприятия, которое состоится на этой неделе:", botResponse, typeButtons);
+        setMessageAndButtons(dateText + " на этой неделе:",
+                createDatePeriod(botResponse, currentDate, dateTo), typeButtons);
     }
 
     private void nextWeek(BotResponse botResponse, String typeButtons) {
@@ -165,11 +146,8 @@ public class CommandHandler {
         String dateFrom = formatDate(calendar);
         calendar.add(Calendar.DATE, 6);
         String dateTo = formatDate(calendar);
-        DatePeriod datePeriod = new DatePeriod();
-        datePeriod.setDateFrom(dateFrom);
-        datePeriod.setDateTo(dateTo);
-        botResponse.setPeriod(datePeriod);
-        setMessageAndButtons("Выберите категорию мероприятия, которое состоится на следующей неделе:", botResponse, typeButtons);
+        setMessageAndButtons(dateText + " на следующей неделе:",
+                createDatePeriod(botResponse, dateFrom, dateTo), typeButtons);
     }
 
     private void thisMonth(BotResponse botResponse, String typeButtons) {
@@ -184,11 +162,8 @@ public class CommandHandler {
             calendar.add(Calendar.DATE, lastDayMonth - dateMonth);
             dateTo = formatDate(calendar);
         }
-        DatePeriod datePeriod = new DatePeriod();
-        datePeriod.setDateFrom(currentDate);
-        datePeriod.setDateTo(dateTo);
-        botResponse.setPeriod(datePeriod);
-        setMessageAndButtons("Выберите категорию мероприятия, которое состоится в этом месяце:", botResponse, typeButtons);
+        setMessageAndButtons(dateText + " в этом месяце:",
+                createDatePeriod(botResponse, currentDate, dateTo), typeButtons);
     }
 
     private void nextMonth(BotResponse botResponse, String typeButtons) {
@@ -204,21 +179,55 @@ public class CommandHandler {
         dateMonth = calendar.get(Calendar.DATE);
         calendar.add(Calendar.DATE, lastDayMonth - dateMonth);
         String dateTo = formatDate(calendar);
+        setMessageAndButtons( dateText + " в следующем месяце:",
+                createDatePeriod(botResponse, dateFrom, dateTo), typeButtons);
+    }
+
+    private String formatDate(Calendar calendar) {
+        String date = Integer.toString(calendar.get(Calendar.DATE));
+        String month = Integer.toString(calendar.get(Calendar.MONTH) + 1);
+        String year = Integer.toString(calendar.get(Calendar.YEAR));
+        return date + '.' + month + '.' + year;
+    }
+
+    private BotResponse createDatePeriod(BotResponse botResponse, String dateFrom, String dateTo){
         DatePeriod datePeriod = new DatePeriod();
         datePeriod.setDateFrom(dateFrom);
         datePeriod.setDateTo(dateTo);
         botResponse.setPeriod(datePeriod);
-        setMessageAndButtons("Выберите категорию мероприятия, которое состоится в следующем месяце:", botResponse, typeButtons);
+        return botResponse;
     }
 
-    private InlineKeyboardMarkup createButtons(int status, Map<String, Integer> map) {
-        Buttons buttons = new Buttons();
-        try {
-            return buttons.createButtons(getKey(status, map));
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            System.out.println(e);
-            throw new RuntimeException();
+    private void events(BotResponse botResponse, boolean isNext) {
+        int start;
+        int countEvent = botResponse.getEvents().size();
+        if (!isNext){
+            ParsingBotResponse(botResponse);
+            start = countEvent;
         }
+        else
+            start = botResponse.getStartEvent();
+        int end = start + 6;
+        countEvent = botResponse.getEvents().size();
+        if (end > countEvent)
+            end = countEvent;
+        botResponse.setStartEvent(start);
+        botResponse.setEndEvent(end);
+//        System.out.println(botResponse.getStartEvent());
+//        System.out.println(botResponse.getEndEvent());
+//        System.out.println(botResponse.getEvents().size());
+    }
+
+    private void ParsingBotResponse(BotResponse botResponse){
+        Parsing parsing = new Parsing();
+        parsing.parsing(botResponse);
+    }
+
+    private void setMessageAndButtons(String message, BotResponse botResponse, String typeButtons) {
+        int status = botResponse.map.get(typeButtons);
+        botResponse.setMessage(message);
+        botResponse.setSendPhoto(getRandomIntegerBetweenRange(1, 5));
+        botResponse.createButtons(getKey(++status, botResponse.map), null, false);
     }
 
     private String getKey(int status, Map<String, Integer> map) {
@@ -230,29 +239,7 @@ public class CommandHandler {
         return null;
     }
 
-    private void ParsingBotResponse(BotResponse botResponse) {
-        Parsing parsing = new Parsing();
-        parsing.parsing(botResponse);
-    }
-
-    private String formatDate(Calendar calendar) {
-        String date = Integer.toString(calendar.get(Calendar.DATE));
-        String month = Integer.toString(calendar.get(Calendar.DATE));
-        String year = Integer.toString(calendar.get(Calendar.DATE));
-        return date + '.' + month + '.' + year;
-    }
-
     private void other(BotResponse botResponse) {
         botResponse.setMessage("Введённой команды не существует, вы можете выполнить команду /start, чтобы начать работу с ботом.");
-    }
-
-    private void date(BotResponse botResponse, String typeButtons){
-        setMessageAndButtons("Выберите дату", botResponse, typeButtons);
-    }
-
-    private void setMessageAndButtons(String message, BotResponse botResponse, String typeButtons){
-        int status = botResponse.map.get(typeButtons);
-        botResponse.setMessage(message);
-        botResponse.setButtons(createButtons(++status, botResponse.map));
     }
 }

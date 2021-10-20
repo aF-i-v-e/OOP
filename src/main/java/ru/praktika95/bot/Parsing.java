@@ -5,7 +5,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Parsing {
@@ -13,14 +15,14 @@ public class Parsing {
         ParsingData parsingData = botResponse.getParsingData();
         DatePeriod date = parsingData.getDatePeriod();
         Map<String,String> query = new HashMap<>() {{
-            put("main", /*parsingData.getCodeCategory()*/"0");
-            put("date_from", /*date.getDateFrom()*/"01.10.2021");
-            put("date_to", /*date.getDateTo()*/"02.10.2021");
+            put("main", parsingData.getCodeCategory()/*"4093"*/);
+            put("date_from", date.getDateFrom()/*"09.10.2021"*/);
+            put("date_to", date.getDateTo()/*"30.10.2021"*/);
             put("sort", "1");
             put("c", "30");
         }};
         String site = "https://ekb.kassir.ru/category?";
-        Document document = null;
+        Document document;
         try {
             document = Jsoup.connect(site)
                 .userAgent("Yandex/21.8.3.614")
@@ -29,31 +31,30 @@ public class Parsing {
                 .data(query)
                 .execute()
                 .parse();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             botResponse.setError(true);
             botResponse.setMessage("Ошибка подключения, попробуйте повторить позже");
             return;
         }
-        if (document == null){
+        if (document.equals(new Document(null))){
             botResponse.setError(true);
             botResponse.setMessage("Ошибка обработки, попробуйте повторить позже");
             return;
         }
         Elements elements = document.select(".events .col-xs-2 .event");
-        Event[] events = new Event[30];
-        for (int i = 0; i < 30; i++){
-            Element element = elements.get(i);
+        int count = elements.size();
+        List<Event> events = botResponse.getEvents();
+        for (Element element : elements) {
             Elements div = element.select(".caption");
-            events[i] = new Event(
+            events.add(new Event(
                     element.select("img").attr("data-src"),
                     div.select(".title").text(),
                     div.select(".date").text(),
                     div.select(".place").text(),
-                    div.select(".cost.rub").text()
-            );
+                    div.select(".cost.rub").text(),
+                    div.select(".buy.hover a").attr("href")
+            ));
         }
         botResponse.setEvents(events);
-//        System.out.println(events[2].getPrice());
     }
 }

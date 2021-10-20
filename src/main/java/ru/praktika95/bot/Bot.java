@@ -23,8 +23,7 @@ public class Bot extends TelegramLongPollingBot {
     private final String token;
     private final BotResponse botResponse;
 
-    public Bot(String botUserName, String token)
-    {
+    public Bot(String botUserName, String token) {
         this.userName = botUserName;
         this.token = token;
         this.botResponse = new BotResponse();
@@ -48,26 +47,28 @@ public class Bot extends TelegramLongPollingBot {
         } else {
             botRequestHandler.getBotAnswer(botRequest, botResponse);
             LinkedList<BotResponse> list = botRequestHandler.getNextAnswer(botRequest, botResponse);
-            if (list.size()!=0) {
-                for (int i = 0; i < list.size(); i++) {
-                    executeBotResponse(list.get(i));
-                    //botResponse.setNull();
-                }
-            }
+            if (list.size()!=0)
+                executeBotResponseList(list);
             else
                 executeBotResponse(botResponse);
         }
-        //botResponse.setNull();
     }
 
-    public void executeBotResponse(BotResponse botR){
+    private void executeBotResponseList(LinkedList<BotResponse> list) {
+        for (int i = 0; i < list.size(); i++) {
+            executeBotResponse(list.get(i));
+        }
+        botResponse.setNull();
+    }
+
+    private void executeBotResponse(BotResponse botR) {
         if (botR.getSendPhoto().getPhoto() != null)
             executePhoto(botR);
         else
             executeMessage(botR);
     }
 
-    private void executePhoto(BotResponse botR){
+    private void executePhoto(BotResponse botR) {
         try{
             execute(botR.getSendPhoto());
         } catch(TelegramApiException e){

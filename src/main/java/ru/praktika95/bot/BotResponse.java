@@ -39,7 +39,7 @@ public class BotResponse {
         this.selectedEvent = new Event();
     }
 
-    public BotResponse(BotResponse superBot){
+    public BotResponse(BotResponse superBot) {
         SendPhoto sendPhoto = new SendPhoto();
         sendPhoto.setPhoto(superBot.getSendPhoto().getPhoto());
         sendPhoto.setCaption(superBot.getSendPhoto().getCaption());
@@ -119,8 +119,7 @@ public class BotResponse {
         this.events = new ArrayList<>();
     }
 
-    public void setSelectedEvent(Event event)
-    {
+    public void setSelectedEvent(Event event) {
         this.selectedEvent = event;
         String eventName = "Вы выбрали мероприятие:\n" + event.getName();
         String eventPlace = "\nОно состоится: " + event.getPlace();

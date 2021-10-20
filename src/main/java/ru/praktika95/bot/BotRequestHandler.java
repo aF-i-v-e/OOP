@@ -13,25 +13,20 @@ public class BotRequestHandler {
     }
 
     public void getBotAnswer(BotRequest botRequest, BotResponse botResponse) {
-        //CommandHandler comH = new CommandHandler();
         comH.commandHandler(botRequest, botResponse);
         botResponse.setChatId(botRequest.getChatId());
     }
 
     public void getBotAnswer(String command, BotRequest botRequest, BotResponse botResponse) {
-        //CommandHandler comH = new CommandHandler();
         comH.commandHandler(command, botResponse);
         botResponse.setChatId(botRequest.getChatId());
     }
 
-    public LinkedList<BotResponse> getNextAnswer(BotRequest botRequest, BotResponse botResponse){
-        //CommandHandler comH = new CommandHandler();
+    public LinkedList<BotResponse> getNextAnswer(BotRequest botRequest, BotResponse botResponse) {
         boolean isNext = Objects.equals(botRequest.getBotCommand(), "next");
         if (Objects.equals(botRequest.getTypeButtons(), "category") || isNext){
             return comH.createEvents(botRequest, botResponse, isNext);
-            //botResponse.setNull();
-           // return;
         }
-        return new LinkedList<BotResponse>();
+        return new LinkedList<>();
     }
 }

@@ -70,10 +70,6 @@ public class ReplyMarkupBotResponseTest {
         return null;
     }
 
-    private void compareStringBotResponse(String correctAnswer){
-        commandHandler.commandHandler(botRequest, botResponse);
-        assertEquals(correctAnswer, botResponse.getSendMessage().getText());
-    }
 
     private void compareReplyMarkupBotResponse(String typeButtons){
         commandHandler.commandHandler(botRequest, botResponse);
@@ -84,13 +80,41 @@ public class ReplyMarkupBotResponseTest {
     @Test
     void testCorrectShowCommand() {
         setBotRequest("main", "show");
-        compareStringBotResponse("Выберите дату");
         compareReplyMarkupBotResponse("main");
     }
 
     @Test
     void testCorrectTodayCommand() {
         setBotRequest("date", "today");
+        compareReplyMarkupBotResponse("date");
+    }
+
+    @Test
+    void testCorrectTomorrowCommand() {
+        setBotRequest("date", "tomorrow");
+        compareReplyMarkupBotResponse("date");
+    }
+
+    @Test
+    void testCorrectThisWeekCommand() {
+        setBotRequest("date", "thisWeek");
+        compareReplyMarkupBotResponse("date");
+    }
+    @Test
+    void testCorrectNextWeekCommand() {
+        setBotRequest("date", "nextWeek");
+        compareReplyMarkupBotResponse("date");
+    }
+
+    @Test
+    void testCorrectThisMonthCommand() {
+        setBotRequest("date", "thisMonth");
+        compareReplyMarkupBotResponse("date");
+    }
+
+    @Test
+    void testCorrectNextMonthCommand() {
+        setBotRequest("date", "nextMonth");
         compareReplyMarkupBotResponse("date");
     }
 }

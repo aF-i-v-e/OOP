@@ -63,17 +63,9 @@ class StringBotResponseTest {
         return message;
     }
 
-    private CallbackQuery createTestCallBackQuery(){
-        CallbackQuery callbackQuery = new CallbackQuery();
-        callbackQuery.setId("1962727177397599840");
-        Message message = createTestMessage();
-        callbackQuery.setMessage(message);
-        return callbackQuery;
-    }
-
     private Update createTestUpdate(){
-        CallbackQuery callbackQuery = createTestCallBackQuery();
-        Update update = new Update(55632457, null, null, null, callbackQuery, null, null, null, null, null, null, null, null, null);
+        Message message = createTestMessage();
+        Update update = new Update(55632457, message, null, null, null, null, null, null, null, null, null, null, null, null);
         return update;
     }
 

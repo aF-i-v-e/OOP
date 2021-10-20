@@ -49,16 +49,7 @@ public class Bot extends TelegramLongPollingBot {
                 botRequestHandler.getBotAnswer("otherCommand", botRequest, botResponse);
             executeBotResponse();
         } else {
-            CallbackQuery callbackQuery = update.getCallbackQuery();
-            String[] callbackData = callbackQuery.getData().split(" ");
-            botRequest.setTypeButtons(callbackData[0]);
-            botRequest.setBotCommand(callbackData[1]);
-            if (callbackData.length > 2)
-                botRequest.setSelectedEvent(callbackData[2]);
             botRequestHandler.getBotAnswer(botRequest, botResponse);
-            System.out.println(botRequest.getTypeButtons());
-            System.out.println(botRequest.getBotCommand());
-            System.out.println(botRequest.getSelectedEvent());
             boolean isNext = Objects.equals(botRequest.getBotCommand(), "next");
             if (Objects.equals(botRequest.getTypeButtons(), "category") || isNext){
                 createEvents(botRequest, isNext);

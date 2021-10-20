@@ -1,10 +1,9 @@
 package ru.praktika95.bot;
 
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.*;
-import java.util.function.Function;
 
 public class BotRequest {
     private String chatId;
@@ -22,9 +21,19 @@ public class BotRequest {
 
     public BotRequest(Update update){
         if (update.hasCallbackQuery())
-            chatId = update.getCallbackQuery().getMessage().getChatId().toString();
+            setBotRequestFromCallbackQuery(update);
         else
             chatId = update.getMessage().getChatId().toString();
+    }
+
+    public void setBotRequestFromCallbackQuery(Update update){
+        chatId = update.getCallbackQuery().getMessage().getChatId().toString();
+        CallbackQuery callbackQuery = update.getCallbackQuery();
+        String[] callbackData = callbackQuery.getData().split(" ");
+        this.setTypeButtons(callbackData[0]);
+        this.setBotCommand(callbackData[1]);
+        if (callbackData.length > 2)
+            this.setSelectedEvent(callbackData[2]);
     }
 
     public String getTypeButtons() {

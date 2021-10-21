@@ -244,9 +244,6 @@ public class CommandHandler {
             end = countEvent;
         botResponse.setStartEvent(start);
         botResponse.setEndEvent(end);
-//        System.out.println(botResponse.getStartEvent());
-//        System.out.println(botResponse.getEndEvent());
-//        System.out.println(botResponse.getEvents().size());
     }
 
     private void ParsingBotResponse(BotResponse botResponse){

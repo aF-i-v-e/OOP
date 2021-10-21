@@ -14,6 +14,7 @@ public class Parsing {
     public void parsing(BotResponse botResponse) {
         ParsingData parsingData = botResponse.getParsingData();
         DatePeriod date = parsingData.getDatePeriod();
+
         Map<String,String> query = new HashMap<>() {{
             put("main", parsingData.getCodeCategory()/*"4093"*/);
             put("date_from", date.getDateFrom()/*"09.10.2021"*/);
@@ -21,6 +22,7 @@ public class Parsing {
             put("sort", "1");
             put("c", "30");
         }};
+
         String site = "https://ekb.kassir.ru/category?";
         Document document;
         try {
@@ -36,14 +38,16 @@ public class Parsing {
             botResponse.setMessage("Ошибка подключения, попробуйте повторить позже");
             return;
         }
+
         if (document.equals(new Document(null))){
             botResponse.setError(true);
             botResponse.setMessage("Ошибка обработки, попробуйте повторить позже");
             return;
         }
+
         Elements elements = document.select(".events .col-xs-2 .event");
-        int count = elements.size();
         List<Event> events = botResponse.getEvents();
+
         for (Element element : elements) {
             Elements div = element.select(".caption");
             events.add(new Event(
@@ -55,6 +59,7 @@ public class Parsing {
                     div.select(".buy.hover a").attr("href")
             ));
         }
+
         botResponse.setEvents(events);
     }
 }

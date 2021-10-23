@@ -9,7 +9,11 @@ import java.util.*;
 public class CommandHandler {
 
     private final String dateText = "Выберите категорию мероприятия, которое состоится";
-
+    final int ExitImageNumber = 1024;
+    final int HelpImageNumber = 911;
+    final int StartImageNumber = 1;
+    final int EndImageNumber = 5;
+    final int MaxEventsCount = 6;
     public void commandHandler(String basicCommand, BotResponse botResponse){
         botResponse.setNullEvents();
         switch (basicCommand) {
@@ -104,17 +108,17 @@ public class CommandHandler {
 
     private void exit(BotResponse botResponse) {
         botResponse.setMessage("Вы завершили работу с EkbEventsBot. Чтобы начать работу с ботом нажмите\n/start");
-        botResponse.setSendPhoto(1024);
+        botResponse.setSendPhoto(ExitImageNumber);
     }
 
     private void hello(BotResponse botResponse) {
         botResponse.setMessage("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте кнопку \"Помощь\"\nДля того, чтобы посмотреть доступные мероприятия, выбрать подходящее время используйте кнопку \"Мероприятия\".");
-        botResponse.setSendPhoto(getRandomIntegerBetweenRange(1, 5));
+        botResponse.setSendPhoto(getRandomIntegerBetweenRange(StartImageNumber, EndImageNumber));
     }
 
     private void help(BotResponse botResponse) {
         botResponse.setMessage("О работе с данным ботом:\nДля того, чтобы выбрать категорию мероприятия и подходящий период времени, используйте соответствующие кнопки.\nПосле, Вам на выбор будет представлено 6 мероприятий.\nКогда Вы выберете конкретное мероприятие, Вы сможете либо подписаться на мероприятие, либо сразу приобрести билеты.\nПри подписке на мероприятие, бот уведомит Вас о выбранном событии за определенный период времени.");
-        botResponse.setSendPhoto(911);
+        botResponse.setSendPhoto(HelpImageNumber);
     }
 
     private static int getRandomIntegerBetweenRange(int min, int max) {
@@ -238,7 +242,7 @@ public class CommandHandler {
         }
         else
             start = botResponse.getStartEvent();
-        int end = start + 6;
+        int end = start + MaxEventsCount;
         countEvent = botResponse.getEvents().size();
         if (end > countEvent)
             end = countEvent;
@@ -254,7 +258,7 @@ public class CommandHandler {
     private void setMessageAndButtons(String message, BotResponse botResponse, String typeButtons) {
         int status = botResponse.map.get(typeButtons);
         botResponse.setMessage(message);
-        botResponse.setSendPhoto(getRandomIntegerBetweenRange(1, 5));
+        botResponse.setSendPhoto(getRandomIntegerBetweenRange(StartImageNumber, EndImageNumber));
         botResponse.createButtons(getKey(++status, botResponse.map), null, false);
     }
 

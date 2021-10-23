@@ -10,6 +10,7 @@ public class BotRequest {
     private String typeButtons;
     private String botCommand;
     private String selectedEvent;
+    final int BasicArrayLength  = 2;
     public final Map<String,Integer> map = Map.of(
             "main", 0,
             "date", 1,
@@ -32,7 +33,7 @@ public class BotRequest {
         String[] callbackData = callbackQuery.getData().split(" ");
         this.setTypeButtons(callbackData[0]);
         this.setBotCommand(callbackData[1]);
-        if (callbackData.length > 2)
+        if (callbackData.length > BasicArrayLength)
             this.setSelectedEvent(callbackData[2]);
     }
 

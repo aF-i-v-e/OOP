@@ -10,7 +10,7 @@ public enum ReplyMarkup {
             String[] stringButtons = new String[] {
                     "Мероприятия", "show", "Помощь", "help"
             };
-            return createRowList(typeButtons, stringButtons, 2);
+            return createRowList(typeButtons, stringButtons, TwoColumns);
         }
     },
     DATE("date") {
@@ -20,7 +20,7 @@ public enum ReplyMarkup {
                     "На этой неделе", "thisWeek", "На следующей неделе", "nextWeek",
                     "В этом месяце", "thisMonth", "В следующем месяце", "nextMonth"
             };
-            return createRowList(typeButtons, stringButtons, 2);
+            return createRowList(typeButtons, stringButtons, TwoColumns);
         }
     },
     CATEGORY("category") {
@@ -31,7 +31,7 @@ public enum ReplyMarkup {
                     "Концерт", "concert",
                     "Все мероприятия", "allEvents"
             };
-            return createRowList(typeButtons, stringButtons, 2);
+            return createRowList(typeButtons, stringButtons, TwoColumns);
         }
     },
     EVENTS("events") {
@@ -44,15 +44,20 @@ public enum ReplyMarkup {
                 };
             else
                 stringButtons = new String[] { "Просмотреть мероприятие", "event" + " " + number };
-            return createRowList(typeButtons, stringButtons, 1);
+            return createRowList(typeButtons, stringButtons, OneColumn);
         }
     };
+
+    final int TwoColumns = 2;
+
+    final int OneColumn = 1;
 
     private final String type;
 
     ReplyMarkup(String type) {
         this.type = type;
     }
+
 
     public abstract List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd);
 

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Parsing {
+    final int ConnectionTime = 3000;
     public void parsing(BotResponse botResponse) {
         ParsingData parsingData = botResponse.getParsingData();
         DatePeriod date = parsingData.getDatePeriod();
@@ -29,7 +30,7 @@ public class Parsing {
             document = Jsoup.connect(site)
                 .userAgent("Yandex/21.8.3.614")
                 .referrer("https://yandex.ru/")
-                .timeout(3000)
+                .timeout(ConnectionTime)
                 .data(query)
                 .execute()
                 .parse();

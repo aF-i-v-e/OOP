@@ -46,6 +46,15 @@ public enum ReplyMarkup {
                 stringButtons = new String[] { "Просмотреть мероприятие", "event" + " " + number };
             return createRowList(typeButtons, stringButtons, OneColumn);
         }
+    },
+    PERIOD("period") {
+        public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd){
+            String[] stringButtons = new String[] {
+                    "Перейти на сайт", "go",
+                    "Подписаться на мероприятие", "subscribe"
+            };
+            return createRowList(typeButtons, stringButtons, OneColumn);
+        }
     };
 
     final int TwoColumns = 2;

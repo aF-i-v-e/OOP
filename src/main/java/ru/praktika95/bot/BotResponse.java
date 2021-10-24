@@ -126,7 +126,9 @@ public class BotResponse {
         String eventTime = "\nДата: " + event.getDateTime();
         String eventPrice = "\nВходной билет стоит: "+ event.getPrice();
         this.setSendPhoto(event.getPhoto());
-        sendMessage.setText(eventName + eventPlace + eventTime + eventPrice);
+        String resultText = eventName + eventPlace + eventTime + eventPrice;
+        sendMessage.setText(resultText);
+        sendPhoto.setCaption(resultText);
     }
 
     public boolean isError() {

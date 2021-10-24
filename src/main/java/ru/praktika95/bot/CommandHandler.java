@@ -1,9 +1,5 @@
 package ru.praktika95.bot;
 
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class CommandHandler {
@@ -14,6 +10,7 @@ public class CommandHandler {
     final int StartImageNumber = 1;
     final int EndImageNumber = 5;
     final int MaxEventsCount = 6;
+
     public void commandHandler(String basicCommand, BotResponse botResponse){
         botResponse.setNullEvents();
         switch (basicCommand) {
@@ -26,7 +23,7 @@ public class CommandHandler {
     public void commandHandler(BotRequest botRequest, BotResponse botResponse) {
         String typeButtons = botRequest.getTypeButtons();
         String botCommand = botRequest.getBotCommand();
-        String selectedEvent = botRequest.getSelectedEvent();
+        String selectedEventNumber = botRequest.getSelectedEvent();
         switch (typeButtons) {
             case "main" -> {
                 botResponse.setNullEvents();
@@ -69,12 +66,32 @@ public class CommandHandler {
             case "events" -> {
                 switch (botCommand) {
                     case "next" -> events(botResponse, true);
+                    case "event" -> showFullEvent(botResponse, selectedEventNumber);
+                }
+            }
+            case "period" -> {
+                switch (botCommand) {
+                    case "go" -> go();
+                    case "subscribe" -> subscribe();
                 }
             }
             default -> other(botResponse);
         }
     }
 
+    public void go() {
+
+    }
+
+    public void subscribe() {
+
+    }
+
+    public void showFullEvent(BotResponse botResponse, String eventNumber) {
+        int eventIndex = Integer.parseInt(eventNumber);
+        botResponse.setSelectedEvent(botResponse.getEvents().get(eventIndex));
+        setButtons("event", botResponse);
+    }
 
     public LinkedList<BotResponse> createEvents(BotRequest botRequest, BotResponse botResponse, boolean isNext) {
         LinkedList<BotResponse> botResponses = new LinkedList<>();
@@ -256,9 +273,13 @@ public class CommandHandler {
     }
 
     private void setMessageAndButtons(String message, BotResponse botResponse, String typeButtons) {
-        int status = botResponse.map.get(typeButtons);
         botResponse.setMessage(message);
         botResponse.setSendPhoto(getRandomIntegerBetweenRange(StartImageNumber, EndImageNumber));
+        setButtons(typeButtons, botResponse);
+    }
+
+    private void setButtons(String typeButtons, BotResponse botResponse) {
+        int status = botResponse.map.get(typeButtons);
         botResponse.createButtons(getKey(++status, botResponse.map), null, false);
     }
 

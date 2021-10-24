@@ -69,10 +69,10 @@ public class CommandHandler {
             case "events" -> {
                 switch (botCommand) {
                     case "next" -> events(botResponse, true);
-                    case "event" -> showFullEvent(botResponse, selectedEventNumber);
+                    case "event" -> showFullEvent(botResponse, typeButtons, selectedEventNumber);
                 }
             }
-            case "period" -> {
+            case "event" -> {
                 switch (botCommand) {
                     case "subscribe" -> subscribe();
                     case "buy" -> buy(botResponse);
@@ -91,10 +91,10 @@ public class CommandHandler {
         botResponse.setSendPhoto(BuyQRCod);
     }
 
-    public void showFullEvent(BotResponse botResponse, String eventNumber) {
+    public void showFullEvent(BotResponse botResponse, String typeButtons, String eventNumber) {
         int eventIndex = Integer.parseInt(eventNumber);
         botResponse.setSelectedEvent(botResponse.getEvents().get(eventIndex));
-        setButtons("event", botResponse, botResponse.getSelectedEvent().getUrl());
+        setButtons(typeButtons, botResponse, botResponse.getSelectedEvent().getUrl());
     }
 
     public LinkedList<BotResponse> createEvents(BotRequest botRequest, BotResponse botResponse, boolean isNext) {

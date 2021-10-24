@@ -87,7 +87,7 @@ public class CommandHandler {
     }
 
     public void buy(BotResponse botResponse) {
-        botResponse.setMessage("\nВас посетила полиция котиков!\nНа это раз без штрафа, но впредь будьте аккуратнее!");
+        botResponse.setMessage("\nВас посетила полиция котиков!\nНа этот раз без штрафа, но впредь будьте аккуратнее!");
         botResponse.setSendPhoto(BuyQRCod);
     }
 

@@ -1,5 +1,7 @@
 package ru.praktika95.bot;
 
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+
 import java.util.*;
 
 public class CommandHandler {
@@ -71,16 +73,11 @@ public class CommandHandler {
             }
             case "period" -> {
                 switch (botCommand) {
-                    case "go" -> go();
                     case "subscribe" -> subscribe();
                 }
             }
             default -> other(botResponse);
         }
-    }
-
-    public void go() {
-
     }
 
     public void subscribe() {
@@ -90,7 +87,7 @@ public class CommandHandler {
     public void showFullEvent(BotResponse botResponse, String eventNumber) {
         int eventIndex = Integer.parseInt(eventNumber);
         botResponse.setSelectedEvent(botResponse.getEvents().get(eventIndex));
-        setButtons("event", botResponse);
+        setButtons("event", botResponse, botResponse.getSelectedEvent().getUrl());
     }
 
     public LinkedList<BotResponse> createEvents(BotRequest botRequest, BotResponse botResponse, boolean isNext) {
@@ -102,7 +99,6 @@ public class CommandHandler {
             botResponse.setMessage("Больше мероприятий по выбранным параметрам нет");
             botResponses.add(botResponse);
             return botResponses;
-            //executeBotResponse();
         }
         else{
             for (int i = start; i < end; i++) {
@@ -114,7 +110,7 @@ public class CommandHandler {
                 boolean isEnd = i == end - 1;
                 if (!isNext)
                     ++status;
-                botResponse.createButtons(getKey(status, botResponse.map), Integer.toString(i), isEnd);
+                botResponse.createButtons(getKey(status, botResponse.map), Integer.toString(i), isEnd, null);
                 BotResponse helpBot = new BotResponse(botResponse);
                 botResponses.add(helpBot);
             }
@@ -155,14 +151,14 @@ public class CommandHandler {
 //    }
 
     private void date(BotResponse botResponse, String typeButtons){
-        setMessageAndButtons("Выберите дату", botResponse, typeButtons);
+        setMessageAndButtons("Выберите дату", botResponse, typeButtons, null);
     }
 
     private void today(BotResponse botResponse, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
         String currentDate = formatDate(calendar);
         setMessageAndButtons(dateText + " сегодня:",
-                createDatePeriod(botResponse, currentDate, currentDate), typeButtons);
+                createDatePeriod(botResponse, currentDate, currentDate), typeButtons, null);
     }
 
     private void tomorrow(BotResponse botResponse, String typeButtons) {
@@ -170,7 +166,7 @@ public class CommandHandler {
         calendar.add(Calendar.DATE, 1);
         String tomorrow = formatDate(calendar);
         setMessageAndButtons(dateText + " завтра:",
-                createDatePeriod(botResponse, tomorrow, tomorrow), typeButtons);
+                createDatePeriod(botResponse, tomorrow, tomorrow), typeButtons, null);
     }
 
     private void thisWeek(BotResponse botResponse, String typeButtons) {
@@ -185,7 +181,7 @@ public class CommandHandler {
             dateTo = formatDate(calendar);
         }
         setMessageAndButtons(dateText + " на этой неделе:",
-                createDatePeriod(botResponse, currentDate, dateTo), typeButtons);
+                createDatePeriod(botResponse, currentDate, dateTo), typeButtons, null);
     }
 
     private void nextWeek(BotResponse botResponse, String typeButtons) {
@@ -199,7 +195,7 @@ public class CommandHandler {
         calendar.add(Calendar.DATE, 6);
         String dateTo = formatDate(calendar);
         setMessageAndButtons(dateText + " на следующей неделе:",
-                createDatePeriod(botResponse, dateFrom, dateTo), typeButtons);
+                createDatePeriod(botResponse, dateFrom, dateTo), typeButtons, null);
     }
 
     private void thisMonth(BotResponse botResponse, String typeButtons) {
@@ -215,7 +211,7 @@ public class CommandHandler {
             dateTo = formatDate(calendar);
         }
         setMessageAndButtons(dateText + " в этом месяце:",
-                createDatePeriod(botResponse, currentDate, dateTo), typeButtons);
+                createDatePeriod(botResponse, currentDate, dateTo), typeButtons, null);
     }
 
     private void nextMonth(BotResponse botResponse, String typeButtons) {
@@ -232,7 +228,7 @@ public class CommandHandler {
         calendar.add(Calendar.DATE, lastDayMonth - dateMonth);
         String dateTo = formatDate(calendar);
         setMessageAndButtons( dateText + " в следующем месяце:",
-                createDatePeriod(botResponse, dateFrom, dateTo), typeButtons);
+                createDatePeriod(botResponse, dateFrom, dateTo), typeButtons, null);
     }
 
     private String formatDate(Calendar calendar) {
@@ -272,15 +268,15 @@ public class CommandHandler {
         parsing.parsing(botResponse);
     }
 
-    private void setMessageAndButtons(String message, BotResponse botResponse, String typeButtons) {
+    private void setMessageAndButtons(String message, BotResponse botResponse, String typeButtons, String url) {
         botResponse.setMessage(message);
         botResponse.setSendPhoto(getRandomIntegerBetweenRange(StartImageNumber, EndImageNumber));
-        setButtons(typeButtons, botResponse);
+        setButtons(typeButtons, botResponse, url);
     }
 
-    private void setButtons(String typeButtons, BotResponse botResponse) {
+    private void setButtons(String typeButtons, BotResponse botResponse, String url) {
         int status = botResponse.map.get(typeButtons);
-        botResponse.createButtons(getKey(++status, botResponse.map), null, false);
+        botResponse.createButtons(getKey(++status, botResponse.map), null, false, url);
     }
 
     private String getKey(int status, Map<String, Integer> map) {

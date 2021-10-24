@@ -39,7 +39,7 @@ public class Bot extends TelegramLongPollingBot {
             Message message = update.getMessage();
             if (Objects.equals(message.getText(), "/start")){
                 botRequestHandler.getBotAnswer("start", botRequest, botResponse);
-                botResponse.createButtons("main", null, false);
+                botResponse.createButtons("main", null, false, null);
             }
             else
                 botRequestHandler.getBotAnswer("otherCommand", botRequest, botResponse);
@@ -47,7 +47,8 @@ public class Bot extends TelegramLongPollingBot {
         } else {
             botRequestHandler.getBotAnswer(botRequest, botResponse);
             LinkedList<BotResponse> list = botRequestHandler.getNextAnswer(botRequest, botResponse);
-            if (list.size()!=0)
+
+            if (list.size() != 0)
                 executeBotResponseList(list);
             else
                 executeBotResponse(botResponse);

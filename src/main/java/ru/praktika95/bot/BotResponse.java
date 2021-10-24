@@ -131,6 +131,10 @@ public class BotResponse {
         sendPhoto.setCaption(resultText);
     }
 
+    public Event getSelectedEvent() {
+        return this.selectedEvent;
+    }
+
     public boolean isError() {
         return error;
     }
@@ -155,8 +159,8 @@ public class BotResponse {
         this.endEvent = endEvent;
     }
 
-    public void createButtons(String typeButtons, String number, boolean isEnd) {
-        List<List<InlineKeyboardButton>> rowList = ReplyMarkup.findButtons(typeButtons).handler(typeButtons, number, isEnd);
+    public void createButtons(String typeButtons, String number, boolean isEnd, String url) {
+        List<List<InlineKeyboardButton>> rowList = ReplyMarkup.findButtons(typeButtons).handler(typeButtons, number, isEnd, url);
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.setKeyboard(rowList);
         sendMessage.setReplyMarkup(inlineKeyboardMarkup);

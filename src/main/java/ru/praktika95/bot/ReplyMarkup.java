@@ -6,36 +6,36 @@ import java.util.*;
 
 public enum ReplyMarkup {
     MAIN("main") {
-        public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd) {
+        public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd, String url) {
             String[] stringButtons = new String[] {
                     "Мероприятия", "show", "Помощь", "help"
             };
-            return createRowList(typeButtons, stringButtons, TwoColumns);
+            return createRowList(typeButtons, stringButtons, TwoColumns, url);
         }
     },
     DATE("date") {
-        public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd){
+        public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd, String url) {
             String[] stringButtons = new String[] {
                     "Сегодня", "today", "Завтра", "tomorrow",
                     "На этой неделе", "thisWeek", "На следующей неделе", "nextWeek",
                     "В этом месяце", "thisMonth", "В следующем месяце", "nextMonth"
             };
-            return createRowList(typeButtons, stringButtons, TwoColumns);
+            return createRowList(typeButtons, stringButtons, TwoColumns, url);
         }
     },
     CATEGORY("category") {
-        public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd){
+        public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd, String url) {
             String[] stringButtons = new String[] {
                     "Театр", "theatre",
                     "Музеи", "museum",
                     "Концерт", "concert",
                     "Все мероприятия", "allEvents"
             };
-            return createRowList(typeButtons, stringButtons, TwoColumns);
+            return createRowList(typeButtons, stringButtons, TwoColumns, url);
         }
     },
     EVENTS("events") {
-        public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd){
+        public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd, String url) {
             String[] stringButtons;
             if (isEnd)
                 stringButtons = new String[] {
@@ -44,16 +44,16 @@ public enum ReplyMarkup {
                 };
             else
                 stringButtons = new String[] { "Просмотреть мероприятие", "event" + " " + number };
-            return createRowList(typeButtons, stringButtons, OneColumn);
+            return createRowList(typeButtons, stringButtons, OneColumn, url);
         }
     },
     PERIOD("period") {
-        public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd){
+        public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd, String url) {
             String[] stringButtons = new String[] {
-                    "Перейти на сайт", "go",
+                    "Перейти на сайт", "",
                     "Подписаться на мероприятие", "subscribe"
             };
-            return createRowList(typeButtons, stringButtons, OneColumn);
+            return createRowList(typeButtons, stringButtons, OneColumn, url);
         }
     };
 
@@ -68,7 +68,7 @@ public enum ReplyMarkup {
     }
 
 
-    public abstract List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd);
+    public abstract List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd, String url);
 
     public static ReplyMarkup findButtons(String typeButtons) {
         for (ReplyMarkup e : values()) {
@@ -79,14 +79,15 @@ public enum ReplyMarkup {
         return null;
     }
 
-    List<List<InlineKeyboardButton>> createRowList(String typeButtons, String[] stringButtons, int countColumns){
+    List<List<InlineKeyboardButton>> createRowList(String typeButtons, String[] stringButtons, int countColumns, String url){
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         int twoCountColumns = 2 * countColumns;
         for(int i = 0; i < stringButtons.length; i += twoCountColumns) {
             LinkedHashMap<String, String> columns = new LinkedHashMap<>();
             for (int j = 0; j < twoCountColumns; j += 2)
                 columns.put(stringButtons[i + j], stringButtons[i + j + 1]);
-            rowList.add(createColumnList(columns, typeButtons, null));
+            rowList.add(createColumnList(columns, typeButtons, url));
+            url = null;
         }
         return rowList;
     }

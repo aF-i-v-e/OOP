@@ -57,7 +57,7 @@ public class ReplyMarkupBotResponseTest {
     private BotResponse createCorrectBotResponse(String typeButtons){
         BotResponse correctBotResponse = new BotResponse();
         int status = correctBotResponse.map.get(typeButtons);
-        correctBotResponse.createButtons(getKey(++status, botResponse.map), null, false);
+        correctBotResponse.createButtons(getKey(++status, botResponse.map), null, false, null);
         return correctBotResponse;
     }
 

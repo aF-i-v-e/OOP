@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentMap;
 
 public class BotRequestHandler {
 
-    private CommandHandler comH;
+    private final CommandHandler comH;
 
     public BotRequestHandler(){
         comH = new CommandHandler();
@@ -24,9 +24,26 @@ public class BotRequestHandler {
 
     public LinkedList<BotResponse> getNextAnswer(BotRequest botRequest, BotResponse botResponse) {
         boolean isNext = Objects.equals(botRequest.getBotCommand(), "next");
+        LinkedList<BotResponse> listResponses = new LinkedList<>();
         if (Objects.equals(botRequest.getTypeButtons(), "category") || isNext){
-            return comH.createEvents(botRequest, botResponse, isNext);
+            listResponses = comH.createEvents(botRequest, botResponse, isNext);
+            if (!isNext)
+                listResponses.addFirst(getSeparateMessage(botRequest, botResponse));
         }
-        return new LinkedList<>();
+        return listResponses;
+    }
+
+    public BotResponse getSeparateMessage(BotRequest botRequest, BotResponse botResponse) {
+        BotResponse helpBotResponse = new BotResponse();
+        helpBotResponse.setChatId(botResponse.getSendMessage().getChatId());
+        String eventCategory = switch (botRequest.getBotCommand()){
+            case("theatre") -> "Театр";
+            case("museum") -> "Музеи";
+            case("concert") -> "Концерт";
+            case("allEvents") -> "Все мероприятия";
+        };
+        helpBotResponse.setMessage("Вы выбрали категорию: " + eventCategory);
+
+        return helpBotResponse;
     }
 }

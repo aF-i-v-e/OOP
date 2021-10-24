@@ -11,7 +11,7 @@ public class CommandHandler {
     final int HelpImageNumber = 911;
     final int StartImageNumber = 1;
     final int EndImageNumber = 5;
-    final int MaxEventsCount = 6;
+    final int MaxEventsCount = 3;//было 6
 
     public void commandHandler(String basicCommand, BotResponse botResponse){
         botResponse.setNullEvents();
@@ -103,7 +103,7 @@ public class CommandHandler {
         else{
             for (int i = start; i < end; i++) {
                 Event event = botResponse.getEvents().get(i);
-                message = "\n" + (i + 1) + ". " + "Мероприятие: " + event.getName() + "\nДата: " + event.getDateTime();
+                message = "\nМероприятие: " + event.getName() + "\nДата: " + event.getDateTime();
                 int status = botResponse.map.get(botRequest.getTypeButtons());
                 botResponse.setMessage(message);
                 botResponse.setSendPhoto(event.getPhoto());

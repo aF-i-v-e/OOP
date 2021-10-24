@@ -43,7 +43,7 @@ public class BotRequestHandler {
             case "allEvents" -> "Все мероприятия";
             default -> "";
         };
-        helpBotResponse.setMessage("Вы выбрали категорию: " + eventCategory);
+        helpBotResponse.setMessage("Вы выбрали категорию: " + eventCategory + " ✓");
 
         return helpBotResponse;
     }

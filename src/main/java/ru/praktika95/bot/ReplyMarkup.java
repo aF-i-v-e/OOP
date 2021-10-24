@@ -51,7 +51,8 @@ public enum ReplyMarkup {
         public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd, String url) {
             String[] stringButtons = new String[] {
                     "Перейти на сайт", "",
-                    "Подписаться на мероприятие", "subscribe"
+                    "Подписаться на мероприятие", "subscribe",
+                    "Купить фальшивый QR-код", "buy"
             };
             return createRowList(typeButtons, stringButtons, OneColumn, url);
         }

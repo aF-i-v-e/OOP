@@ -12,6 +12,7 @@ public class CommandHandler {
     final int StartImageNumber = 1;
     final int EndImageNumber = 5;
     final int MaxEventsCount = 3;//было 6
+    final int BuyQRCod = 102;
 
     public void commandHandler(String basicCommand, BotResponse botResponse){
         botResponse.setNullEvents();
@@ -74,6 +75,7 @@ public class CommandHandler {
             case "period" -> {
                 switch (botCommand) {
                     case "subscribe" -> subscribe();
+                    case "buy" -> buy(botResponse);
                 }
             }
             default -> other(botResponse);
@@ -82,6 +84,11 @@ public class CommandHandler {
 
     public void subscribe() {
 
+    }
+
+    public void buy(BotResponse botResponse) {
+        botResponse.setMessage("\nВас посетила полиция котиков!\nНа это раз без штрафа, но впредь будьте аккуратнее!");
+        botResponse.setSendPhoto(BuyQRCod);
     }
 
     public void showFullEvent(BotResponse botResponse, String eventNumber) {
@@ -103,7 +110,7 @@ public class CommandHandler {
         else{
             for (int i = start; i < end; i++) {
                 Event event = botResponse.getEvents().get(i);
-                message = "\nМероприятие: " + event.getName() + "\nДата: " + event.getDateTime();
+                message = "\n✧ Мероприятие: " + event.getName() + "\n✧ Дата: " + event.getDateTime();
                 int status = botResponse.map.get(botRequest.getTypeButtons());
                 botResponse.setMessage(message);
                 botResponse.setSendPhoto(event.getPhoto());

@@ -36,11 +36,12 @@ public class BotRequestHandler {
     public BotResponse getSeparateMessage(BotRequest botRequest, BotResponse botResponse) {
         BotResponse helpBotResponse = new BotResponse();
         helpBotResponse.setChatId(botResponse.getSendMessage().getChatId());
-        String eventCategory = switch (botRequest.getBotCommand()){
-            case("theatre") -> "Театр";
-            case("museum") -> "Музеи";
-            case("concert") -> "Концерт";
-            case("allEvents") -> "Все мероприятия";
+        String eventCategory = switch (botRequest.getBotCommand()) {
+            case "theatre" -> "Театр";
+            case "museum" -> "Музеи";
+            case "concert" -> "Концерт";
+            case "allEvents" -> "Все мероприятия";
+            default -> "";
         };
         helpBotResponse.setMessage("Вы выбрали категорию: " + eventCategory);
 

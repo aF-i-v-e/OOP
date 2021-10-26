@@ -9,21 +9,21 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-class StringBotResponseTest {
+class StringResponseTest {
     private CommandHandler commandHandler;
-    private BotResponse botResponse;
+    private Response response;
     private BotRequest botRequest;
     private final String dateText = "Выберите категорию мероприятия, которое состоится";
 
     @BeforeEach
     public void setUp() {
         commandHandler = new CommandHandler();
-        botResponse = new BotResponse();
+        response = new Response();
     }
 
     private void compareBasicCommandWork(String basicCommand, String correctAnswer){
-        commandHandler.commandHandler(basicCommand, botResponse);
-        assertEquals(correctAnswer, botResponse.getSendMessage().getText());
+        commandHandler.commandHandler(basicCommand, response);
+        assertEquals(correctAnswer,response.getText());
     }
 
     @Test
@@ -70,8 +70,8 @@ class StringBotResponseTest {
     }
 
     private void compareStringBotResponse(String correctAnswer){
-        commandHandler.commandHandler(botRequest, botResponse);
-        assertEquals(correctAnswer, botResponse.getSendMessage().getText());
+        commandHandler.commandHandler(botRequest, response);
+        assertEquals(correctAnswer, response.getText());
     }
 
     @Test

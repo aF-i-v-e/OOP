@@ -12,8 +12,8 @@ import java.util.Map;
 
 public class Parsing {
     final int ConnectionTime = 3000;
-    public void parsing(BotResponse botResponse) {
-        ParsingData parsingData = botResponse.getParsingData();
+    public void parsing(Response response) {
+        ParsingData parsingData = response.getParsingData();
         DatePeriod date = parsingData.getDatePeriod();
 
         Map<String,String> query = new HashMap<>() {{
@@ -35,19 +35,19 @@ public class Parsing {
                 .execute()
                 .parse();
         } catch (Exception e) {
-            botResponse.setError(true);
-            botResponse.setMessage("Ошибка подключения, попробуйте повторить позже");
+            response.setError(true);
+            response.setText("Ошибка подключения, попробуйте повторить позже");
             return;
         }
 
         if (document.equals(new Document(null))){
-            botResponse.setError(true);
-            botResponse.setMessage("Ошибка обработки, попробуйте повторить позже");
+            response.setError(true);
+            response.setText("Ошибка обработки, попробуйте повторить позже");
             return;
         }
 
         Elements elements = document.select(".events .col-xs-2 .event");
-        List<Event> events = botResponse.getEvents();
+        List<Event> events = response.getEvents();
 
         for (Element element : elements) {
             Elements div = element.select(".caption");
@@ -61,6 +61,6 @@ public class Parsing {
             ));
         }
 
-        botResponse.setEvents(events);
+        response.setEvents(events);
     }
 }

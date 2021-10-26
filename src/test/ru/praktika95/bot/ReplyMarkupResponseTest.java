@@ -7,21 +7,20 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.sql.Date;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ReplyMarkupBotResponseTest {
+public class ReplyMarkupResponseTest {
 
     private CommandHandler commandHandler;
-    private BotResponse botResponse;
     private BotRequest botRequest;
+    private Response response;
 
     @BeforeEach
     public void setUp() {
         commandHandler = new CommandHandler();
-        botResponse = new BotResponse();
+        response = new Response();
     }
 
     private void setBotRequest(String typeButtons, String botCommand){
@@ -54,10 +53,10 @@ public class ReplyMarkupBotResponseTest {
         return update;
     }
 
-    private BotResponse createCorrectBotResponse(String typeButtons){
-        BotResponse correctBotResponse = new BotResponse();
+    private Response createCorrectBotResponse(String typeButtons){
+        Response correctBotResponse = new Response();
         int status = correctBotResponse.map.get(typeButtons);
-        correctBotResponse.createButtons(getKey(++status, botResponse.map), null, false, null);
+        correctBotResponse.createButtons(getKey(++status, response.map), null, false, null);
         return correctBotResponse;
     }
 
@@ -72,9 +71,9 @@ public class ReplyMarkupBotResponseTest {
 
 
     private void compareReplyMarkupBotResponse(String typeButtons){
-        commandHandler.commandHandler(botRequest, botResponse);
-        BotResponse correctBotResponse = createCorrectBotResponse(typeButtons);
-        assertEquals(correctBotResponse.getSendMessage().getReplyMarkup(), botResponse.getSendMessage().getReplyMarkup());
+        commandHandler.commandHandler(botRequest, response);
+        Response correctBotResponse = createCorrectBotResponse(typeButtons);
+        assertEquals(correctBotResponse.getKeyboard(), response.getKeyboard());
     }
 
     @Test

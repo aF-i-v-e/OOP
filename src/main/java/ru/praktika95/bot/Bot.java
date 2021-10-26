@@ -2,31 +2,25 @@ package ru.praktika95.bot;
 
 import lombok.SneakyThrows;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 
 public class Bot extends TelegramLongPollingBot {
 
     private final String userName;
     private final String token;
-    private final BotResponse botResponse;
+    private final Response response;
 
     public Bot(String botUserName, String token) {
         this.userName = botUserName;
         this.token = token;
-        this.botResponse = new BotResponse();
+        this.response = new Response();
     }
 
     @SneakyThrows
@@ -38,50 +32,51 @@ public class Bot extends TelegramLongPollingBot {
         {
             Message message = update.getMessage();
             if (Objects.equals(message.getText(), "/start")){
-                botRequestHandler.getBotAnswer("start", botRequest, botResponse);
-                botResponse.createButtons("main", null, false, null);
+                botRequestHandler.getBotAnswer("start", botRequest, response);
+                response.createButtons("main", null, false, null);
             }
             else
-                botRequestHandler.getBotAnswer("otherCommand", botRequest, botResponse);
-            executeBotResponse(botResponse);
+                botRequestHandler.getBotAnswer("otherCommand", botRequest, response);
+            executeResponse(response);
         } else {
-            botRequestHandler.getBotAnswer(botRequest, botResponse);
-            LinkedList<BotResponse> list = botRequestHandler.getNextAnswer(botRequest, botResponse);
+            botRequestHandler.getBotAnswer(botRequest, response);
+            LinkedList<Response> list = botRequestHandler.getNextAnswer(botRequest, response);
 
             if (list.size() != 0)
-                executeBotResponseList(list);
+                executeResponseList(list);
             else
-                executeBotResponse(botResponse);
+                executeResponse(response);
         }
-        botResponse.setNull();
+        response.setNull();
     }
 
-    private void executeBotResponseList(LinkedList<BotResponse> list) {
+    private void executeResponseList(LinkedList<Response> list) {
         for (int i = 0; i < list.size(); i++) {
-            executeBotResponse(list.get(i));
+            executeResponse(list.get(i));
         }
-        botResponse.setNull();
+        response.setNull();
     }
 
-    private void executeBotResponse(BotResponse botR) {
-        if (botR.getSendPhoto().getPhoto() != null)
-            executePhoto(botR);
+    private void executeResponse(Response response) {
+        BotResponse botResponse = new BotResponse(response);
+        if (response.getPhotoFile() != null)
+            executePhotoBotResponse(botResponse);
         else
-            executeMessage(botR);
+            executeMessageBotResponse(botResponse);
     }
 
-    private void executePhoto(BotResponse botR) {
+    private void executePhotoBotResponse(BotResponse botResponse) {
         try{
-            execute(botR.getSendPhoto());
+            execute(botResponse.getSendPhoto());
         } catch(TelegramApiException e){
             e.printStackTrace();
         }
     }
 
-    private void executeMessage(BotResponse botR)
+    private void executeMessageBotResponse(BotResponse botResponse)
     {
         try {
-            execute(botR.getSendMessage());
+            execute(botResponse.getSendMessage());
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

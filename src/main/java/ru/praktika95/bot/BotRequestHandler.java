@@ -12,30 +12,30 @@ public class BotRequestHandler {
         comH = new CommandHandler();
     }
 
-    public void getBotAnswer(BotRequest botRequest, BotResponse botResponse) {
-        comH.commandHandler(botRequest, botResponse);
-        botResponse.setChatId(botRequest.getChatId());
+    public void getBotAnswer(BotRequest botRequest, Response response) {
+        comH.commandHandler(botRequest, response);
+        response.setChatId(botRequest.getChatId());
     }
 
-    public void getBotAnswer(String command, BotRequest botRequest, BotResponse botResponse) {
-        comH.commandHandler(command, botResponse);
-        botResponse.setChatId(botRequest.getChatId());
+    public void getBotAnswer(String command, BotRequest botRequest, Response response) {
+        comH.commandHandler(command, response);
+        response.setChatId(botRequest.getChatId());
     }
 
-    public LinkedList<BotResponse> getNextAnswer(BotRequest botRequest, BotResponse botResponse) {
+    public LinkedList<Response> getNextAnswer(BotRequest botRequest, Response response) {
         boolean isNext = Objects.equals(botRequest.getBotCommand(), "next");
-        LinkedList<BotResponse> listResponses = new LinkedList<>();
+        LinkedList<Response> listResponses = new LinkedList<>();
         if (Objects.equals(botRequest.getTypeButtons(), "category") || isNext){
-            listResponses = comH.createEvents(botRequest, botResponse, isNext);
+            listResponses = comH.createEvents(botRequest, response, isNext);
             if (!isNext)
-                listResponses.addFirst(getSeparateMessage(botRequest, botResponse));
+                listResponses.addFirst(getSeparateMessage(botRequest, response));
         }
         return listResponses;
     }
 
-    public BotResponse getSeparateMessage(BotRequest botRequest, BotResponse botResponse) {
-        BotResponse helpBotResponse = new BotResponse();
-        helpBotResponse.setChatId(botResponse.getSendMessage().getChatId());
+    public Response getSeparateMessage(BotRequest botRequest, Response response) {
+        Response helpResponse = new Response();
+        helpResponse.setChatId(response.getChatId());
         String eventCategory = switch (botRequest.getBotCommand()) {
             case "theatre" -> "Театр";
             case "museum" -> "Музеи";
@@ -43,8 +43,7 @@ public class BotRequestHandler {
             case "allEvents" -> "Все мероприятия";
             default -> "";
         };
-        helpBotResponse.setMessage("Вы выбрали категорию: " + eventCategory + " ✓");
-
-        return helpBotResponse;
+        helpResponse.setText("Вы выбрали категорию: " + eventCategory + " ✓");
+        return helpResponse;
     }
 }

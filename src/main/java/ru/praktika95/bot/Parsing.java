@@ -15,14 +15,14 @@ public class Parsing {
     public void parsing(Response response) {
         ParsingData parsingData = response.getParsingData();
         DatePeriod date = parsingData.getDatePeriod();
-
-        Map<String,String> query = new HashMap<>() {{
-            put("main", parsingData.getCodeCategory()/*"4093"*/);
-            put("date_from", date.getDateFrom()/*"09.10.2021"*/);
-            put("date_to", date.getDateTo()/*"30.10.2021"*/);
-            put("sort", "1");
-            put("c", "30");
-        }};
+        
+        Map<String,String> query = Map.of(
+                "main", parsingData.getCodeCategory()/*"4093"*/,
+                "date_from", date.getDateFrom()/*"09.10.2021"*/,
+                "date_to", date.getDateTo()/*"30.10.2021"*/,
+                "sort", "1",
+                "c", "30"
+        );
 
         String site = "https://ekb.kassir.ru/category?";
         Document document;

@@ -116,4 +116,10 @@ public class ReplyMarkupResponseTest {
         setBotRequest("date", "nextMonth");
         compareReplyMarkupBotResponse("date");
     }
+
+    @Test
+    void testCorrectEventCommand() {
+        setBotRequest("event", "subscribe");
+        compareReplyMarkupBotResponse("event");
+    }
 }

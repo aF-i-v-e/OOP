@@ -71,24 +71,49 @@ public class CommandHandler {
             }
             case "event" -> {
                 switch (botCommand) {
-                    case "subscribe" -> subscribe();
+                    case "subscribe" -> subscribe(response, typeButtons);
                     case "buy" -> buy(response);
+                }
+            }
+            case "period" -> {
+                switch (botCommand) {
+                    case "day" -> day(response);
+                    case "week" -> week(response);
                 }
             }
             default -> other(response);
         }
     }
 
-    public void subscribe() {
-
+    private void day(Response response) {
+        String notificationText = eventNotification(response, "день");
+        response.setText(notificationText);
     }
 
-    public void buy(Response response) {
+    private void week(Response response) {
+        String notificationText = eventNotification(response, "неделю");
+        response.setText(notificationText);
+    }
+
+    private String eventNotification(Response response, String period) {
+        response.setPhotoFile(getRandomIntegerBetweenRange(841, 842)); //in unicode t has number 84
+        String eventName = "Вы выбрали: \""  + response.getSelectedEvent().getName() + "\"";
+        String eventDate = "\nОно состоится: " + response.getSelectedEvent().getDateTime();
+        String notification = "\nEkbEventBot оповестит Вас за " + period + " о мероприятии, которое Вы выбрали";
+        String resultText = eventName + eventDate + notification;
+        return resultText;
+    }
+
+    private void subscribe(Response response, String typeButtons) {
+        setMessageAndButtons("Выберите период, за который Вы хотите, чтобы бот Вас оповестил о мероприятии:", response, typeButtons, null, false);
+    }
+
+    private void buy(Response response) {
         response.setText("\nВас посетила полиция котиков!\nНа этот раз без штрафа, но впредь будьте аккуратнее!");
         response.setPhotoFile(BuyQRCod);
     }
 
-    public void showFullEvent(Response response, String typeButtons, String eventNumber) {
+    private void showFullEvent(Response response, String typeButtons, String eventNumber) {
         int eventIndex = Integer.parseInt(eventNumber);
         response.setSelectedEvent(response.getEvents().get(eventIndex));
         setButtons(typeButtons, response, response.getSelectedEvent().getUrl());
@@ -139,14 +164,14 @@ public class CommandHandler {
     }
 
     private void date(Response response, String typeButtons){
-        setMessageAndButtons("Выберите дату", response, typeButtons, null);
+        setMessageAndButtons("Выберите дату", response, typeButtons, null, true);
     }
 
     private void today(Response response, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
         String currentDate = formatDate(calendar);
         setMessageAndButtons(dateText + " сегодня:",
-                createDatePeriod(response, currentDate, currentDate), typeButtons, null);
+                createDatePeriod(response, currentDate, currentDate), typeButtons, null, true);
     }
 
     private void tomorrow(Response response, String typeButtons) {
@@ -154,7 +179,7 @@ public class CommandHandler {
         calendar.add(Calendar.DATE, 1);
         String tomorrow = formatDate(calendar);
         setMessageAndButtons(dateText + " завтра:",
-                createDatePeriod(response, tomorrow, tomorrow), typeButtons, null);
+                createDatePeriod(response, tomorrow, tomorrow), typeButtons, null, true);
     }
 
     private void thisWeek(Response response, String typeButtons) {
@@ -169,7 +194,7 @@ public class CommandHandler {
             dateTo = formatDate(calendar);
         }
         setMessageAndButtons(dateText + " на этой неделе:",
-                createDatePeriod(response, currentDate, dateTo), typeButtons, null);
+                createDatePeriod(response, currentDate, dateTo), typeButtons, null, true);
     }
 
     private void nextWeek(Response response, String typeButtons) {
@@ -183,7 +208,7 @@ public class CommandHandler {
         calendar.add(Calendar.DATE, 6);
         String dateTo = formatDate(calendar);
         setMessageAndButtons(dateText + " на следующей неделе:",
-                createDatePeriod(response, dateFrom, dateTo), typeButtons, null);
+                createDatePeriod(response, dateFrom, dateTo), typeButtons, null, true);
     }
 
     private void thisMonth(Response response, String typeButtons) {
@@ -199,7 +224,7 @@ public class CommandHandler {
             dateTo = formatDate(calendar);
         }
         setMessageAndButtons(dateText + " в этом месяце:",
-                createDatePeriod(response, currentDate, dateTo), typeButtons, null);
+                createDatePeriod(response, currentDate, dateTo), typeButtons, null, true);
     }
 
     private void nextMonth(Response response, String typeButtons) {
@@ -216,7 +241,7 @@ public class CommandHandler {
         calendar.add(Calendar.DATE, lastDayMonth - dateMonth);
         String dateTo = formatDate(calendar);
         setMessageAndButtons( dateText + " в следующем месяце:",
-                createDatePeriod(response, dateFrom, dateTo), typeButtons, null);
+                createDatePeriod(response, dateFrom, dateTo), typeButtons, null, true);
     }
 
     private String formatDate(Calendar calendar) {
@@ -256,9 +281,10 @@ public class CommandHandler {
         parsing.parsing(response);
     }
 
-    private void setMessageAndButtons(String message, Response response, String typeButtons, String url) {
+    private void setMessageAndButtons(String message, Response response, String typeButtons, String url, boolean withPhoto) {
         response.setText(message);
-        response.setPhotoFile(getRandomIntegerBetweenRange(StartImageNumber, EndImageNumber));
+        if (withPhoto)
+            response.setPhotoFile(getRandomIntegerBetweenRange(StartImageNumber, EndImageNumber));
         setButtons(typeButtons, response, url);
     }
 

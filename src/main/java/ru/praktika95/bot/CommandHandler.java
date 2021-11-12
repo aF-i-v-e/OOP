@@ -5,11 +5,13 @@ import java.util.*;
 public class CommandHandler {
 
     private final String dateText = "Выберите категорию мероприятия, которое состоится";
-    final int HelpImageNumber = 911;
-    final int StartImageNumber = 1;
-    final int EndImageNumber = 5;
+    final int HelpImageName = 911;
+    final int StartImageName = 1;
+    final int EndImageName = 5;
     final int MaxEventsCount = 3;//было 6
-    final int BuyQRCod = 102;
+    final int BuyQRCodImageName = 102;
+    final int TelegramIconImageNameType1 = 841;//in unicode t has number 84 and image has the first type => 841
+    final int TelegramIconImageNameType2 = 842;
 
     public void commandHandler(String basicCommand, Response response){
         response.setNullEvents();
@@ -96,7 +98,7 @@ public class CommandHandler {
     }
 
     private String eventNotification(Response response, String period) {
-        response.setPhotoFile(getRandomIntegerBetweenRange(841, 842)); //in unicode t has number 84
+        response.setPhotoFile(getRandomIntegerBetweenRange(TelegramIconImageNameType1, TelegramIconImageNameType2));
         String eventName = "Вы выбрали: \""  + response.getSelectedEvent().getName() + "\"";
         String eventDate = "\nОно состоится: " + response.getSelectedEvent().getDateTime();
         String notification = "\nEkbEventBot оповестит Вас за " + period + " о мероприятии, которое Вы выбрали";
@@ -110,7 +112,7 @@ public class CommandHandler {
 
     private void buy(Response response) {
         response.setText("\nВас посетила полиция котиков!\nНа этот раз без штрафа, но впредь будьте аккуратнее!");
-        response.setPhotoFile(BuyQRCod);
+        response.setPhotoFile(BuyQRCodImageName);
     }
 
     private void showFullEvent(Response response, String typeButtons, String eventNumber) {
@@ -150,12 +152,12 @@ public class CommandHandler {
 
     private void hello(Response response) {
         response.setText("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте кнопку \"Помощь\"\nДля того, чтобы посмотреть доступные мероприятия, выбрать подходящее время используйте кнопку \"Мероприятия\".");
-        response.setPhotoFile(getRandomIntegerBetweenRange(StartImageNumber, EndImageNumber));
+        response.setPhotoFile(getRandomIntegerBetweenRange(StartImageName, EndImageName));
     }
 
     private void help(Response response) {
         response.setText("О работе с данным ботом:\nДля того, чтобы выбрать категорию мероприятия и подходящий период времени, используйте соответствующие кнопки.\nПосле, Вам на выбор будет представлено 6 мероприятий.\nКогда Вы выберете конкретное мероприятие, Вы сможете либо подписаться на мероприятие, либо сразу приобрести билеты.\nПри подписке на мероприятие, бот уведомит Вас о выбранном событии за определенный период времени.");
-        response.setPhotoFile(HelpImageNumber);
+        response.setPhotoFile(HelpImageName);
     }
 
     private static int getRandomIntegerBetweenRange(int min, int max) {
@@ -284,7 +286,7 @@ public class CommandHandler {
     private void setMessageAndButtons(String message, Response response, String typeButtons, String url, boolean withPhoto) {
         response.setText(message);
         if (withPhoto)
-            response.setPhotoFile(getRandomIntegerBetweenRange(StartImageNumber, EndImageNumber));
+            response.setPhotoFile(getRandomIntegerBetweenRange(StartImageName, EndImageName));
         setButtons(typeButtons, response, url);
     }
 

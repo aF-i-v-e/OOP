@@ -88,13 +88,8 @@ public class Response {
 
     public void setSelectedEvent(Event event) {
         this.selectedEvent = event;
-        String eventName = "Вы выбрали мероприятие:\n" + event.getName();
-        String eventPlace = "\nОно состоится: " + event.getPlace();
-        String eventTime = "\nДата: " + event.getDateTime();
-        String eventPrice = "\nВходной билет стоит: "+ event.getPrice();
         setPhotoFile(event.getPhoto());
-        String resultText = eventName + eventPlace + eventTime + eventPrice;
-        this.text = resultText;
+        this.text = event.getEventFullDescription();
     }
 
     public List<Event> getEvents() {

@@ -1,5 +1,8 @@
 package ru.praktika95.bot;
 
+import ru.praktika95.bot.hibernate.*;
+
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class CommandHandler {
@@ -79,32 +82,40 @@ public class CommandHandler {
             }
             case "period" -> {
                 switch (botCommand) {
-                    case "day" -> day(response);
-                    case "week" -> week(response);
+                    case "day" -> setNotification(response, "день");
+                    case "week" -> setNotification(response, "неделю");
                 }
             }
             default -> other(response);
         }
     }
 
-    private void day(Response response) {
-        String notificationText = eventNotification(response, "день");
-        response.setText(notificationText);
+    private void setNotification(Response response, String period) {
+        Event selectedEvent = response.getSelectedEvent();
+        setNotificationInResponse(period, selectedEvent, response);
+        setNotificationInDateBase(period, response.getChatId(), selectedEvent);
     }
 
-    private void week(Response response) {
-        String notificationText = eventNotification(response, "неделю");
-        response.setText(notificationText);
-    }
-
-    private String eventNotification(Response response, String period) {
+    private void setNotificationInResponse(String period, Event selectedEvent, Response response) {
+        String notificationText = selectedEvent.getEventNotification(period);
         response.setPhotoFile(getRandomIntegerBetweenRange(TelegramIconImageNameType1, TelegramIconImageNameType2));
-        String eventName = "Вы выбрали: \""  + response.getSelectedEvent().getName() + "\"";
-        String eventDate = "\nОно состоится: " + response.getSelectedEvent().getDateTime();
-        String notification = "\nEkbEventBot оповестит Вас за " + period + " о мероприятии, которое Вы выбрали";
-        String resultText = eventName + eventDate + notification;
-        return resultText;
+        response.setText(notificationText);
     }
+
+    private void setNotificationInDateBase(String period, String chatId, Event selectedEvent) {
+        UsersCRUD usersCRUD = new UsersCRUD();
+        Users user = new Users(chatId, selectedEvent);
+        //задача 5 реализовать оповещение либо за день, либо за месяц т.е в базу внести соотсветсивующую запись
+        if (period == "день") {
+
+        }
+        else {
+
+        }
+        if (!usersCRUD.existNote(user))
+            usersCRUD.save(user);
+    }
+
 
     private void subscribe(Response response, String typeButtons) {
         setMessageAndButtons("Выберите период, за который Вы хотите, чтобы бот Вас оповестил о мероприятии:", response, typeButtons, null, false);
@@ -134,7 +145,7 @@ public class CommandHandler {
         else{
             for (int i = start; i < end; i++) {
                 Event event = response.getEvents().get(i);
-                message = "\n✧ Мероприятие: " + event.getName() + "\n✧ Дата: " + event.getDateTime();
+                message = event.getEventBriefDescription();
                 int status = response.map.get(botRequest.getTypeButtons());
                 response.setText(message);
                 response.setPhotoFile(event.getPhoto());

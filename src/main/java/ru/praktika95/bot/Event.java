@@ -42,4 +42,25 @@ public class Event {
     public String getUrl() {
         return url;
     }
+
+    public String getEventFullDescription() {
+        String eventName = "Вы выбрали мероприятие:\n" + name;
+        String eventPlace = "\nОно состоится: " + place;
+        String eventTime = "\nДата: " + dateTime;
+        String eventPrice = "\nВходной билет стоит: "+ price;
+        String resultText = eventName + eventPlace + eventTime + eventPrice;
+        return resultText;
+    }
+
+    public String getEventBriefDescription() {
+        return "\n✧ Мероприятие: " + name + "\n✧ Дата: " + dateTime;
+    }
+
+    public String getEventNotification(String period) {
+        String eventName = "Вы выбрали: \""  + name + "\"";
+        String eventDate = "\nОно состоится: " + dateTime;
+        String notification = "\nEkbEventBot оповестит Вас за " + period + " о мероприятии, которое Вы выбрали";
+        String resultText = eventName + eventDate + notification;
+        return resultText;
+    }
 }

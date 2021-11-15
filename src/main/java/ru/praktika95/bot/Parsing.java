@@ -16,24 +16,24 @@ public class Parsing {
         ParsingData parsingData = response.getParsingData();
         DatePeriod date = parsingData.getDatePeriod();
 
-        Map<String,String> query = new HashMap<>() {{
-            put("main", parsingData.getCodeCategory()/*"4093"*/);
-            put("date_from", date.getDateFrom()/*"09.10.2021"*/);
-            put("date_to", date.getDateTo()/*"30.10.2021"*/);
-            put("sort", "1");
-            put("c", "30");
-        }};
+        Map<String,String> query = Map.of(
+                "main", parsingData.getCodeCategory()/*"3009"*/,
+                "date_from", date.getDateFrom()/*"16.11.2021"*/,
+                "date_to", date.getDateTo()/*"16.11.2021"*/,
+                "sort", "1",
+                "c", "30"
+        );
 
         String site = "https://ekb.kassir.ru/category?";
         Document document;
         try {
             document = Jsoup.connect(site)
-                .userAgent("Yandex/21.8.3.614")
-                .referrer("https://yandex.ru/")
-                .timeout(ConnectionTime)
-                .data(query)
-                .execute()
-                .parse();
+                    .userAgent("Yandex/21.8.3.614")
+                    .referrer("https://yandex.ru/")
+                    .timeout(ConnectionTime)
+                    .data(query)
+                    .execute()
+                    .parse();
         } catch (Exception e) {
             response.setError(true);
             response.setText("Ошибка подключения, попробуйте повторить позже");
@@ -45,19 +45,17 @@ public class Parsing {
             response.setText("Ошибка обработки, попробуйте повторить позже");
             return;
         }
-
-        Elements elements = document.select(".events .col-xs-2 .event");
+        Elements elements = document.select(".content .event-cards-container .event-card");
         List<Event> events = response.getEvents();
 
         for (Element element : elements) {
-            Elements div = element.select(".caption");
             events.add(new Event(
                     element.select("img").attr("data-src"),
-                    div.select(".title").text(),
-                    div.select(".date").text(),
-                    div.select(".place").text(),
-                    div.select(".cost.rub").text(),
-                    div.select(".buy.hover a").attr("href")
+                    element.select(".title").text(),
+                    element.select(".date").text(),
+                    element.select(".venue").text(),
+                    element.select(".cost.rub").text(),
+                    element.select(".poster  a").attr("href")
             ));
         }
 

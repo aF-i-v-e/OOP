@@ -53,9 +53,9 @@ public class Parsing {
                     element.select("img").attr("data-src"),
                     element.select(".title").text(),
                     element.select(".date").text(),
-                    element.select(".place").text(),
+                    element.select(".venue").text(),
                     element.select(".cost.rub").text(),
-                    element.select(".buy.hover a").attr("href")
+                    element.select(".poster  a").attr("href")
             ));
         }
 

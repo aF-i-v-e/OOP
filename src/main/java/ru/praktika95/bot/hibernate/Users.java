@@ -143,15 +143,15 @@ public class Users {
         if (getClass() != obj.getClass())
             return false;
         Users other = (Users) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
         if (chatId == null) {
             if (other.chatId != null)
                 return false;
         } else if (!chatId.equals(other.chatId))
+            return false;
+        if (eventDateNotice == null) {
+            if (other.eventDateNotice != null)
+                return false;
+        } else if (!eventDateNotice.equals(other.eventDateNotice))
             return false;
         if (eventPhoto == null) {
             if (other.eventPhoto != null)

@@ -28,7 +28,11 @@ public class UsersCRUD {
 
     public List<Users> getAll(){
         Session session = HibernateUtil.getSessionFactory().openSession();
-        return session.createCriteria(Users.class).list();
+        CriteriaQuery<Users> criteriaQuery = session.getCriteriaBuilder().createQuery(Users.class);
+        criteriaQuery.from(Users.class);
+        List<Users> users = session.createQuery(criteriaQuery).getResultList();
+        session.close();
+        return users;
     }
 
     public Users getById(Integer id) {

@@ -3,6 +3,7 @@ package ru.praktika95.bot;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.praktika95.bot.hibernate.DataBaseSettings;
 import ru.praktika95.bot.hibernate.HibernateUtil;
+import ru.praktika95.bot.hibernate.UsersCRUD;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -27,12 +28,6 @@ public class App {
             String passBase = property.getProperty("db.password");
             String dialectBase = property.getProperty("db.dialect");
             DataBaseSettings.setDataBaseSettings(driverBase, urlBase, userBase, passBase, dialectBase);
-//            String urlBase = property.getProperty("db.host");
-//            String userBase = property.getProperty("db.login");
-//            String passBase = property.getProperty("db.password");
-//            DataBase dataBase = new DataBase();
-//            dataBase.connect(urlBase, userBase, passBase);
-//            dataBase.createTable();
         } catch (IOException e) {
             System.err.println(e);
         }

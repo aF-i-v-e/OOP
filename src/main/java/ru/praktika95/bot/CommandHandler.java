@@ -106,7 +106,7 @@ public class CommandHandler {
         UsersCRUD usersCRUD = new UsersCRUD();
         Users user = new Users(chatId, selectedEvent);
         user.setEventDateNotice("12.12.2021");
-        //задача 5 реализовать оповещение либо за день, либо за месяц т.е в базу внести соотсветсивующую запись
+        //задача 5 реализовать оповещение либо за день, либо за месяц т.е в базу внести соотсветствующую запись
         if (period == "день") {
 
         }

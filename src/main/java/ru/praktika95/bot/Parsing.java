@@ -15,11 +15,11 @@ public class Parsing {
     public void parsing(Response response) {
         ParsingData parsingData = response.getParsingData();
         DatePeriod date = parsingData.getDatePeriod();
-        
+
         Map<String,String> query = Map.of(
-                "main", parsingData.getCodeCategory()/*"4093"*/,
-                "date_from", date.getDateFrom()/*"09.10.2021"*/,
-                "date_to", date.getDateTo()/*"30.10.2021"*/,
+                "main", parsingData.getCodeCategory()/*"3009"*/,
+                "date_from", date.getDateFrom()/*"16.11.2021"*/,
+                "date_to", date.getDateTo()/*"16.11.2021"*/,
                 "sort", "1",
                 "c", "30"
         );
@@ -45,19 +45,17 @@ public class Parsing {
             response.setText("Ошибка обработки, попробуйте повторить позже");
             return;
         }
-
-        Elements elements = document.select(".events .col-xs-2 .event");
+        Elements elements = document.select(".content .event-cards-container .event-card");
         List<Event> events = response.getEvents();
 
         for (Element element : elements) {
-            Elements div = element.select(".caption");
             events.add(new Event(
                     element.select("img").attr("data-src"),
-                    div.select(".title").text(),
-                    div.select(".date").text(),
-                    div.select(".place").text(),
-                    div.select(".cost.rub").text(),
-                    div.select(".buy.hover a").attr("href")
+                    element.select(".title").text(),
+                    element.select(".date").text(),
+                    element.select(".place").text(),
+                    element.select(".cost.rub").text(),
+                    element.select(".buy.hover a").attr("href")
             ));
         }
 

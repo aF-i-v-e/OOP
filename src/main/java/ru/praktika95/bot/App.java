@@ -24,7 +24,8 @@ public class App {
             if (urlBase != null && userBase != null && passBase != null){
                 DataBase dataBase = new DataBase();
                 dataBase.connect(urlBase, userBase, passBase);
-                dataBase.createTable();
+
+                dataBase.create(1, "2", "1", "2", "1", "2", "1", "2");
             }
         } catch (IOException | SQLException e) {
             System.err.println(e);

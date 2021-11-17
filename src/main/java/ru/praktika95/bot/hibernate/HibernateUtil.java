@@ -2,7 +2,6 @@ package ru.praktika95.bot.hibernate;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
@@ -15,8 +14,11 @@ public class HibernateUtil {
     private static StandardServiceRegistry registry;
     private static SessionFactory sessionFactory;
 
+    private HibernateUtil() {
+
+    }
+
     public static SessionFactory getSessionFactory() {
-        //реализация синглтона. Если объекта нет - создаем, если есть просто возвращаем
         if (sessionFactory == null) {
             try {
                 StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();

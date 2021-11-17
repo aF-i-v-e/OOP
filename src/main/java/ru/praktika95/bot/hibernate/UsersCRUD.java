@@ -1,12 +1,8 @@
 package ru.praktika95.bot.hibernate;
 
 import java.util.List;
-
 import javax.persistence.criteria.CriteriaQuery;
-import javax.transaction.Transactional;
-
 import org.hibernate.Session;
-import org.telegram.telegrambots.meta.api.objects.User;
 
 public class UsersCRUD {
 
@@ -38,12 +34,14 @@ public class UsersCRUD {
     public Users getById(Integer id) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Users users = session.get(Users.class, id);
+        session.close();
         return users;
     }
 
     public Users getByChatId(String chatId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Users users = session.get(Users.class, chatId);
+        session.close();
         return users;
     }
 

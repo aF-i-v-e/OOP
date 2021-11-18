@@ -52,7 +52,7 @@ public class Parsing {
             events.add(new Event(
                     element.select("img").attr("data-src"),
                     element.select(".title").text(),
-                    element.select(".date").text(),
+                    element.select(".event-card__caption .date").text(),
                     element.select(".venue").text(),
                     element.select(".cost.rub").text(),
                     element.select(".poster  a").attr("href")

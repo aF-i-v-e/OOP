@@ -90,7 +90,7 @@ public class Response {
         this.selectedEvent = event;
         String eventName = "Вы выбрали мероприятие:\n" + event.getName();
         String eventPlace = "\nОно состоится: " + event.getPlace();
-        String eventTime = "\nДата: " + event.getDateTime();
+        String eventTime = "\nДата: " + event.getDate() + " " + event.getTime();
         String eventPrice = "\nВходной билет стоит: "+ event.getPrice();
         setPhotoFile(event.getPhoto());
         String resultText = eventName + eventPlace + eventTime + eventPrice;

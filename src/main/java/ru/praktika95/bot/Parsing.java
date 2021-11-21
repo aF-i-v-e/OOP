@@ -6,8 +6,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -71,18 +69,18 @@ public class Parsing {
 
         if (matcher.find()){
             String dateTime = getDateTime(matcher.group());
-            String[] dateTimeAr = dateTime.split("\\.");
-            System.out.println(dateTime);
-            event.setDate(dateTimeAr[0]);
-            event.setTime(dateTimeAr[1]);
-            System.out.println(dateTimeAr[0]);
-            System.out.println(dateTimeAr[1]);
+            if (dateTime != null){
+                String[] dateTimeAr = dateTime.split("\\.");
+                event.setDate(dateTimeAr[0]);
+                event.setTime(dateTimeAr[1]);
+            }
             dataString = String.join("", dataString.split("\"date\".+},"));
         }
 
         for (int i = 1; i < dataString.length(); i++)
-            if (dataString.charAt(i) == ',' && Pattern.matches("[\\d\"]", dataString.substring(i - 1, i)))
-                dataString = dataString.substring(0,i) + "|,|" + dataString.substring(i + 1);
+            if (dataString.charAt(i) == ',' && (Pattern.matches("[\\d\"]", dataString.substring(i - 1, i))) ||
+                    (i > 3 && dataString.startsWith("null", i - 4)))
+                    dataString = dataString.substring(0,i) + "|,|" + dataString.substring(i + 1);
 
         String[] data = dataString.split("\\|,\\|");
 
@@ -93,8 +91,6 @@ public class Parsing {
             String[] splitDataElement = dataElement.split("\":");
             String nameDataElement = splitDataElement[0].substring(1);
             String valueDataElement = splitDataElement[1];
-            System.out.println(nameDataElement);
-            System.out.println(valueDataElement);
             switch (nameDataElement) {
                 case "name" -> event.setName(valueDataElement);
                 case "image" -> event.setPhoto(valueDataElement.substring(1, valueDataElement.length() - 1));
@@ -120,8 +116,12 @@ public class Parsing {
 
     private String getDateTime(String date) {
         JSONObject dateJson = new JSONObject(date.substring(7, date.length() - 1));
-        String[] start = dateJson.get("start_min").toString().split(" ");
-        String[] end = dateJson.get("end_max").toString().split(" ");
+        String startString = dateJson.get("start_min").toString();
+        if (Objects.equals(startString, "null"))
+            return null;
+        String[] start = startString.split(" ");
+        String endString = dateJson.get("end_max").toString();
+        String[] end = endString.split(" ");
         String startTime = start[1].substring(0, 5);
         String endTime = end[1].substring(0, 5);
         String time;

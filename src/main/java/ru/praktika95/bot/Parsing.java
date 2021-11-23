@@ -47,7 +47,7 @@ public class Parsing {
             return;
         }
 
-        Elements elements = document.select(".content .event-cards-container .event-card .poster a.image");
+        Elements elements = document.select(".content .event-card .poster a.image");
 
         List<Event> events = response.getEvents();
 
@@ -92,7 +92,7 @@ public class Parsing {
             String nameDataElement = splitDataElement[0].substring(1);
             String valueDataElement = splitDataElement[1];
             switch (nameDataElement) {
-                case "name" -> event.setName(valueDataElement);
+                case "name" -> event.setName(valueDataElement.substring(1, valueDataElement.length() - 1));
                 case "image" -> event.setPhoto(valueDataElement.substring(1, valueDataElement.length() - 1));
                 case "venueName" -> event.setPlace(valueDataElement);
                 case "minPrice" -> minPrice = valueDataElement;

@@ -12,7 +12,7 @@ import org.hibernate.cfg.Environment;
 public class HibernateUtil {
 
     private static StandardServiceRegistry registry;
-    private static SessionFactory sessionFactory;
+    private static volatile SessionFactory sessionFactory;
 
     private HibernateUtil() {
 
@@ -20,29 +20,30 @@ public class HibernateUtil {
 
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
-            try {
-                StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
-                Map<String, String> settings = new HashMap<>();
-                settings.put(Environment.DRIVER, DataBaseSettings.getDriver());
-                settings.put(Environment.URL, DataBaseSettings.getUrl());
-                settings.put(Environment.USER, DataBaseSettings.getUser());
-                settings.put(Environment.PASS, DataBaseSettings.getPass());
-                settings.put(Environment.DIALECT, DataBaseSettings.getDialect());
+            synchronized (HibernateUtil.class) {
+                if (sessionFactory == null) {
+                    try {
+                        StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
+                        Map<String, String> settings = new HashMap<>();
+                        settings.put(Environment.DRIVER, DataBaseSettings.getDriver());
+                        settings.put(Environment.URL, DataBaseSettings.getUrl());
+                        settings.put(Environment.USER, DataBaseSettings.getUser());
+                        settings.put(Environment.PASS, DataBaseSettings.getPass());
+                        settings.put(Environment.DIALECT, DataBaseSettings.getDialect());
 
-                registryBuilder.applySettings(settings);
+                        registryBuilder.applySettings(settings);
+                        registry = registryBuilder.build();
+                        MetadataSources sources = new MetadataSources(registry);
+                        sources.addAnnotatedClass(User.class);
+                        Metadata metadata = sources.getMetadataBuilder().build();
+                        sessionFactory = metadata.getSessionFactoryBuilder().build();
 
-                registry = registryBuilder.build();
-
-                MetadataSources sources = new MetadataSources(registry);
-                sources.addAnnotatedClass(Users.class);
-                Metadata metadata = sources.getMetadataBuilder().build();
-
-                sessionFactory = metadata.getSessionFactoryBuilder().build();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                if (registry != null) {
-                    StandardServiceRegistryBuilder.destroy(registry);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        if (registry != null) {
+                            StandardServiceRegistryBuilder.destroy(registry);
+                        }
+                    }
                 }
             }
         }

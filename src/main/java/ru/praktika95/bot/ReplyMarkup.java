@@ -8,9 +8,11 @@ public enum ReplyMarkup {
     MAIN("main") {
         public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd, String url) {
             String[] stringButtons = new String[] {
-                    "Мероприятия", "show", "Помощь", "help"
+                    "Выбрать", "show",
+                    "Помощь", "help",
+                    "Mои мероприятия", "showMyEvents"
             };
-            return createRowList(typeButtons, stringButtons, TwoColumns, url);
+            return createRowList(typeButtons, stringButtons, ThreeColumn, url);
         }
     },
     DATE("date") {
@@ -65,11 +67,42 @@ public enum ReplyMarkup {
             };
             return createRowList(typeButtons, stringButtons, TwoColumns, url);
         }
+    },
+    MYEVENTS("myevents") {
+        public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd, String url) {
+            String[] stringButtons;
+            if (isEnd)
+                stringButtons = new String[] {
+                        "Просмотреть мероприятие", "myevent" + " " + number,
+                        "Показать ещё", "nextMyEvent"
+                };
+            else
+                stringButtons = new String[] { "Просмотреть мероприятие", "myevent" + " " + number };
+            return createRowList(typeButtons, stringButtons, OneColumn, url);
+        }
+    },
+    MYEVENT("myevent") {
+        public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd, String url) {
+            String[] stringButtons = new String[]{
+                    "Перейти на сайт", "",
+                    "Отписаться от мероприятие", "cancelSubscribe",
+                    "Купить фальшивый QR-код", "buy"
+            };
+            return createRowList(typeButtons, stringButtons, OneColumn, url);
+        }
+    },
+    CANCEL("cancel") {
+        public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd, String url) {
+            String[] stringButtons = new String[]{
+                    "Отменить подписку", "cancel"
+            };
+            return createRowList(typeButtons, stringButtons, OneColumn, url);
+        }
     };
 
-    final int TwoColumns = 2;
-
     final int OneColumn = 1;
+    final int TwoColumns = 2;
+    final int ThreeColumn = 3;
 
     private final String type;
 

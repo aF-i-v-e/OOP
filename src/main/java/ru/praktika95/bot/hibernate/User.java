@@ -1,10 +1,11 @@
 package ru.praktika95.bot.hibernate;
 import ru.praktika95.bot.*;
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users")
-public class Users {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,11 +35,11 @@ public class Users {
     @Column(name = "url_event")
     private String eventUrl;
 
-    public Users() {
+    public User() {
 
     }
 
-    public Users(String chatId, Event event) {
+    public User(String chatId, Event event) {
         this.chatId = chatId;
         this.eventPhoto = event.getPhoto();
         this.eventName = event.getName();
@@ -121,20 +122,6 @@ public class Users {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((eventPhoto == null) ? 0 : eventPhoto.hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((eventName == null) ? 0 : eventName.hashCode());
-        result = prime * result + ((eventPlace == null) ? 0 : eventPlace.hashCode());
-        result = prime * result + ((eventPrice == null) ? 0 : eventPrice.hashCode());
-        result = prime * result + ((eventDateTime == null) ? 0 : eventDateTime.hashCode());
-        result = prime * result + ((eventUrl == null) ? 0 : eventUrl.hashCode());
-        return result;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
@@ -142,48 +129,26 @@ public class Users {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Users other = (Users) obj;
-        if (chatId == null) {
-            if (other.chatId != null)
-                return false;
-        } else if (!chatId.equals(other.chatId))
-            return false;
-        if (eventDateNotice == null) {
-            if (other.eventDateNotice != null)
-                return false;
-        } else if (!eventDateNotice.equals(other.eventDateNotice))
-            return false;
-        if (eventPhoto == null) {
-            if (other.eventPhoto != null)
-                return false;
-        } else if (!eventPhoto.equals(other.eventPhoto))
-            return false;
-        if (eventName == null) {
-            if (other.eventName != null)
-                return false;
-        } else if (!eventName.equals(other.eventName))
-            return false;
-        if (eventDateTime == null) {
-            if (other.eventDateTime != null)
-                return false;
-        } else if (!eventDateTime.equals(other.eventDateTime))
-            return false;
-        if (eventPlace == null) {
-            if (other.eventPlace != null)
-                return false;
-        } else if (!eventPlace.equals(other.eventPlace))
-            return false;
-        if (eventPrice == null) {
-            if (other.eventPrice != null)
-                return false;
-        } else if (!eventPrice.equals(other.eventPrice))
-            return false;
-        if (eventUrl == null) {
-            if (other.eventUrl != null)
-                return false;
-        } else if (!eventUrl.equals(other.eventUrl))
-            return false;
-        return true;
+        User other = (User) obj; //может быть из таблицы БД, а может быть созданный нами
+        if (this.hashCode() == other.hashCode()) {
+            if (other.id == null) {
+                return chatId.equals(other.chatId) &&
+                        eventDateNotice.equals(other.eventDateNotice) && //даты, когда надо оповестить равны
+                        eventUrl.equals(other.eventUrl);
+            }
+            return id.equals(other.id); // иначе гарантируем уникальность по id, разные id - разные события
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((chatId == null) ? 0 : chatId.hashCode());
+        result = prime * result + ((eventDateNotice == null) ? 0 : eventDateNotice.hashCode());
+        result = prime * result + ((eventUrl == null) ? 0 : eventUrl.hashCode());
+        return result;
     }
 
     @Override

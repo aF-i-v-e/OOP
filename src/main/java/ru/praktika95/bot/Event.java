@@ -7,6 +7,8 @@ public class Event {
     private String place;
     private String price;
     private String url;
+    private String dateNotice;
+    private Integer idBD;
 
     public Event() { }
 
@@ -41,6 +43,22 @@ public class Event {
 
     public String getUrl() {
         return url;
+    }
+
+    public String getDateNotice() {
+        return dateNotice;
+    }
+
+    public void setDateNotice(String dateNotice) {
+        this.dateNotice = dateNotice;
+    }
+
+    public Integer getIdBD() {
+        return idBD;
+    }
+
+    public void setIdBD(Integer idBD) {
+        this.idBD = idBD;
     }
 
     public String getEventFullDescription() {

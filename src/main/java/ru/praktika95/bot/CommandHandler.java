@@ -2,7 +2,6 @@ package ru.praktika95.bot;
 
 import ru.praktika95.bot.hibernate.*;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class CommandHandler {
@@ -18,6 +17,7 @@ public class CommandHandler {
 
     public void commandHandler(String basicCommand, Response response){
         response.setNullEvents();
+        response.setNullMyEvents();
         switch (basicCommand) {
             case "help" -> help(response);
             case "start" ->  hello(response);
@@ -29,12 +29,15 @@ public class CommandHandler {
         String typeButtons = botRequest.getTypeButtons();
         String botCommand = botRequest.getBotCommand();
         String selectedEventNumber = botRequest.getSelectedEvent();
+        String selectedMyEventNumber = botRequest.getMySelectedEvent();
         switch (typeButtons) {
             case "main" -> {
                 response.setNullEvents();
+                response.setNullMyEvents();
                 switch (botCommand) {
                     case "show" -> date(response, typeButtons);
                     case "help" -> help(response);
+                    case "showMyEvents" -> myEvents(response, false);
                 }
             }
             case "date" -> {
@@ -86,14 +89,100 @@ public class CommandHandler {
                     case "week" -> setNotification(response, "неделю");
                 }
             }
+            case "myevents" -> {
+                switch (botCommand) {
+                    case "nextMyEvent" -> myEvents(response, true);
+                    case "myevent" -> showMyFullEvent(response, typeButtons, selectedMyEventNumber);
+                }
+            }
+            case "myevent" -> {
+                switch (botCommand) {
+                    case "cancelSubscribe" -> cancelSubscribe(response);
+                    case "buy" -> buy(response);
+                }
+            }
+            case "cancel" -> {
+                switch (botCommand) {
+                    case "cancel" -> cancel(response);
+                }
+            }
             default -> other(response);
         }
+    }
+
+    private void myEvents(Response response, Boolean isNextMyEvent) {
+        int start;
+        int countEvent = response.getMyEventsList().size();
+        if (!isNextMyEvent) {
+            setMyEventsList(response);
+            start = countEvent;
+        }
+        else
+            start = response.getMyStartEventNumber();
+        int end = start + MaxEventsCount;
+        countEvent = response.getMyEventsList().size();
+        if (end > countEvent)
+            end = countEvent;
+        response.setMyStartEventNumber(start);
+        response.setMyEndEventNumber(end);
+    }
+
+    private void setMyEventsList(Response response) {
+        String userChatId = response.getChatId();
+        UsersCRUD usersCRUD = new UsersCRUD();
+        List<User> usersList = usersCRUD.getByChatId(userChatId);
+        List<Event> events = restoreEvent(usersList);
+        response.setMyEventsList(events);
+    }
+
+    public void showMyFullEvent(Response response, String typeButtons, String selectedMyEventNumber) {
+        int eventIndex = Integer.parseInt(selectedMyEventNumber);
+        response.setMySelectedEvent(response.getMyEventsList().get(eventIndex));
+        setButtons(typeButtons, response, response.getMySelectedEvent().getUrl());
+    }
+
+    private LinkedList<Event> restoreEvent(List<User> usersList) {
+        LinkedList<Event> events = new LinkedList<>();
+        for (User user : usersList){
+            Event event = new Event(user.getEventPhoto(),user.getEventName(), user.getEventDateTime(), user.getEventPlace(), user.getEventPrice(), user.getEventUrl());
+            event.setDateNotice(user.getEventDateNotice());
+            event.setIdBD(user.getId());
+            events.add(event);
+        }
+        return events;
+    }
+
+    private void cancel(Response response){
+        Event eventToDelete = response.getSelectedEvent();
+        UsersCRUD usersCRUD = new UsersCRUD();
+        eventToDelete.setIdBD(usersCRUD.getLastId());
+        deleteEventAndSetMessage(response, eventToDelete);
+    }
+
+    private void cancelSubscribe(Response response) {
+        Event eventToDelete = response.getMySelectedEvent();
+        deleteEventAndSetMessage(response, eventToDelete);
+    }
+
+    private void deleteEventAndSetMessage(Response response, Event event) {
+        String subscriptionDate = deleteFromDB(event);
+        response.setText("Вы отменили оповещение на " + subscriptionDate + "." + event.getEventBriefDescription());
+    }
+
+    private String deleteFromDB(Event event) {
+        UsersCRUD usersCRUD = new UsersCRUD();
+        User userToDelete = usersCRUD.getById(event.getIdBD());
+        String subscriptionDate = userToDelete.getEventDateNotice();
+        usersCRUD.delete(userToDelete);
+        return  subscriptionDate;
     }
 
     private void setNotification(Response response, String period) {
         Event selectedEvent = response.getSelectedEvent();
         setNotificationInResponse(period, selectedEvent, response);
-        setNotificationInDateBase(period, response.getChatId(), selectedEvent);
+        Boolean success = setNotificationInDateBase(period, response.getChatId(), selectedEvent);
+        if (success)
+            response.createButtons("cancel", "8", false, null);
     }
 
     private void setNotificationInResponse(String period, Event selectedEvent, Response response) {
@@ -102,9 +191,9 @@ public class CommandHandler {
         response.setText(notificationText);
     }
 
-    private void setNotificationInDateBase(String period, String chatId, Event selectedEvent) {
+    private boolean setNotificationInDateBase(String period, String chatId, Event selectedEvent) {
         UsersCRUD usersCRUD = new UsersCRUD();
-        Users user = new Users(chatId, selectedEvent);
+        User user = new User(chatId, selectedEvent);
         user.setEventDateNotice("12.12.2021");
         //задача 5 реализовать оповещение либо за день, либо за месяц т.е в базу внести соотсветствующую запись
         if (period == "день") {
@@ -113,8 +202,12 @@ public class CommandHandler {
         else {
 
         }
-        if (!usersCRUD.existNote(user))
+        if (!usersCRUD.existNote(user)) {
             usersCRUD.save(user);
+            return true;
+            //нужно получить id этого занесенного юзера и назначить этот id юзеру - это нужно для того, чтобы потом в cancel удалить по id
+        }
+        return false;
     }
 
 
@@ -133,31 +226,56 @@ public class CommandHandler {
         setButtons(typeButtons, response, response.getSelectedEvent().getUrl());
     }
 
-    public LinkedList<Response> createEvents(BotRequest botRequest, Response response, boolean isNext) {
+    public LinkedList<Response> createEvents(BotRequest botRequest, Response response, boolean doNext, List<Event> events, Boolean isMyEvents) {
+        int start;
+        int end;
+        int delta = 0; //сдвиг кнопочек в map
+        LinkedList<Response> result;
+        if (isMyEvents){
+            start = response.getMyStartEventNumber();
+            end = response.getMyEndEventNumber();
+            if (!doNext) //если пользовательно не выбрал показать еще, то сдвиг в мапе равен 5 между нужными кнопочками
+                delta = 5;
+            result = createEvents(botRequest, response, doNext, events,start, end, delta);
+            response.setMyStartEventNumber(end);
+        }
+        else
+        {
+            start = response.getStartEventNumber();
+            end = response.getEndEventNumber();
+            result = createEvents(botRequest, response, doNext, events,start, end, delta);
+            response.setStartEventNumber(end);
+        }
+        return result;
+    }
+
+    public LinkedList<Response> createEvents(BotRequest botRequest, Response response, boolean doNext, List<Event> events, int start, int end, int delta) {
         LinkedList<Response> responses = new LinkedList<>();
         String message;
-        int start = response.getStartEventNumber();
-        int end = response.getEndEventNumber();
         if (start == end || end == 0){
             response.setText("Больше мероприятий по выбранным параметрам нет");
             responses.add(response);
             return responses;
         }
+        else if (events.size() == 0) {
+            response.setText("Список выбранных Вами мероприятий пуст!\nИспользуйте кнопку \"Показать мероприятия\", чтобы посмотреть доступные мероприятия.");
+            responses.add(response);
+            return responses;
+        }
         else{
             for (int i = start; i < end; i++) {
-                Event event = response.getEvents().get(i);
+                Event event = events.get(i);
                 message = event.getEventBriefDescription();
-                int status = response.map.get(botRequest.getTypeButtons());
+                int status = response.map.get(botRequest.getTypeButtons()) + delta;
                 response.setText(message);
                 response.setPhotoFile(event.getPhoto());
                 boolean isEnd = i == end - 1;
-                if (!isNext)
+                if (!doNext)
                     ++status;
                 response.createButtons(getKey(status, response.map), Integer.toString(i), isEnd, null);
                 Response helpEvent = new Response(response);
                 responses.add(helpEvent);
             }
-            response.setStartEventNumber(end);
             return responses;
         }
     }

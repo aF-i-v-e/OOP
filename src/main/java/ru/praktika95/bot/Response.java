@@ -16,9 +16,13 @@ public class Response {
     private InputFile photoFile;
     private InlineKeyboardMarkup keyboard;
     private Event selectedEvent;
+    private Event mySelectedEvent;
     private List<Event> events;
+    private List<Event> myEventsList;
     private int startEventNumber;
     private int endEventNumber;
+    private int myStartEventNumber;
+    private int myEndEventNumber;
     private ParsingData parsingData;
     private boolean error;
 
@@ -28,14 +32,19 @@ public class Response {
             "category", 2,
             "events", 3,
             "event", 4,
-            "period", 5
+            "period", 5,
+            "myevents",6,
+            "myevent", 7,
+            "cancel", 8
     );
 
     public Response() {
         this.parsingData = new ParsingData();
         this.events = new ArrayList<>();
+        this.myEventsList = new ArrayList<>();
         this.error = false;
         this.selectedEvent = new Event();
+        this.mySelectedEvent = new Event();
     }
 
     public Response(Response superEvent) {
@@ -92,6 +101,16 @@ public class Response {
         this.text = event.getEventFullDescription();
     }
 
+    public Event getMySelectedEvent() {
+        return mySelectedEvent;
+    }
+
+    public void setMySelectedEvent(Event mySelectedEvent) {
+        this.mySelectedEvent = mySelectedEvent;
+        setPhotoFile(mySelectedEvent.getPhoto());
+        this.text = mySelectedEvent.getEventFullDescription();
+    }
+
     public List<Event> getEvents() {
         return events;
     }
@@ -100,12 +119,36 @@ public class Response {
         this.events = events;
     }
 
+    public List<Event> getMyEventsList() {
+        return myEventsList;
+    }
+
+    public  void setMyEventsList(List<Event> myEventsList) {
+        this.myEventsList = myEventsList;
+    }
+
     public int getStartEventNumber() {
         return startEventNumber;
     }
 
     public void setStartEventNumber(int startEvent) {
         this.startEventNumber = startEvent;
+    }
+
+    public int getMyStartEventNumber() {
+        return myStartEventNumber;
+    }
+
+    public void setMyStartEventNumber(int myStartEventNumber) {
+        this.myStartEventNumber = myStartEventNumber;
+    }
+
+    public int getMyEndEventNumber() {
+        return myEndEventNumber;
+    }
+
+    public void setMyEndEventNumber(int myEndEventNumber) {
+        this.myEndEventNumber = myEndEventNumber;
     }
 
     public int getEndEventNumber() {
@@ -119,6 +162,11 @@ public class Response {
     public void setNullEvents() {
         this.startEventNumber = 0;
         this.events = new ArrayList<>();
+    }
+
+    public void setNullMyEvents() {
+        this.myStartEventNumber = 0;
+        this.myEventsList = new ArrayList<>();
     }
 
     public void createButtons(String typeButtons, String number, boolean isEnd, String url) {

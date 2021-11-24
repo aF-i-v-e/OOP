@@ -13,7 +13,7 @@ public class Event {
 
     public Event() { }
 
-    public Event(String photo, String name, String dateTime, String place, String price, String url) {
+    public Event(String photo, String name, String date, String time, String place, String price, String url) {
         this.photo = photo;
         this.name = name;
         this.date = date;
@@ -37,6 +37,10 @@ public class Event {
 
     public String getTime(){
         return time;
+    }
+
+    public String getDateTime() {
+        return FormatDate.userFormatDate(date) + ", " + time;
     }
 
     public String getPlace(){
@@ -70,19 +74,19 @@ public class Event {
     public String getEventFullDescription() {
         String eventName = "Вы выбрали мероприятие:\n" + name;
         String eventPlace = "\nОно состоится: " + place;
-        String eventTime = "\nДата: " + dateTime;
+        String eventTime = "\nДата: " + FormatDate.userFormatDate(date) + ", "+ time;
         String eventPrice = "\nВходной билет стоит: "+ price;
         String resultText = eventName + eventPlace + eventTime + eventPrice;
         return resultText;
     }
 
     public String getEventBriefDescription() {
-        return "\n✧ Мероприятие: " + name + "\n✧ Дата: " + dateTime;
+        return "\n✧ Мероприятие: " + name + "\n✧ Дата: " + FormatDate.userFormatDate(date) + ", " + time;
     }
 
     public String getEventNotification(String period) {
         String eventName = "Вы выбрали: \""  + name + "\"";
-        String eventDate = "\nОно состоится: " + dateTime;
+        String eventDate = "\nОно состоится: " + FormatDate.userFormatDate(date) + ", "+ time;
         String notification = "\nEkbEventBot оповестит Вас за " + period + " о мероприятии, которое Вы выбрали";
         String resultText = eventName + eventDate + notification;
         return resultText;

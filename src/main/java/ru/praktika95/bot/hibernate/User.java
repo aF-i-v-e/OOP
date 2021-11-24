@@ -1,7 +1,6 @@
 package ru.praktika95.bot.hibernate;
 import ru.praktika95.bot.*;
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -89,14 +88,6 @@ public class User {
         this.eventName = eventName;
     }
 
-    public String getEventDateTime() {
-        return eventDateTime;
-    }
-
-    public void setEventDateTime(String eventDateTime) {
-        this.eventDateTime = eventDateTime;
-    }
-
     public String getEventPlace() {
         return eventPlace;
     }
@@ -120,6 +111,19 @@ public class User {
     public void setEventUrl(String eventUrl) {
         this.eventUrl = eventUrl;
     }
+
+    private String[] getDateAndTime() {
+        return eventDateTime.split(", ");
+    }
+
+    public String getEventDate() {
+        return getDateAndTime()[0];
+    }
+
+    public String getEventTime() {
+        return getDateAndTime()[1];
+    }
+
 
     @Override
     public boolean equals(Object obj) {
@@ -153,7 +157,7 @@ public class User {
 
     @Override
     public String toString() {
-        Event event = new Event(eventPhoto, eventName, eventDateTime, eventPlace, eventPrice, eventUrl);
+        Event event = new Event(eventPhoto, eventName, getEventDate(), getEventTime(), eventPlace, eventPrice, eventUrl);
         return event.getEventFullDescription();
     }
 }

@@ -144,7 +144,7 @@ public class CommandHandler {
     private LinkedList<Event> restoreEvent(List<User> usersList) {
         LinkedList<Event> events = new LinkedList<>();
         for (User user : usersList){
-            Event event = new Event(user.getEventPhoto(),user.getEventName(), user.getEventDateTime(), user.getEventPlace(), user.getEventPrice(), user.getEventUrl());
+            Event event = new Event(user.getEventPhoto(),user.getEventName(), user.getEventDate(), user.getEventTime(), user.getEventPlace(), user.getEventPrice(), user.getEventUrl());
             event.setDateNotice(user.getEventDateNotice());
             event.setIdBD(user.getId());
             events.add(event);
@@ -252,8 +252,6 @@ public class CommandHandler {
     public LinkedList<Response> createEvents(BotRequest botRequest, Response response, boolean doNext, List<Event> events, int start, int end, int delta) {
         LinkedList<Response> responses = new LinkedList<>();
         String message;
-        int start = response.getStartEventNumber();
-        int end = response.getEndEventNumber();
         if (start == end || end == 0){
             response.setText("Больше мероприятий по выбранным параметрам нет");
             responses.add(response);
@@ -278,7 +276,6 @@ public class CommandHandler {
                 Response helpEvent = new Response(response);
                 responses.add(helpEvent);
             }
-            response.setStartEventNumber(end);
             return responses;
         }
     }

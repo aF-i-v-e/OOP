@@ -10,15 +10,8 @@ public class BotRequest {
     private String typeButtons;
     private String botCommand;
     private String selectedEvent;
+    private String mySelectedEvent;
     final int BasicArrayLength  = 2;
-    public final Map<String,Integer> map = Map.of(
-            "main", 0,
-            "date", 1,
-            "category", 2,
-            "events", 3,
-            "event", 4,
-            "period", 5
-    );
 
     public BotRequest(Update update){
         if (update.hasCallbackQuery())
@@ -33,8 +26,10 @@ public class BotRequest {
         String[] callbackData = callbackQuery.getData().split(" ");
         this.setTypeButtons(callbackData[0]);
         this.setBotCommand(callbackData[1]);
-        if (callbackData.length > BasicArrayLength)
+        if (callbackData.length > BasicArrayLength) {
             this.setSelectedEvent(callbackData[2]);
+            this.setMySelectedEvent(callbackData[2]);
+        }
     }
 
     public String getTypeButtons() {
@@ -67,5 +62,14 @@ public class BotRequest {
 
     public void setSelectedEvent(String selectedEvent) {
         this.selectedEvent = selectedEvent;
+    }
+
+
+    public String getMySelectedEvent() {
+        return mySelectedEvent;
+    }
+
+    public void setMySelectedEvent(String mySelectedEvent) {
+        this.mySelectedEvent = mySelectedEvent;
     }
 }

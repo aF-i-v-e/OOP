@@ -100,7 +100,7 @@ public class CommandHandler {
     private String eventNotification(Response response, String period) {
         response.setPhotoFile(getRandomIntegerBetweenRange(TelegramIconImageNameType1, TelegramIconImageNameType2));
         String eventName = "Вы выбрали: \""  + response.getSelectedEvent().getName() + "\"";
-        String eventDate = "\nОно состоится: " + response.getSelectedEvent().getDateTime();
+        String eventDate = "\nОно состоится: " + response.getSelectedEvent().getDate() + " " + response.getSelectedEvent().getTime();
         String notification = "\nEkbEventBot оповестит Вас за " + period + " о мероприятии, которое Вы выбрали";
         String resultText = eventName + eventDate + notification;
         return resultText;

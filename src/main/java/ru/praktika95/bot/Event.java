@@ -71,17 +71,24 @@ public class Event {
         this.idBD = idBD;
     }
 
-    public String getEventFullDescription() {
+    public String getEventFullDescription(Boolean needToFormate) {
         String eventName = "Вы выбрали мероприятие:\n" + name;
         String eventPlace = "\nОно состоится: " + place;
-        String eventTime = "\nДата: " + FormatDate.userFormatDate(date) + ", "+ time;
+        String eventTime;
+        if (needToFormate)
+            eventTime = "\nДата: " + FormatDate.userFormatDate(date) + ", "+ time;
+        else
+            eventTime = "\nДата: " + date + ", "+ time;
         String eventPrice = "\nВходной билет стоит: "+ price;
         String resultText = eventName + eventPlace + eventTime + eventPrice;
         return resultText;
     }
 
-    public String getEventBriefDescription() {
-        return "\n✧ Мероприятие: " + name + "\n✧ Дата: " + FormatDate.userFormatDate(date) + ", " + time;
+    public String getEventBriefDescription(Boolean needToFormatDate) {
+        if (needToFormatDate)
+            return "\n✧ Мероприятие: " + name + "\n✧ Дата: " + FormatDate.userFormatDate(date) + ", " + time;
+        else
+            return "\n✧ Мероприятие: " + name + "\n✧ Дата: " + date + ", " + time;
     }
 
     public String getEventNotification(String period) {

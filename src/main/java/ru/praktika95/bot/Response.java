@@ -98,7 +98,7 @@ public class Response {
     public void setSelectedEvent(Event event) {
         this.selectedEvent = event;
         setPhotoFile(event.getPhoto());
-        this.text = event.getEventFullDescription();
+        this.text = event.getEventFullDescription(true);
     }
 
     public Event getMySelectedEvent() {
@@ -108,7 +108,7 @@ public class Response {
     public void setMySelectedEvent(Event mySelectedEvent) {
         this.mySelectedEvent = mySelectedEvent;
         setPhotoFile(mySelectedEvent.getPhoto());
-        this.text = mySelectedEvent.getEventFullDescription();
+        this.text = mySelectedEvent.getEventFullDescription(false);
     }
 
     public List<Event> getEvents() {

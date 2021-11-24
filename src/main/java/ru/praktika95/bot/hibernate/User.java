@@ -158,6 +158,6 @@ public class User {
     @Override
     public String toString() {
         Event event = new Event(eventPhoto, eventName, getEventDate(), getEventTime(), eventPlace, eventPrice, eventUrl);
-        return event.getEventFullDescription();
+        return event.getEventFullDescription(false);
     }
 }

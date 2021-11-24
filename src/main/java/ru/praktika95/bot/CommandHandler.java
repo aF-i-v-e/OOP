@@ -166,7 +166,7 @@ public class CommandHandler {
 
     private void deleteEventAndSetMessage(Response response, Event event) {
         String subscriptionDate = deleteFromDB(event);
-        response.setText("Вы отменили оповещение на " + subscriptionDate + "." + event.getEventBriefDescription());
+        response.setText("Вы отменили оповещение на " + subscriptionDate + "." + event.getEventBriefDescription(false));
     }
 
     private String deleteFromDB(Event event) {
@@ -236,20 +236,20 @@ public class CommandHandler {
             end = response.getMyEndEventNumber();
             if (!doNext) //если пользовательно не выбрал показать еще, то сдвиг в мапе равен 5 между нужными кнопочками
                 delta = 5;
-            result = createEvents(botRequest, response, doNext, events,start, end, delta);
+            result = createEvents(botRequest, response, doNext, events,start, end, delta, false);
             response.setMyStartEventNumber(end);
         }
         else
         {
             start = response.getStartEventNumber();
             end = response.getEndEventNumber();
-            result = createEvents(botRequest, response, doNext, events,start, end, delta);
+            result = createEvents(botRequest, response, doNext, events,start, end, delta, true);
             response.setStartEventNumber(end);
         }
         return result;
     }
 
-    public LinkedList<Response> createEvents(BotRequest botRequest, Response response, boolean doNext, List<Event> events, int start, int end, int delta) {
+    public LinkedList<Response> createEvents(BotRequest botRequest, Response response, boolean doNext, List<Event> events, int start, int end, int delta, boolean needToFormat) {
         LinkedList<Response> responses = new LinkedList<>();
         String message;
         if (start == end || end == 0){
@@ -265,7 +265,7 @@ public class CommandHandler {
         else{
             for (int i = start; i < end; i++) {
                 Event event = events.get(i);
-                message = event.getEventBriefDescription();
+                message = event.getEventBriefDescription(needToFormat);
                 int status = response.map.get(botRequest.getTypeButtons()) + delta;
                 response.setText(message);
                 response.setPhotoFile(event.getPhoto());

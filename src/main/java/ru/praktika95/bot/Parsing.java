@@ -94,7 +94,7 @@ public class Parsing {
             switch (nameDataElement) {
                 case "name" -> event.setName(valueDataElement.substring(1, valueDataElement.length() - 1));
                 case "image" -> event.setPhoto(valueDataElement.substring(1, valueDataElement.length() - 1));
-                case "venueName" -> event.setPlace(valueDataElement);
+                case "venueName" -> event.setPlace(valueDataElement.substring(1, valueDataElement.length() - 1));
                 case "minPrice" -> minPrice = valueDataElement;
                 case "maxPrice" -> maxPrice = valueDataElement;
                 case "date" -> {

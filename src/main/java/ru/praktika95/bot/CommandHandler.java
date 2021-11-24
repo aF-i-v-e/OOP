@@ -134,7 +134,7 @@ public class CommandHandler {
         else{
             for (int i = start; i < end; i++) {
                 Event event = response.getEvents().get(i);
-                message = "\n✧ Мероприятие: " + event.getName() + "\n✧ Дата: " + event.getDateTime();
+                message = "\n✧ Мероприятие: " + event.getName() + "\n✧ Дата: " + FormatDate.userFormatDate(event.getDate()) + " " + event.getTime();
                 int status = response.map.get(botRequest.getTypeButtons());
                 response.setText(message);
                 response.setPhotoFile(event.getPhoto());

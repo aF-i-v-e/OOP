@@ -98,6 +98,14 @@ public enum ReplyMarkup {
             };
             return createRowList(typeButtons, stringButtons, OneColumn, url);
         }
+    },
+    EXIST_NOTICE("existNotice") {
+        public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd, String url) {
+            String[] stringButtons = new String[]{
+                    "Отменить подписку", "cancel"
+            };
+            return createRowList(typeButtons, stringButtons, OneColumn, url);
+        }
     };
 
     final int OneColumn = 1;

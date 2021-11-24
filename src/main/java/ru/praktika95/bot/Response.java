@@ -35,7 +35,8 @@ public class Response {
             "period", 5,
             "myevents",6,
             "myevent", 7,
-            "cancel", 8
+            "cancel", 8,
+            "existNotice", 9
     );
 
     public Response() {

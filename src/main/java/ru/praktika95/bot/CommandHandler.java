@@ -14,6 +14,7 @@ public class CommandHandler {
     final int BuyQRCodImageName = 102;
     final int TelegramIconImageNameType1 = 841;//in unicode t has number 84 and image has the first type => 841
     final int TelegramIconImageNameType2 = 842;
+    final int ExistNoticeImage = 409;
 
     public void commandHandler(String basicCommand, Response response){
         response.setNullEvents();
@@ -179,10 +180,15 @@ public class CommandHandler {
 
     private void setNotification(Response response, String period) {
         Event selectedEvent = response.getSelectedEvent();
-        setNotificationInResponse(period, selectedEvent, response);
         Boolean success = setNotificationInDateBase(period, response.getChatId(), selectedEvent);
-        if (success)
+        if (success){
+            setNotificationInResponse(period, selectedEvent, response);
             response.createButtons("cancel", "8", false, null);
+        }
+        else {
+            response.setPhotoFile(ExistNoticeImage);
+            response.setText("Вы уже подписаны на это мероприятие!");
+        }
     }
 
     private void setNotificationInResponse(String period, Event selectedEvent, Response response) {
@@ -194,14 +200,13 @@ public class CommandHandler {
     private boolean setNotificationInDateBase(String period, String chatId, Event selectedEvent) {
         UsersCRUD usersCRUD = new UsersCRUD();
         User user = new User(chatId, selectedEvent);
-        user.setEventDateNotice("12.12.2021");
-        //задача 5 реализовать оповещение либо за день, либо за месяц т.е в базу внести соотсветствующую запись
-        if (period == "день") {
-
-        }
-        else {
-
-        }
+        System.out.println(selectedEvent.getDate());
+        String[] dateTwo = selectedEvent.getDate().split(" - ");
+        String[] date = dateTwo.length == 1 ? dateTwo[0].split("-") : dateTwo[1].split("-");
+        Calendar calendar = new GregorianCalendar(Integer.parseInt(date[0]), Integer.parseInt(date[1]) - 1, Integer.parseInt(date[2]));
+        int delta = period == "день" ? -1 : -7;
+        calendar.add(Calendar.DATE, delta);
+        user.setEventDateNotice(formatDate(calendar));
         if (!usersCRUD.existNote(user)) {
             usersCRUD.save(user);
             return true;

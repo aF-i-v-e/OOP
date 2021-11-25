@@ -77,8 +77,9 @@ public class Event {
         String eventTime;
         if (needToFormate)
             eventTime = "\nДата: " + FormatDate.userFormatDate(date) + ", "+ time;
-        else
-            eventTime = "\nДата: " + date + ", "+ time;
+        else {
+            eventTime = "\nДата: " + date + ", " + time + "\nДата уведомления: " + dateNotice;
+        }
         String eventPrice = "\nВходной билет стоит: "+ price;
         String resultText = eventName + eventPlace + eventTime + eventPrice;
         return resultText;
@@ -87,8 +88,9 @@ public class Event {
     public String getEventBriefDescription(Boolean needToFormatDate) {
         if (needToFormatDate)
             return "\n✧ Мероприятие: " + name + "\n✧ Дата: " + FormatDate.userFormatDate(date) + ", " + time;
-        else
-            return "\n✧ Мероприятие: " + name + "\n✧ Дата: " + date + ", " + time;
+        else {
+            return "\n✧ Мероприятие: " + name + "\n✧ Дата: " + date + ", " + time + "\n✧ Дата уведомления: " + dateNotice;
+        }
     }
 
     public String getEventNotification(String period) {

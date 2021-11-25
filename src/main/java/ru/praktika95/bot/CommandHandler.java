@@ -1,8 +1,11 @@
 package ru.praktika95.bot;
 
 import ru.praktika95.bot.hibernate.*;
+import ru.praktika95.bot.service.Service;
 
 import java.util.*;
+
+import static ru.praktika95.bot.FormatDateCalendar.formatDate;
 
 public class CommandHandler {
 
@@ -14,7 +17,8 @@ public class CommandHandler {
     final int BuyQRCodImageName = 102;
     final int TelegramIconImageNameType1 = 841;//in unicode t has number 84 and image has the first type => 841
     final int TelegramIconImageNameType2 = 842;
-    final int ExistNoticeImage = 409;
+    final int ExistNoticeImage = 410;
+    private Service service = new Service();
 
     public void commandHandler(String basicCommand, Response response){
         response.setNullEvents();
@@ -130,9 +134,7 @@ public class CommandHandler {
 
     private void setMyEventsList(Response response) {
         String userChatId = response.getChatId();
-        UsersCRUD usersCRUD = new UsersCRUD();
-        List<User> usersList = usersCRUD.getByChatId(userChatId);
-        List<Event> events = restoreEvent(usersList);
+        List<Event> events = Service.getEventListByChatId(userChatId);
         response.setMyEventsList(events);
     }
 
@@ -142,21 +144,9 @@ public class CommandHandler {
         setButtons(typeButtons, response, response.getMySelectedEvent().getUrl());
     }
 
-    private LinkedList<Event> restoreEvent(List<User> usersList) {
-        LinkedList<Event> events = new LinkedList<>();
-        for (User user : usersList){
-            Event event = new Event(user.getEventPhoto(),user.getEventName(), user.getEventDate(), user.getEventTime(), user.getEventPlace(), user.getEventPrice(), user.getEventUrl());
-            event.setDateNotice(user.getEventDateNotice());
-            event.setIdBD(user.getId());
-            events.add(event);
-        }
-        return events;
-    }
-
     private void cancel(Response response){
         Event eventToDelete = response.getSelectedEvent();
-        UsersCRUD usersCRUD = new UsersCRUD();
-        eventToDelete.setIdBD(usersCRUD.getLastId());
+        eventToDelete.setIdBD(Service.getLastId());
         deleteEventAndSetMessage(response, eventToDelete);
     }
 
@@ -166,21 +156,13 @@ public class CommandHandler {
     }
 
     private void deleteEventAndSetMessage(Response response, Event event) {
-        String subscriptionDate = deleteFromDB(event);
+        String subscriptionDate = Service.deleteFromDB(event);
         response.setText("Вы отменили оповещение на " + subscriptionDate + "." + event.getEventBriefDescription(false));
-    }
-
-    private String deleteFromDB(Event event) {
-        UsersCRUD usersCRUD = new UsersCRUD();
-        User userToDelete = usersCRUD.getById(event.getIdBD());
-        String subscriptionDate = userToDelete.getEventDateNotice();
-        usersCRUD.delete(userToDelete);
-        return  subscriptionDate;
     }
 
     private void setNotification(Response response, String period) {
         Event selectedEvent = response.getSelectedEvent();
-        Boolean success = setNotificationInDateBase(period, response.getChatId(), selectedEvent);
+        Boolean success = Service.setNotificationInDateBase(period, response.getChatId(), selectedEvent);
         if (success){
             setNotificationInResponse(period, selectedEvent, response);
             response.createButtons("cancel", "8", false, null);
@@ -195,24 +177,6 @@ public class CommandHandler {
         String notificationText = selectedEvent.getEventNotification(period);
         response.setPhotoFile(getRandomIntegerBetweenRange(TelegramIconImageNameType1, TelegramIconImageNameType2));
         response.setText(notificationText);
-    }
-
-    private boolean setNotificationInDateBase(String period, String chatId, Event selectedEvent) {
-        UsersCRUD usersCRUD = new UsersCRUD();
-        User user = new User(chatId, selectedEvent);
-        System.out.println(selectedEvent.getDate());
-        String[] dateTwo = selectedEvent.getDate().split(" - ");
-        String[] date = dateTwo.length == 1 ? dateTwo[0].split("-") : dateTwo[1].split("-");
-        Calendar calendar = new GregorianCalendar(Integer.parseInt(date[0]), Integer.parseInt(date[1]) - 1, Integer.parseInt(date[2]));
-        int delta = period == "день" ? -1 : -7;
-        calendar.add(Calendar.DATE, delta);
-        user.setEventDateNotice(formatDate(calendar));
-        if (!usersCRUD.existNote(user)) {
-            usersCRUD.save(user);
-            return true;
-            //нужно получить id этого занесенного юзера и назначить этот id юзеру - это нужно для того, чтобы потом в cancel удалить по id
-        }
-        return false;
     }
 
 
@@ -231,15 +195,16 @@ public class CommandHandler {
         setButtons(typeButtons, response, response.getSelectedEvent().getUrl());
     }
 
-    public LinkedList<Response> createEvents(BotRequest botRequest, Response response, boolean doNext, List<Event> events, Boolean isMyEvents) {
+    public LinkedList<Response> createEvents(BotRequest botRequest, Response response, boolean doNext,
+                                             List<Event> events, Boolean isMyEvents) {
         int start;
         int end;
-        int delta = 0; //сдвиг кнопочек в map
+        int delta = 0;
         LinkedList<Response> result;
         if (isMyEvents){
             start = response.getMyStartEventNumber();
             end = response.getMyEndEventNumber();
-            if (!doNext) //если пользовательно не выбрал показать еще, то сдвиг в мапе равен 5 между нужными кнопочками
+            if (!doNext)
                 delta = 5;
             result = createEvents(botRequest, response, doNext, events,start, end, delta, false);
             response.setMyStartEventNumber(end);
@@ -254,7 +219,8 @@ public class CommandHandler {
         return result;
     }
 
-    public LinkedList<Response> createEvents(BotRequest botRequest, Response response, boolean doNext, List<Event> events, int start, int end, int delta, boolean needToFormat) {
+    public LinkedList<Response> createEvents(BotRequest botRequest, Response response, boolean doNext,
+                                             List<Event> events, int start, int end, int delta, boolean needToFormat) {
         LinkedList<Response> responses = new LinkedList<>();
         String message;
         if (start == end || end == 0){
@@ -379,13 +345,6 @@ public class CommandHandler {
         String dateTo = formatDate(calendar);
         setMessageAndButtons( dateText + " в следующем месяце:",
                 createDatePeriod(response, dateFrom, dateTo), typeButtons, null, true);
-    }
-
-    private String formatDate(Calendar calendar) {
-        String date = Integer.toString(calendar.get(Calendar.DATE));
-        String month = Integer.toString(calendar.get(Calendar.MONTH) + 1);
-        String year = Integer.toString(calendar.get(Calendar.YEAR));
-        return date + '.' + month + '.' + year;
     }
 
     private Response createDatePeriod(Response response, String dateFrom, String dateTo){

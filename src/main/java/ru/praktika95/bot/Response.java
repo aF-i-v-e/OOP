@@ -54,6 +54,12 @@ public class Response {
         this.photoFile = superEvent.getPhotoFile();
     }
 
+    public Response(String chatId, String message, String photo) {
+        this.chatId = chatId;
+        this.text = message;
+        setPhotoFile(photo);
+    }
+
     public String getText() {
         return this.text;
     }

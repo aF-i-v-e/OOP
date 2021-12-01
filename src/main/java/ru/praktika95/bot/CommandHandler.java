@@ -1,7 +1,6 @@
 package ru.praktika95.bot;
 
-import ru.praktika95.bot.hibernate.*;
-import ru.praktika95.bot.service.Service;
+import ru.praktika95.bot.service.DataBaseWorkService;
 
 import java.util.*;
 
@@ -18,7 +17,7 @@ public class CommandHandler {
     final int TelegramIconImageNameType1 = 841;//in unicode t has number 84 and image has the first type => 841
     final int TelegramIconImageNameType2 = 842;
     final int ExistNoticeImage = 410;
-    private Service service = new Service();
+    private DataBaseWorkService dataBaseWorkService = new DataBaseWorkService();
 
     public void commandHandler(String basicCommand, Response response){
         response.setNullEvents();
@@ -134,7 +133,7 @@ public class CommandHandler {
 
     private void setMyEventsList(Response response) {
         String userChatId = response.getChatId();
-        List<Event> events = Service.getEventListByChatId(userChatId);
+        List<Event> events = DataBaseWorkService.getEventListByChatId(userChatId);
         response.setMyEventsList(events);
     }
 
@@ -146,7 +145,7 @@ public class CommandHandler {
 
     private void cancel(Response response){
         Event eventToDelete = response.getSelectedEvent();
-        eventToDelete.setIdBD(Service.getLastId());
+        eventToDelete.setIdBD(DataBaseWorkService.getLastId());
         deleteEventAndSetMessage(response, eventToDelete);
     }
 
@@ -156,13 +155,13 @@ public class CommandHandler {
     }
 
     private void deleteEventAndSetMessage(Response response, Event event) {
-        String subscriptionDate = Service.deleteFromDB(event);
+        String subscriptionDate = DataBaseWorkService.deleteFromDB(event);
         response.setText("Вы отменили оповещение на " + subscriptionDate + "." + event.getEventBriefDescription(false));
     }
 
     private void setNotification(Response response, String period) {
         Event selectedEvent = response.getSelectedEvent();
-        Boolean success = Service.setNotificationInDateBase(period, response.getChatId(), selectedEvent);
+        Boolean success = DataBaseWorkService.setNotificationInDateBase(period, response.getChatId(), selectedEvent);
         if (success){
             setNotificationInResponse(period, selectedEvent, response);
             response.createButtons("cancel", "8", false, null);

@@ -57,7 +57,7 @@ public class Bot extends TelegramLongPollingBot {
         response.setNull();
     }
 
-    private void executeResponse(Response response) {
+    public void executeResponse(Response response) {
         BotResponse botResponse = new BotResponse(response);
         if (response.getPhotoFile() != null)
             executePhotoBotResponse(botResponse);

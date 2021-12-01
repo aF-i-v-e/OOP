@@ -1,0 +1,37 @@
+package ru.praktika95.bot.service;
+
+import ru.praktika95.bot.Event;
+import ru.praktika95.bot.hibernate.User;
+
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+
+public class DBNoteService {
+
+    public static LinkedList<Event> restoreEvents(List<User> usersList) {
+        LinkedList<Event> events = new LinkedList<>();
+        for (User user : usersList){
+            Event event = restoreEvent(user);
+            events.add(event);
+        }
+        return events;
+    }
+
+    public static Event restoreEvent(User user) {
+        Event event = new Event(user.getEventPhoto(),user.getEventName(), user.getEventDate(), user.getEventTime(), user.getEventPlace(), user.getEventPrice(), user.getEventUrl());
+        event.setDateNotice(user.getEventDateNotice());
+        event.setIdBD(user.getId());
+        return event;
+    }
+
+    public static LinkedHashMap<String, Event> getDictionaryChatIdEvent(List<User> users) {
+        LinkedHashMap<String, Event> dictChatIdEvent = new LinkedHashMap<>();
+        for (User user : users){
+            Event event = restoreEvent(user);
+            String chatId = user.getChatId();
+            dictChatIdEvent.put(chatId, event);
+        }
+        return dictChatIdEvent;
+    }
+}

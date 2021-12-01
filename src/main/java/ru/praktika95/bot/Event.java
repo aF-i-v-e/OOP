@@ -101,6 +101,15 @@ public class Event {
         return resultText;
     }
 
+    public String getNotifyMessage() {
+        String notificationMsg = "Уведомление о посещении мероприятия! ";
+        String eventDescription = getEventBriefDescription(false);
+        String gratitudeMsg = "\nСпасибо за пользование EkbEventBot!";
+        String wishMsg = "\nЖелаем Вам приятно провести время на мероприятии!";
+        String resultAppeal = notificationMsg + eventDescription + gratitudeMsg + wishMsg;
+        return resultAppeal;
+    }
+
     public void setPhoto(String photo) {
         this.photo = photo;
     }

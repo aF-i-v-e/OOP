@@ -81,6 +81,21 @@ public class UsersCRUD {
         return results;
     }
 
+    public List<User> getUsersByDate(String dateNotice) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<User> cr = cb.createQuery(User.class);
+        Root<User> root = cr.from(User.class);
+        Predicate predicate = cb.like(root.get("eventDateNotice"),dateNotice);
+        cr.select(root).where(predicate);
+        Query<User> query = session.createQuery(cr);
+        List<User> results = query.getResultList();
+        session.close();
+        return results;
+    }
+
+
+
     public boolean existNote(User user) {
         Boolean existUser;
         List<User> usersDB = getEqualsUsersFromDB(user);

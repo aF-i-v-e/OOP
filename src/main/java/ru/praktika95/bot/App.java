@@ -5,6 +5,7 @@ import ru.praktika95.bot.hibernate.DataBaseSettings;
 import ru.praktika95.bot.hibernate.HibernateUtil;
 import ru.praktika95.bot.hibernate.User;
 import ru.praktika95.bot.hibernate.UsersCRUD;
+import ru.praktika95.bot.notifier.NotifierApp;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.util.Properties;
 
 public class App {
 
+    private static Bot bot;
     public static void main(String[] args) throws TelegramApiException {
         try {
             FileInputStream config = new FileInputStream("src/main/resources/config.properties");
@@ -20,9 +22,9 @@ public class App {
             property.load(config);
             String name = property.getProperty("bot.name");
             String token = property.getProperty("bot.token");
-            Bot bot = new Bot(name, token);
+            bot = new Bot(name, token);
             bot.botConnect();
-
+            NotifierApp.mainNotifier(null);
             String driverBase = property.getProperty("db.driver");
             String urlBase = property.getProperty("db.host");
             String userBase = property.getProperty("db.login");
@@ -32,5 +34,9 @@ public class App {
         } catch (IOException e) {
             System.err.println(e);
         }
+    }
+
+    public static Bot getBot() {
+        return bot;
     }
 }

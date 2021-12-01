@@ -6,12 +6,12 @@ import ru.praktika95.bot.hibernate.UsersCRUD;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.LinkedList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static ru.praktika95.bot.FormatDateCalendar.formatDate;
 
-public class Service {
+public class DataBaseWorkService {
     private static UsersCRUD usersCRUD = new UsersCRUD();
 
     public static boolean setNotificationInDateBase(String period, String chatId, Event selectedEvent) {
@@ -42,18 +42,20 @@ public class Service {
 
     public static List<Event> getEventListByChatId(String userChatId) {
         List<User> usersList = usersCRUD.getByChatId(userChatId);
-        List<Event> events = restoreEvent(usersList);
+        List<Event> events = DBNoteService.restoreEvents(usersList);
         return events;
     }
 
-    private static LinkedList<Event> restoreEvent(List<User> usersList) {
-        LinkedList<Event> events = new LinkedList<>();
-        for (User user : usersList){
-            Event event = new Event(user.getEventPhoto(),user.getEventName(), user.getEventDate(), user.getEventTime(), user.getEventPlace(), user.getEventPrice(), user.getEventUrl());
-            event.setDateNotice(user.getEventDateNotice());
-            event.setIdBD(user.getId());
-            events.add(event);
+    public static LinkedHashMap<String, Event> setNotifyDictAndDeleteUsers(String dateNotice) {
+        List<User> usersList = usersCRUD.getUsersByDate(dateNotice);
+        LinkedHashMap<String, Event> dict = DBNoteService.getDictionaryChatIdEvent(usersList);
+        deleteUsers(usersList);
+        return dict;
+    }
+
+    private static void deleteUsers(List<User> usersList) {
+        for (User user : usersList) {
+            usersCRUD.delete(user);
         }
-        return events;
     }
 }

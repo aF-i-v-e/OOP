@@ -2,6 +2,10 @@ package ru.praktika95.bot;
 
 import ru.praktika95.bot.services.Service;
 
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static ru.praktika95.bot.format.FormatDateCalendar.formatDate;
@@ -16,7 +20,7 @@ public class CommandHandler {
     final int BuyQRCodImageName = 102;
     final int TelegramIconImageNameType1 = 841;//in unicode t has number 84 and image has the first type => 841
     final int TelegramIconImageNameType2 = 842;
-    final int ExistNoticeImage = 410;
+    final int YouShallNotPassNoticeImage = 410;
     private Service service = new Service();
 
     public void commandHandler(String basicCommand, Response response){
@@ -161,14 +165,48 @@ public class CommandHandler {
 
     private void setNotification(Response response, String period) {
         Event selectedEvent = response.getSelectedEvent();
+        String responseNotificationCapability = checkNotificationCapability(selectedEvent, period);
+        if (responseNotificationCapability != null) {
+            response.setPhotoFile(YouShallNotPassNoticeImage);
+            String[] answer = responseNotificationCapability.split("-");
+            response.setText("Мероприятие через " + answer[0] + " дней, мы не можем уведомить Вас за " + answer[1] + "!");
+            return;
+        }
         Boolean success = Service.setNotificationInDateBase(period, response.getChatId(), selectedEvent);
         if (success){
+            response.setSelectedEvent(selectedEvent);
             setNotificationInResponse(period, selectedEvent, response);
             response.createButtons("cancel", "8", false, null);
         }
         else {
-            response.setPhotoFile(ExistNoticeImage);
+            response.setPhotoFile(YouShallNotPassNoticeImage);
             response.setText("Вы уже подписаны на это мероприятие!");
+        }
+    }
+
+    private String checkNotificationCapability(Event selectedEvent, String period) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String[] todayDate = sdf.format(new Date()).split("-");
+
+        String[] eventDate = selectedEvent.getDate().split(" - ");
+        String[] date = eventDate.length == 1 ? eventDate[0].split("-") : eventDate[1].split("-");
+
+        ZoneId z = ZoneId.of( "UTC+5" );
+
+        ZonedDateTime today = ZonedDateTime.of(Integer.parseInt(todayDate[0]), Integer.parseInt(todayDate[1]), Integer.parseInt(todayDate[2]), 0, 0, 0, 0, z);
+        ZonedDateTime eventD = ZonedDateTime.of(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]), 0, 0, 0, 0, z);
+
+        long days = ChronoUnit.DAYS.between(today , eventD);
+
+        if (period == "день") {
+            if (days > 1)
+                return null;
+            return days + "-" + "день";
+        }
+        else {
+            if (days > 7)
+                return null;
+            return days + "-" + "неделю";
         }
     }
 

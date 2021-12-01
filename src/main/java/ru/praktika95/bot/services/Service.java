@@ -21,7 +21,9 @@ public class Service {
         Calendar calendar = new GregorianCalendar(Integer.parseInt(date[0]), Integer.parseInt(date[1]) - 1, Integer.parseInt(date[2]));
         int delta = period == "день" ? -1 : -7;
         calendar.add(Calendar.DATE, delta);
-        user.setEventDateNotice(formatDate(calendar));
+        String dateNotice = formatDate(calendar);
+        user.setEventDateNotice(dateNotice);
+        selectedEvent.setDateNotice(dateNotice);
         if (!usersCRUD.existNote(user)) {
             usersCRUD.save(user);
             return true;

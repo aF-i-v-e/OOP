@@ -1,4 +1,4 @@
-package ru.praktika95.bot;
+package ru.praktika95.bot.format;
 
 import java.util.Calendar;
 

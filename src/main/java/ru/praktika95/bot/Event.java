@@ -1,5 +1,7 @@
 package ru.praktika95.bot;
 
+import ru.praktika95.bot.format.FormatDate;
+
 public class Event {
     private String photo;
     private String name;

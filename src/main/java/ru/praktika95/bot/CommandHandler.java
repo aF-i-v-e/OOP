@@ -1,11 +1,10 @@
 package ru.praktika95.bot;
 
-import ru.praktika95.bot.hibernate.*;
-import ru.praktika95.bot.service.Service;
+import ru.praktika95.bot.services.Service;
 
 import java.util.*;
 
-import static ru.praktika95.bot.FormatDateCalendar.formatDate;
+import static ru.praktika95.bot.format.FormatDateCalendar.formatDate;
 
 public class CommandHandler {
 

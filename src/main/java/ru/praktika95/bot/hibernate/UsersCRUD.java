@@ -1,16 +1,10 @@
 package ru.praktika95.bot.hibernate;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
 import javax.persistence.criteria.*;
 
-import org.glassfish.jersey.server.model.Suspendable;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import ru.praktika95.bot.Event;
 
 public class UsersCRUD {
 

@@ -1,5 +1,6 @@
 package ru.praktika95.bot.hibernate;
-import ru.praktika95.bot.*;
+import ru.praktika95.bot.Event;
+
 import javax.persistence.*;
 
 @Entity

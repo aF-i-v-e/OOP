@@ -2,13 +2,9 @@ package ru.praktika95.bot;
 
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.praktika95.bot.hibernate.DataBaseSettings;
-import ru.praktika95.bot.hibernate.HibernateUtil;
-import ru.praktika95.bot.hibernate.User;
-import ru.praktika95.bot.hibernate.UsersCRUD;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Properties;
 
 public class App {

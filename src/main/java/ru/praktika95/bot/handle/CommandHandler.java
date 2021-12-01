@@ -1,6 +1,11 @@
-package ru.praktika95.bot;
+package ru.praktika95.bot.handle;
 
-import ru.praktika95.bot.services.Service;
+import ru.praktika95.bot.bot.BotRequest;
+import ru.praktika95.bot.handle.parsing.Parsing;
+import ru.praktika95.bot.handle.response.DatePeriod;
+import ru.praktika95.bot.handle.response.Event;
+import ru.praktika95.bot.handle.response.Response;
+import ru.praktika95.bot.handle.services.Service;
 
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
@@ -8,7 +13,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import static ru.praktika95.bot.format.FormatDateCalendar.formatDate;
+import static ru.praktika95.bot.handle.format.FormatDateCalendar.formatDate;
 
 public class CommandHandler {
 

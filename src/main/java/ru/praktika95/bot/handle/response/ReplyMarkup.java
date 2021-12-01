@@ -1,4 +1,4 @@
-package ru.praktika95.bot;
+package ru.praktika95.bot.handle.response;
 
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 

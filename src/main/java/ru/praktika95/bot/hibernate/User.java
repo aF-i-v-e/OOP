@@ -1,5 +1,5 @@
 package ru.praktika95.bot.hibernate;
-import ru.praktika95.bot.Event;
+import ru.praktika95.bot.handle.response.Event;
 
 import javax.persistence.*;
 

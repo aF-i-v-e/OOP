@@ -1,6 +1,6 @@
-package ru.praktika95.bot;
+package ru.praktika95.bot.handle.response;
 
-import ru.praktika95.bot.format.FormatDate;
+import ru.praktika95.bot.handle.format.FormatDate;
 
 public class Event {
     private String photo;

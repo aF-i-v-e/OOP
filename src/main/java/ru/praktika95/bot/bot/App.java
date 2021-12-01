@@ -1,6 +1,7 @@
-package ru.praktika95.bot;
+package ru.praktika95.bot.bot;
 
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.praktika95.bot.bot.Bot;
 import ru.praktika95.bot.hibernate.DataBaseSettings;
 
 import java.io.FileInputStream;

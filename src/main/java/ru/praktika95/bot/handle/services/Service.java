@@ -1,6 +1,6 @@
-package ru.praktika95.bot.services;
+package ru.praktika95.bot.handle.services;
 
-import ru.praktika95.bot.Event;
+import ru.praktika95.bot.handle.response.Event;
 import ru.praktika95.bot.hibernate.User;
 import ru.praktika95.bot.hibernate.UsersCRUD;
 
@@ -9,7 +9,7 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
-import static ru.praktika95.bot.format.FormatDateCalendar.formatDate;
+import static ru.praktika95.bot.handle.format.FormatDateCalendar.formatDate;
 
 public class Service {
     private static UsersCRUD usersCRUD = new UsersCRUD();

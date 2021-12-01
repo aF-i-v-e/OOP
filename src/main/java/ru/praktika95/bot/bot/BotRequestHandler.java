@@ -1,8 +1,10 @@
-package ru.praktika95.bot;
+package ru.praktika95.bot.bot;
+
+import ru.praktika95.bot.handle.CommandHandler;
+import ru.praktika95.bot.handle.response.Response;
 
 import java.util.LinkedList;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentMap;
 
 public class BotRequestHandler {
 

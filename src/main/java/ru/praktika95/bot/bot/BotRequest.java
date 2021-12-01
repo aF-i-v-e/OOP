@@ -1,4 +1,4 @@
-package ru.praktika95.bot;
+package ru.praktika95.bot.bot;
 
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;

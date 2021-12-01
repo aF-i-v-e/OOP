@@ -1,4 +1,4 @@
-package ru.praktika95.bot;
+package ru.praktika95.bot.bot;
 
 import lombok.SneakyThrows;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -8,6 +8,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import ru.praktika95.bot.handle.response.Response;
 
 import java.util.*;
 

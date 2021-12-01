@@ -1,4 +1,6 @@
-package ru.praktika95.bot;
+package ru.praktika95.bot.handle.parsing;
+
+import ru.praktika95.bot.handle.response.DatePeriod;
 
 public class ParsingData {
     private String codeCategory;

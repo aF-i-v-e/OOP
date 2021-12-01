@@ -1,4 +1,4 @@
-package ru.praktika95.bot;
+package ru.praktika95.bot.handle.response;
 
 public class DatePeriod {
     private String dateFrom;

@@ -1,10 +1,13 @@
-package ru.praktika95.bot;
+package ru.praktika95.bot.handle.parsing;
 
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import ru.praktika95.bot.handle.response.DatePeriod;
+import ru.praktika95.bot.handle.response.Event;
+import ru.praktika95.bot.handle.response.Response;
 
 import java.util.*;
 import java.util.regex.Matcher;

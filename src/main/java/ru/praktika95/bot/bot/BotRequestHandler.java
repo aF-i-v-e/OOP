@@ -25,12 +25,12 @@ public class BotRequestHandler {
     }
 
     public LinkedList<Response> getNextAnswer(BotRequest botRequest, Response response) {
-        boolean isNextEvent = Objects.equals(botRequest.getBotCommand(), "next");
+        boolean isNextCategoryEvent = Objects.equals(botRequest.getBotCommand(), "next");
         boolean isNextMyEvent = Objects.equals(botRequest.getBotCommand(), "nextMyEvent");
         LinkedList<Response> listResponses = new LinkedList<>();
-        if (Objects.equals(botRequest.getTypeButtons(), "category") || isNextEvent){
-            listResponses = comH.createEvents(botRequest, response, isNextEvent, response.getEvents(), false);
-            if (!isNextEvent) {
+        if (Objects.equals(botRequest.getTypeButtons(), "category") || isNextCategoryEvent){
+            listResponses = comH.createEvents(botRequest, response, isNextCategoryEvent, response.getEvents(), false);
+            if (!isNextCategoryEvent) {
                 listResponses.addFirst(getSeparateMessage(botRequest, response));
             }
         }

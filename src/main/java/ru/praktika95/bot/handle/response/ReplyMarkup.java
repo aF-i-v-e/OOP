@@ -53,7 +53,7 @@ public enum ReplyMarkup {
         public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd, String url) {
             String[] stringButtons = new String[] {
                     "Перейти на сайт", "",
-                    "Подписаться на мероприятие", "subscribe",
+                    "Поставить уведомление", "subscribe",
                     "Купить фальшивый QR-код", "buy"
             };
             return createRowList(typeButtons, stringButtons, OneColumn, url);
@@ -85,7 +85,7 @@ public enum ReplyMarkup {
         public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd, String url) {
             String[] stringButtons = new String[]{
                     "Перейти на сайт", "",
-                    "Отписаться от мероприятия", "cancelSubscribe",
+                    "Отменить уведомление", "cancelSubscribe",
                     "Купить фальшивый QR-код", "buy"
             };
             return createRowList(typeButtons, stringButtons, OneColumn, url);
@@ -94,7 +94,7 @@ public enum ReplyMarkup {
     CANCEL("cancel") {
         public List<List<InlineKeyboardButton>> handler(String typeButtons, String number, boolean isEnd, String url) {
             String[] stringButtons = new String[]{
-                    "Отменить подписку", "cancel"
+                    "Отменить уведомление", "cancel"
             };
             return createRowList(typeButtons, stringButtons, OneColumn, url);
         }

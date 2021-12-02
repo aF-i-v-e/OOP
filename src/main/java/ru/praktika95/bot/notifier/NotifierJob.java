@@ -21,7 +21,7 @@ public class NotifierJob {
         this.findNodeService = findNodeServiceImpl;
     }
 
-    @Scheduled(fixedRateString = "${bot.wakeUpFrequency}")
+    @Scheduled(fixedRateString = "${interval-in-cron}")
     public void findNode() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.uuuu");
         LocalDate localDate = LocalDate.now();

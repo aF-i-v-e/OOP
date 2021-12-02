@@ -177,7 +177,7 @@ public class CommandHandler {
             response.setText("Мероприятие через " + answer[0] + " дней, мы не можем уведомить Вас за " + answer[1] + "!");
             return;
         }
-        Boolean success = Service.setNotificationInDateBase(period, response.getChatId(), selectedEvent);
+        boolean success = Service.setNotificationInDateBase(period, response.getChatId(), selectedEvent);
         if (success){
             response.setSelectedEvent(selectedEvent);
             setNotificationInResponse(period, selectedEvent, response);
@@ -317,8 +317,7 @@ public class CommandHandler {
     }
 
     private static int getRandomIntegerBetweenRange(int min, int max) {
-        int x = (int) (Math.random() * ((max - min) + 1)) + min;
-        return x;
+        return (int) (Math.random() * ((max - min) + 1)) + min;
     }
 
     private void date(Response response, String typeButtons){

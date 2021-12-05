@@ -1,8 +1,9 @@
-package ru.praktika95.bot;
+package ru.praktika95.bot.handle.response;
 
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import ru.praktika95.bot.handle.parsing.ParsingData;
 
 import java.io.File;
 import java.util.ArrayList;

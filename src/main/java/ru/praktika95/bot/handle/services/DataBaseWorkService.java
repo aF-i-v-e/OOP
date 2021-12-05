@@ -1,12 +1,12 @@
-package ru.praktika95.bot.service;
+package ru.praktika95.bot.handle.services;
 
-import ru.praktika95.bot.Event;
+import ru.praktika95.bot.handle.response.Event;
 import ru.praktika95.bot.hibernate.User;
 import ru.praktika95.bot.hibernate.UsersCRUD;
 
 import java.util.*;
 
-import static ru.praktika95.bot.FormatDateCalendar.formatDate;
+import static ru.praktika95.bot.handle.format.FormatDateCalendar.formatDate;
 
 public class DataBaseWorkService {
     private static UsersCRUD usersCRUD = new UsersCRUD();
@@ -18,7 +18,9 @@ public class DataBaseWorkService {
         Calendar calendar = new GregorianCalendar(Integer.parseInt(date[0]), Integer.parseInt(date[1]) - 1, Integer.parseInt(date[2]));
         int delta = period == "день" ? -1 : -7;
         calendar.add(Calendar.DATE, delta);
-        user.setEventDateNotice(formatDate(calendar));
+        String dateNotice = formatDate(calendar);
+        user.setEventDateNotice(dateNotice);
+        selectedEvent.setDateNotice(dateNotice);
         if (!usersCRUD.existNote(user)) {
             usersCRUD.save(user);
             return true;

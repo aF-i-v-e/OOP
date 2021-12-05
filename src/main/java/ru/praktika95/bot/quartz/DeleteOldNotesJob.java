@@ -3,8 +3,9 @@ package ru.praktika95.bot.quartz;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import ru.praktika95.bot.service.DataBaseWorkService;
-import ru.praktika95.bot.service.TimeService;
+import ru.praktika95.bot.handle.services.DataBaseWorkService;
+import ru.praktika95.bot.handle.services.TimeService;
+
 
 public class DeleteOldNotesJob implements Job {
     @Override

@@ -3,11 +3,12 @@ package ru.praktika95.bot.quartz;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import ru.praktika95.bot.App;
-import ru.praktika95.bot.Event;
-import ru.praktika95.bot.Response;
-import ru.praktika95.bot.service.DataBaseWorkService;
-import ru.praktika95.bot.service.TimeService;
+
+import ru.praktika95.bot.bot.App;
+import ru.praktika95.bot.handle.response.Event;
+import ru.praktika95.bot.handle.response.Response;
+import ru.praktika95.bot.handle.services.DataBaseWorkService;
+import ru.praktika95.bot.handle.services.TimeService;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;

@@ -6,6 +6,9 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.praktika95.bot.bot.BotRequest;
+import ru.praktika95.bot.handle.CommandHandler;
+import ru.praktika95.bot.handle.response.Response;
 
 import java.util.Map;
 

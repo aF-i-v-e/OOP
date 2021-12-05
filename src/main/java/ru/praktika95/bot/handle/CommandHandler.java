@@ -1,10 +1,20 @@
-package ru.praktika95.bot;
+package ru.praktika95.bot.handle;
 
-import ru.praktika95.bot.service.DataBaseWorkService;
+import ru.praktika95.bot.bot.BotRequest;
+import ru.praktika95.bot.handle.parsing.Parsing;
+import ru.praktika95.bot.handle.response.DatePeriod;
+import ru.praktika95.bot.handle.response.Event;
+import ru.praktika95.bot.handle.response.Response;
+import ru.praktika95.bot.handle.services.DataBaseWorkService;
 
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import static ru.praktika95.bot.FormatDateCalendar.formatDate;
+import static ru.praktika95.bot.handle.format.FormatDateCalendar.formatDate;
+
 
 public class CommandHandler {
 
@@ -16,7 +26,7 @@ public class CommandHandler {
     final int BuyQRCodImageName = 102;
     final int TelegramIconImageNameType1 = 841;//in unicode t has number 84 and image has the first type => 841
     final int TelegramIconImageNameType2 = 842;
-    final int ExistNoticeImage = 410;
+    final int YouShallNotPassNoticeImage = 410;
 
     public void commandHandler(String basicCommand, Response response){
         response.setNullEvents();
@@ -105,8 +115,8 @@ public class CommandHandler {
                 }
             }
             case "cancel" -> {
-                if ("cancel".equals(botCommand)) {
-                    cancel(response);
+                switch (botCommand) {
+                    case "cancel" -> cancel(response);
                 }
             }
             default -> other(response);
@@ -160,14 +170,48 @@ public class CommandHandler {
 
     private void setNotification(Response response, String period) {
         Event selectedEvent = response.getSelectedEvent();
+        String responseNotificationCapability = checkNotificationCapability(selectedEvent, period);
+        if (responseNotificationCapability != null) {
+            response.setPhotoFile(YouShallNotPassNoticeImage);
+            String[] answer = responseNotificationCapability.split("-");
+            response.setText(String.format("Мероприятие через %s дней, мы не можем уведомить Вас за %s!", answer[0], answer[1]));
+            return;
+        }
         boolean success = DataBaseWorkService.setNotificationInDateBase(period, response.getChatId(), selectedEvent);
         if (success){
+            response.setSelectedEvent(selectedEvent);
             setNotificationInResponse(period, selectedEvent, response);
             response.createButtons("cancel", "8", false, null);
         }
         else {
-            response.setPhotoFile(ExistNoticeImage);
+            response.setPhotoFile(YouShallNotPassNoticeImage);
             response.setText("Вы уже подписаны на это мероприятие!");
+        }
+    }
+
+    private String checkNotificationCapability(Event selectedEvent, String period) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String[] todayDate = sdf.format(new Date()).split("-");
+
+        String[] eventDate = selectedEvent.getDate().split(" - ");
+        String[] date = eventDate.length == 1 ? eventDate[0].split("-") : eventDate[1].split("-");
+
+        ZoneId z = ZoneId.of( "UTC+5" );
+
+        ZonedDateTime today = ZonedDateTime.of(Integer.parseInt(todayDate[0]), Integer.parseInt(todayDate[1]), Integer.parseInt(todayDate[2]), 0, 0, 0, 0, z);
+        ZonedDateTime eventD = ZonedDateTime.of(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]), 0, 0, 0, 0, z);
+
+        long days = ChronoUnit.DAYS.between(today , eventD);
+
+        if (period == "день") {
+            if (days > 1)
+                return null;
+            return days + "-" + "день";
+        }
+        else {
+            if (days > 7)
+                return null;
+            return days + "-" + "неделю";
         }
     }
 
@@ -250,7 +294,11 @@ public class CommandHandler {
     }
 
     private void hello(Response response) {
-        response.setText("Привет!\nЯ бот, которые может показать ближайшие мероприятия. Вы можете подписаться на их уведомление и вы точно про него не забудете.\nДля того, чтобы узнать больше о работе с данным ботом используйте кнопку \"Помощь\"\nДля того, чтобы посмотреть доступные мероприятия, выбрать подходящее время используйте кнопку \"Мероприятия\".");
+        response.setText("Привет!\nЯ бот, которые может показать ближайшие мероприятия. " +
+                "Вы можете подписаться на их уведомление и вы точно про него не забудете." +
+                "\nДля того, чтобы узнать больше о работе с данным ботом используйте кнопку \"Помощь\"" +
+                "\nДля того, чтобы посмотреть доступные мероприятия, выбрать подходящее время используйте кнопку" +
+                " \"Мероприятия\".");
         response.setPhotoFile(getRandomIntegerBetweenRange(StartImageName, EndImageName));
     }
 
@@ -263,7 +311,8 @@ public class CommandHandler {
                 "\nДоступно оповещение о событии за день, за неделю, либо за оба периода сразу." +
                 "\nДля отмены уведомления Вам нужно найти на главном меню кнопку \"Мои мероприятия\" " +
                 "и в появившемся списке выбрать мероприятие, оповещение на которое нужно убрать." +
-                "\nДля полной отмены уведомления на событие, нужно исключить все записи о данном мероприятии из списка \"Мои мероприятия\".");
+                "\nДля полной отмены уведомления на событие, нужно исключить все записи о данном мероприятии из списка" +
+                " \"Мои мероприятия\".");
         response.setPhotoFile(HelpImageName);
     }
 

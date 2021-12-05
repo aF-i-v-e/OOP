@@ -1,7 +1,8 @@
-package ru.praktika95.bot;
+package ru.praktika95.bot.bot;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import ru.praktika95.bot.handle.response.Response;
 
 public class BotResponse {
     private SendMessage sendMessage;

@@ -1,4 +1,4 @@
-package ru.praktika95.bot.service;
+package ru.praktika95.bot.handle.services;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

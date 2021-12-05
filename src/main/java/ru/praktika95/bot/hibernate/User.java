@@ -1,7 +1,6 @@
 package ru.praktika95.bot.hibernate;
-import ru.praktika95.bot.*;
-import ru.praktika95.bot.service.TimeService;
-
+import ru.praktika95.bot.handle.response.Event;
+import ru.praktika95.bot.handle.services.TimeService;
 import javax.persistence.*;
 
 @Entity

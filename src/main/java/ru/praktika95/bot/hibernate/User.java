@@ -11,28 +11,32 @@ public class User {
     private Integer id;
 
     @Column(name = "chat_id")
-    private final String chatId;
+    private String chatId;
 
     @Column(name = "date_notice")
     private String eventDateNotice;
 
     @Column(name = "photo_event")
-    private final String eventPhoto;
+    private String eventPhoto;
 
     @Column(name = "name_event")
-    private final String eventName;
+    private String eventName;
 
     @Column(name = "date_event")
-    private final String eventDateTime;
+    private String eventDateTime;
 
     @Column(name = "place_event")
-    private final String eventPlace;
+    private String eventPlace;
 
     @Column(name = "price_event")
-    private final String eventPrice;
+    private String eventPrice;
 
     @Column(name = "url_event")
-    private final String eventUrl;
+    private String eventUrl;
+
+    public User() {
+
+    }
 
     public User(String chatId, Event event) {
         this.chatId = chatId;

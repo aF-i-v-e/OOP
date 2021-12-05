@@ -17,7 +17,6 @@ public class CommandHandler {
     final int TelegramIconImageNameType1 = 841;//in unicode t has number 84 and image has the first type => 841
     final int TelegramIconImageNameType2 = 842;
     final int ExistNoticeImage = 410;
-    private DataBaseWorkService dataBaseWorkService = new DataBaseWorkService();
 
     public void commandHandler(String basicCommand, Response response){
         response.setNullEvents();
@@ -106,8 +105,8 @@ public class CommandHandler {
                 }
             }
             case "cancel" -> {
-                switch (botCommand) {
-                    case "cancel" -> cancel(response);
+                if ("cancel".equals(botCommand)) {
+                    cancel(response);
                 }
             }
             default -> other(response);
@@ -155,13 +154,13 @@ public class CommandHandler {
     }
 
     private void deleteEventAndSetMessage(Response response, Event event) {
-        String subscriptionDate = DataBaseWorkService.deleteFromDB(event);
+        String subscriptionDate = DataBaseWorkService.deleteByEvent(event);
         response.setText("Вы отменили оповещение на " + subscriptionDate + "." + event.getEventBriefDescription(false));
     }
 
     private void setNotification(Response response, String period) {
         Event selectedEvent = response.getSelectedEvent();
-        Boolean success = DataBaseWorkService.setNotificationInDateBase(period, response.getChatId(), selectedEvent);
+        boolean success = DataBaseWorkService.setNotificationInDateBase(period, response.getChatId(), selectedEvent);
         if (success){
             setNotificationInResponse(period, selectedEvent, response);
             response.createButtons("cancel", "8", false, null);
@@ -269,8 +268,7 @@ public class CommandHandler {
     }
 
     private static int getRandomIntegerBetweenRange(int min, int max) {
-        int x = (int) (Math.random() * ((max - min) + 1)) + min;
-        return x;
+        return (int) (Math.random() * ((max - min) + 1)) + min;
     }
 
     private void date(Response response, String typeButtons){

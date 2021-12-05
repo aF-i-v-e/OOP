@@ -1,21 +1,18 @@
 package ru.praktika95.bot;
 
+import org.quartz.SchedulerException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.praktika95.bot.hibernate.DataBaseSettings;
-import ru.praktika95.bot.hibernate.HibernateUtil;
-import ru.praktika95.bot.hibernate.User;
-import ru.praktika95.bot.hibernate.UsersCRUD;
-import ru.praktika95.bot.notifier.NotifierApp;
+import ru.praktika95.bot.quartz.QuartzJobScheduler;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Properties;
 
 public class App {
 
     private static Bot bot;
-    public static void main(String[] args) throws TelegramApiException {
+    public static void main(String[] args) throws TelegramApiException, SchedulerException {
         try {
             FileInputStream config = new FileInputStream("src/main/resources/config.properties");
             Properties property = new Properties();
@@ -24,7 +21,7 @@ public class App {
             String token = property.getProperty("bot.token");
             bot = new Bot(name, token);
             bot.botConnect();
-            NotifierApp.mainNotifier(null);
+            //QuartzJobScheduler.mainQuartzApp();
             String driverBase = property.getProperty("db.driver");
             String urlBase = property.getProperty("db.host");
             String userBase = property.getProperty("db.login");

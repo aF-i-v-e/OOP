@@ -11,32 +11,28 @@ public class User {
     private Integer id;
 
     @Column(name = "chat_id")
-    private String chatId;
+    private final String chatId;
 
     @Column(name = "date_notice")
     private String eventDateNotice;
 
     @Column(name = "photo_event")
-    private String eventPhoto;
+    private final String eventPhoto;
 
     @Column(name = "name_event")
-    private String eventName;
+    private final String eventName;
 
     @Column(name = "date_event")
-    private String eventDateTime;
+    private final String eventDateTime;
 
     @Column(name = "place_event")
-    private String eventPlace;
+    private final String eventPlace;
 
     @Column(name = "price_event")
-    private String eventPrice;
+    private final String eventPrice;
 
     @Column(name = "url_event")
-    private String eventUrl;
-
-    public User() {
-
-    }
+    private final String eventUrl;
 
     public User(String chatId, Event event) {
         this.chatId = chatId;
@@ -52,16 +48,8 @@ public class User {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public String getChatId() {
         return chatId;
-    }
-
-    public void setChatId(String chatId) {
-        this.chatId = chatId;
     }
 
     public String getEventDateNotice() {
@@ -76,40 +64,20 @@ public class User {
         return eventPhoto;
     }
 
-    public void setEventPhoto(String eventPhoto) {
-        this.eventPhoto = eventPhoto;
-    }
-
     public String getEventName() {
         return eventName;
-    }
-
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
     }
 
     public String getEventPlace() {
         return eventPlace;
     }
 
-    public void setEventPlace(String eventPlace) {
-        this.eventPlace = eventPlace;
-    }
-
     public String getEventPrice() {
         return eventPrice;
     }
 
-    public void setEventPrice(String eventPrice) {
-        this.eventPrice = eventPrice;
-    }
-
     public String getEventUrl() {
         return eventUrl;
-    }
-
-    public void setEventUrl(String eventUrl) {
-        this.eventUrl = eventUrl;
     }
 
     private String[] getDateAndTime() {
@@ -133,14 +101,14 @@ public class User {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        User other = (User) obj; //может быть из таблицы БД, а может быть созданный нами
+        User other = (User) obj;
         if (this.hashCode() == other.hashCode()) {
             if (other.id == null) {
                 return chatId.equals(other.chatId) &&
-                        eventDateNotice.equals(other.eventDateNotice) && //даты, когда надо оповестить равны
+                        eventDateNotice.equals(other.eventDateNotice) &&
                         eventUrl.equals(other.eventUrl);
             }
-            return id.equals(other.id); // иначе гарантируем уникальность по id, разные id - разные события
+            return id.equals(other.id);
         }
         return false;
     }

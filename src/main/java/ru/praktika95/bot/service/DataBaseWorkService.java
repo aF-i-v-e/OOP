@@ -29,7 +29,7 @@ public class DataBaseWorkService {
         return false;
     }
 
-    public static String deleteFromDB(Event event) {
+    public static String deleteByEvent(Event event) {
         User userToDelete = usersCRUD.getById(event.getIdBD());
         String subscriptionDate = userToDelete.getEventDateNotice();
         usersCRUD.delete(userToDelete);
@@ -49,11 +49,16 @@ public class DataBaseWorkService {
     public static LinkedHashMap<String, Event> setNotifyDictAndDeleteUsers(String dateNotice) {
         List<User> usersList = usersCRUD.getUsersByDate(dateNotice);
         LinkedHashMap<String, Event> dict = DBNoteService.getDictionaryChatIdEvent(usersList);
-        deleteUsers(usersList);
+        deleteByUsersList(usersList);
         return dict;
     }
 
-    private static void deleteUsers(List<User> usersList) {
+    public static void deleteOldNotes(String dateNotification) {
+        List<User> usersList = usersCRUD.getUsersWithLessDateNotice(dateNotification);
+        deleteByUsersList(usersList);
+    }
+
+    private static void deleteByUsersList(List<User> usersList) {
         for (User user : usersList) {
             usersCRUD.delete(user);
         }

@@ -81,6 +81,10 @@ public class UsersCRUD {
         return results;
     }
 
+    public List<User> getUsersWithLessDateNotice(String dateNotice) {
+        return new ArrayList<>();//надо реализовать
+    }
+
     public List<User> getUsersByDate(String dateNotice) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -93,8 +97,6 @@ public class UsersCRUD {
         session.close();
         return results;
     }
-
-
 
     public boolean existNote(User user) {
         Boolean existUser;

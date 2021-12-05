@@ -21,7 +21,7 @@ public class App {
             String token = property.getProperty("bot.token");
             bot = new Bot(name, token);
             bot.botConnect();
-            //QuartzJobScheduler.mainQuartzApp();
+            QuartzJobScheduler.mainQuartzApp();
             String driverBase = property.getProperty("db.driver");
             String urlBase = property.getProperty("db.host");
             String userBase = property.getProperty("db.login");

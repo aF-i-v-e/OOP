@@ -1,5 +1,7 @@
 package ru.praktika95.bot.hibernate;
 import ru.praktika95.bot.*;
+import ru.praktika95.bot.service.TimeService;
+
 import javax.persistence.*;
 
 @Entity
@@ -61,7 +63,7 @@ public class User {
     }
 
     public void setEventDateNotice(String eventDateNotice) {
-        this.eventDateNotice = eventDateNotice;
+        this.eventDateNotice = TimeService.getTimeInDBFormat(eventDateNotice);
     }
 
     public String getEventPhoto() {

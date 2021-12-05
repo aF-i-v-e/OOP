@@ -7,6 +7,13 @@ public class TimeService {
     public static String getCurrentTime() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.uuuu");
         LocalDate localDate = LocalDate.now();
-        return dtf.format(localDate);
+        String date = dtf.format(localDate);
+        return getTimeInDBFormat(date);
+    }
+
+    public static String getTimeInDBFormat(String date) {
+        if (date.charAt(0) == '0')
+            return date.substring(1);
+        return date;
     }
 }

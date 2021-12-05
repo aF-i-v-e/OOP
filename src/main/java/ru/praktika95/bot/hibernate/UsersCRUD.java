@@ -90,7 +90,7 @@ public class UsersCRUD {
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<User> cr = cb.createQuery(User.class);
         Root<User> root = cr.from(User.class);
-        Predicate predicate = cb.like(root.get("eventDateNotice"),dateNotice);
+        Predicate predicate = cb.like(root.get("eventDateNotice"), dateNotice);
         cr.select(root).where(predicate);
         Query<User> query = session.createQuery(cr);
         List<User> results = query.getResultList();

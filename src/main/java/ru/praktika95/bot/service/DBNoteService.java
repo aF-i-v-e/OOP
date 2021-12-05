@@ -25,12 +25,15 @@ public class DBNoteService {
         return event;
     }
 
-    public static LinkedHashMap<String, Event> getDictionaryChatIdEvent(List<User> users) {
-        LinkedHashMap<String, Event> dictChatIdEvent = new LinkedHashMap<>();
+    public static LinkedHashMap<String, LinkedList<Event>> getDictionaryChatIdEvent(List<User> users) {
+        LinkedHashMap<String, LinkedList<Event>> dictChatIdEvent = new LinkedHashMap<>();
         for (User user : users){
             Event event = restoreEvent(user);
             String chatId = user.getChatId();
-            dictChatIdEvent.put(chatId, event);
+            if (!dictChatIdEvent.containsKey(chatId))
+                dictChatIdEvent.put(chatId, new LinkedList<>());
+            LinkedList<Event> oldEvents = dictChatIdEvent.get(chatId);
+            oldEvents.add(event);
         }
         return dictChatIdEvent;
     }

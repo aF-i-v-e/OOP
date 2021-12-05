@@ -4,10 +4,7 @@ import ru.praktika95.bot.Event;
 import ru.praktika95.bot.hibernate.User;
 import ru.praktika95.bot.hibernate.UsersCRUD;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 import static ru.praktika95.bot.FormatDateCalendar.formatDate;
 
@@ -46,9 +43,9 @@ public class DataBaseWorkService {
         return events;
     }
 
-    public static LinkedHashMap<String, Event> setNotifyDictAndDeleteUsers(String dateNotice) {
+    public static LinkedHashMap<String, LinkedList<Event>> setNotifyDictAndDeleteUsers(String dateNotice) {
         List<User> usersList = usersCRUD.getUsersByDate(dateNotice);
-        LinkedHashMap<String, Event> dict = DBNoteService.getDictionaryChatIdEvent(usersList);
+        LinkedHashMap<String, LinkedList<Event>> dict = DBNoteService.getDictionaryChatIdEvent(usersList);
         deleteByUsersList(usersList);
         return dict;
     }

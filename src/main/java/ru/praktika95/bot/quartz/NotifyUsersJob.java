@@ -10,6 +10,7 @@ import ru.praktika95.bot.service.DataBaseWorkService;
 import ru.praktika95.bot.service.TimeService;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 public class NotifyUsersJob implements Job {
@@ -17,16 +18,18 @@ public class NotifyUsersJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         System.out.println("QuartzNotifyUsersJob run successfully.");
         String date = TimeService.getCurrentTime();
-        LinkedHashMap<String, Event> dictChatIdEvent = DataBaseWorkService.setNotifyDictAndDeleteUsers(date);
+        LinkedHashMap<String, LinkedList<Event>> dictChatIdEvent = DataBaseWorkService.setNotifyDictAndDeleteUsers(date);
         sendNotify(dictChatIdEvent);
     }
 
-    private void sendNotify(LinkedHashMap<String, Event> dict) {
-        for (Map.Entry<String, Event> entry: dict.entrySet()) {
+    private void sendNotify(LinkedHashMap<String, LinkedList<Event>> dict) {
+        for (Map.Entry<String, LinkedList<Event>> entry: dict.entrySet()) {
             String chatId = entry.getKey();
-            Event event = entry.getValue();
-            Response response = new Response(chatId,event.getNotifyMessage(), event.getPhoto());
-            App.getBot().executeResponse(response);
+            LinkedList<Event> events = entry.getValue();
+            for(Event event : events) {
+                Response response = new Response(chatId,event.getNotifyMessage(), event.getPhoto());
+                App.getBot().executeResponse(response);
+            }
         }
     }
 }

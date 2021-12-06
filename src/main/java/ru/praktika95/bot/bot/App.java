@@ -2,7 +2,6 @@ package ru.praktika95.bot.bot;
 
 import org.quartz.SchedulerException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.praktika95.bot.bot.Bot;
 import ru.praktika95.bot.hibernate.DataBaseSettings;
 import ru.praktika95.bot.quartz.QuartzJobScheduler;
 

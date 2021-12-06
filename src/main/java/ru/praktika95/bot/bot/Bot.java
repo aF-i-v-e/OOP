@@ -52,9 +52,7 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     private void executeResponseList(LinkedList<Response> list) {
-        for (int i = 0; i < list.size(); i++) {
-            executeResponse(list.get(i));
-        }
+        for (int i = 0; i < list.size(); i++) executeResponse(list.get(i));
         response.setNull();
     }
 

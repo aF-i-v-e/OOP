@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 class CheckNotificationCapabilityTest {
-
     @Test
     void testCheckNotificationCapabilityIncorrect() {
         Event event = new Event(

@@ -52,13 +52,11 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     private void executeResponseList(LinkedList<Response> list) {
-        for (int i = 0; i < list.size(); i++) {
-            executeResponse(list.get(i));
-        }
+        for (Response value : list) executeResponse(value);
         response.setNull();
     }
 
-    private void executeResponse(Response response) {
+    public void executeResponse(Response response) {
         BotResponse botResponse = new BotResponse(response);
         if (response.getPhotoFile() != null)
             executePhotoBotResponse(botResponse);

@@ -37,10 +37,6 @@ public class Event {
         return date;
     }
 
-    public String getTime(){
-        return time;
-    }
-
     public String getDateTime() {
         return FormatDate.userFormatDate(date) + ", " + time;
     }
@@ -80,8 +76,7 @@ public class Event {
                 ? "\nДата: " + FormatDate.userFormatDate(date) + ", "+ time
                 : "\nДата: " + date + ", " + time + "\nДата уведомления: " + dateNotice;
         String eventPrice = "\nВходной билет стоит: "+ price;
-        String resultText = eventName + eventPlace + eventTime + eventPrice;
-        return resultText;
+        return eventName + eventPlace + eventTime + eventPrice;
     }
 
     public String getEventBriefDescription(Boolean needToFormatDate) {
@@ -94,8 +89,15 @@ public class Event {
         String eventName = "Вы выбрали: \""  + name + "\"";
         String eventDate = "\nОно состоится: " + FormatDate.userFormatDate(date) + ", "+ time;
         String notification = "\nEkbEventBot оповестит Вас за " + period + " о мероприятии, которое Вы выбрали";
-        String resultText = eventName + eventDate + notification;
-        return resultText;
+        return eventName + eventDate + notification;
+    }
+
+    public String getNotifyMessage() {
+        String notificationMsg = "Уведомление о посещении мероприятия! ";
+        String eventDescription = getEventBriefDescription(false);
+        String gratitudeMsg = "\nСпасибо за пользование EkbEventBot!";
+        String wishMsg = "\nЖелаем Вам приятно провести время на мероприятии!";
+        return  notificationMsg + eventDescription + gratitudeMsg + wishMsg;
     }
 
     public void setPhoto(String photo) {

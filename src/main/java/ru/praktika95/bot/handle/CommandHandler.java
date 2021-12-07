@@ -5,7 +5,11 @@ import ru.praktika95.bot.handle.parsing.Parsing;
 import ru.praktika95.bot.handle.response.DatePeriod;
 import ru.praktika95.bot.handle.response.Event;
 import ru.praktika95.bot.handle.response.Response;
-import ru.praktika95.bot.handle.services.Service;
+import ru.praktika95.bot.handle.services.chService.RandomService;
+import ru.praktika95.bot.handle.services.dbService.DataBaseWorkService;
+import ru.praktika95.bot.handle.services.chService.CommandHandlerConstants;
+import ru.praktika95.bot.handle.services.chService.StringFormatService;
+import ru.praktika95.bot.handle.services.timeService.TimeConstants;
 
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
@@ -15,18 +19,9 @@ import java.util.*;
 
 import static ru.praktika95.bot.handle.format.FormatDateCalendar.formatDate;
 
-public class CommandHandler {
 
-    private final String dateText = "Выберите категорию мероприятия, которое состоится";
-    final int HelpImageName = 911;
-    final int StartImageName = 1;
-    final int EndImageName = 5;
-    final int MaxEventsCount = 3;//было 6
-    final int BuyQRCodImageName = 102;
-    final int TelegramIconImageNameType1 = 841;//in unicode t has number 84 and image has the first type => 841
-    final int TelegramIconImageNameType2 = 842;
-    final int YouShallNotPassNoticeImage = 410;
-    private Service service = new Service();
+public class CommandHandler {
+    final String dash = "-";
 
     public void commandHandler(String basicCommand, Response response){
         response.setNullEvents();
@@ -132,7 +127,7 @@ public class CommandHandler {
         }
         else
             start = response.getMyStartEventNumber();
-        int end = start + MaxEventsCount;
+        int end = start + CommandHandlerConstants.MaxEventsCount;
         countEvent = response.getMyEventsList().size();
         if (end > countEvent)
             end = countEvent;
@@ -142,7 +137,7 @@ public class CommandHandler {
 
     private void setMyEventsList(Response response) {
         String userChatId = response.getChatId();
-        List<Event> events = Service.getEventListByChatId(userChatId);
+        List<Event> events = DataBaseWorkService.getEventListByChatId(userChatId);
         response.setMyEventsList(events);
     }
 
@@ -154,7 +149,7 @@ public class CommandHandler {
 
     private void cancel(Response response){
         Event eventToDelete = response.getSelectedEvent();
-        eventToDelete.setIdBD(Service.getLastId());
+        eventToDelete.setIdBD(DataBaseWorkService.getLastId());
         deleteEventAndSetMessage(response, eventToDelete);
     }
 
@@ -164,66 +159,76 @@ public class CommandHandler {
     }
 
     private void deleteEventAndSetMessage(Response response, Event event) {
-        String subscriptionDate = Service.deleteFromDB(event);
-        response.setText("Вы отменили оповещение на " + subscriptionDate + "." + event.getEventBriefDescription(false));
+        String subscriptionDate = DataBaseWorkService.deleteByEvent(event);
+        response.setText(StringFormatService.getString(CommandHandlerConstants.youCancelNotification, subscriptionDate,
+                event.getEventBriefDescription(false)));
     }
 
     private void setNotification(Response response, String period) {
         Event selectedEvent = response.getSelectedEvent();
-        String[] resNotificationCap = checkNotificationCapability(selectedEvent, period);
-        if (resNotificationCap != null) {
+        String responseNotificationCapability = checkNotificationCapability(selectedEvent, period);
+        if (responseNotificationCapability != null) {
             response.setPhotoFile(YouShallNotPassNoticeImage);
-            response.setText(String.format("Мероприятие через %s дней, мы не можем уведомить Вас за %s!", resNotificationCap[0], resNotificationCap[1]));
+            String[] answer = responseNotificationCapability.split("-");
+            response.setText(String.format("Мероприятие через %s дней, мы не можем уведомить Вас за %s!", answer[0], answer[1]));
             return;
         }
-        boolean success = Service.setNotificationInDateBase(period, response.getChatId(), selectedEvent);
+        boolean success = DataBaseWorkService.setNotificationInDateBase(period, response.getChatId(), selectedEvent);
         if (success){
             response.setSelectedEvent(selectedEvent);
             setNotificationInResponse(period, selectedEvent, response);
-            response.createButtons("cancel", "8", false, null);
+            response.createButtons(CommandHandlerConstants.cancelButtons,
+                    response.map.get(CommandHandlerConstants.cancelButtons).toString(), false, null);
         }
         else {
-            response.setPhotoFile(YouShallNotPassNoticeImage);
-            response.setText("Вы уже подписаны на это мероприятие!");
+            response.setPhotoFile(CommandHandlerConstants.YouShallNotPassNoticeImage);
+            response.setText(CommandHandlerConstants.existNotification);
         }
     }
 
-    private String[] checkNotificationCapability(Event selectedEvent, String period) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String[] todayDate = sdf.format(new Date()).split("-");
+    private String checkNotificationCapability(Event selectedEvent, String period) {
+        SimpleDateFormat sdf = new SimpleDateFormat(TimeConstants.timePatternWithDash);
+        String[] todayDate = sdf.format(new Date()).split(dash);
 
-        String[] eventDate = selectedEvent.getDate().split(" - ");
-        String[] date = eventDate.length == 1 ? eventDate[0].split("-") : eventDate[1].split("-");
+        String[] eventDate = selectedEvent.getDate().split(TimeConstants.dashWithWhitespaces);
+        String[] date = eventDate.length == 1 ? eventDate[0].split(dash) : eventDate[1].split(dash);
 
-        ZoneId z = ZoneId.of("UTC+5");
+        ZoneId z = ZoneId.of( TimeConstants.zoneId );
 
-        ZonedDateTime today = ZonedDateTime.of(Integer.parseInt(todayDate[0]), Integer.parseInt(todayDate[1]), Integer.parseInt(todayDate[2]), 0, 0, 0, 0, z);
-        ZonedDateTime eventD = ZonedDateTime.of(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]), 0, 0, 0, 0, z);
+        ZonedDateTime today = ZonedDateTime.of(Integer.parseInt(todayDate[0]), Integer.parseInt(todayDate[1]),
+                Integer.parseInt(todayDate[2]), 0, 0, 0, 0, z);
+        ZonedDateTime eventD = ZonedDateTime.of(Integer.parseInt(date[0]), Integer.parseInt(date[1]),
+                Integer.parseInt(date[2]), 0, 0, 0, 0, z);
 
         long days = ChronoUnit.DAYS.between(today , eventD);
 
-        if (Objects.equals(period, "день")) {
-            return days > 1 ? null : new String[] {Long.toString(days), "день"};
+        if (TimeConstants.day.equals(period)) {
+            if (days > 1)
+                return null;
+            return days + dash + TimeConstants.day;
         }
         else {
-            return days > 7 ? null : new String[] {Long.toString(days), "неделю"};
+            if (days > 7)
+                return null;
+            return days + dash + TimeConstants.week;
         }
     }
 
     private void setNotificationInResponse(String period, Event selectedEvent, Response response) {
         String notificationText = selectedEvent.getEventNotification(period);
-        response.setPhotoFile(getRandomIntegerBetweenRange(TelegramIconImageNameType1, TelegramIconImageNameType2));
+        response.setPhotoFile(RandomService.getRandomIntegerBetweenRange(CommandHandlerConstants.TelegramIconImageNameType1,
+                CommandHandlerConstants.TelegramIconImageNameType2));
         response.setText(notificationText);
     }
 
 
     private void subscribe(Response response, String typeButtons) {
-        setMessageAndButtons("Выберите период, за который Вы хотите, чтобы бот Вас оповестил о мероприятии:", response, typeButtons, null, false);
+        setMessageAndButtons(CommandHandlerConstants.choosePeriod, response, typeButtons, null, false);
     }
 
     private void buy(Response response) {
-        response.setText("\nВас посетила полиция котиков!\nНа этот раз без штрафа, но впредь будьте аккуратнее!");
-        response.setPhotoFile(BuyQRCodImageName);
+        response.setText(CommandHandlerConstants.catPolice);
+        response.setPhotoFile(CommandHandlerConstants.BuyQRCodImageName);
     }
 
     private void showFullEvent(Response response, String typeButtons, String eventNumber) {
@@ -261,12 +266,7 @@ public class CommandHandler {
         LinkedList<Response> responses = new LinkedList<>();
         String message;
         if (start == end || end == 0){
-            response.setText("Больше мероприятий по выбранным параметрам нет");
-            responses.add(response);
-            return responses;
-        }
-        else if (events.size() == 0) {
-            response.setText("Список выбранных Вами мероприятий пуст!\nИспользуйте кнопку \"Показать мероприятия\", чтобы посмотреть доступные мероприятия.");
+            response.setText(CommandHandlerConstants.noEvents);
             responses.add(response);
             return responses;
         }
@@ -289,40 +289,23 @@ public class CommandHandler {
     }
 
     private void hello(Response response) {
-        response.setText("Привет!\nЯ бот, которые может показать ближайшие мероприятия. " +
-                "Вы можете подписаться на их уведомление и вы точно про него не забудете." +
-                "\nДля того, чтобы узнать больше о работе с данным ботом используйте кнопку \"Помощь\"" +
-                "\nДля того, чтобы посмотреть доступные мероприятия, выбрать подходящее время используйте кнопку" +
-                " \"Мероприятия\".");
-        response.setPhotoFile(getRandomIntegerBetweenRange(StartImageName, EndImageName));
+        response.setText(CommandHandlerConstants.helloMessage);
+        response.setPhotoFile(RandomService.getRandomIntegerBetweenRange(CommandHandlerConstants.StartImageName, CommandHandlerConstants.EndImageName));
     }
 
     private void help(Response response) {
-        response.setText("О работе с данным ботом:" +
-                "\nДля того, чтобы выбрать категорию мероприятия и подходящий период времени, " +
-                "используйте соответствующие кнопки.\nПосле, Вам на выбор будет представлено 3 мероприятия." +
-                "\nКогда Вы выберете конкретное мероприятие, Вы сможете сразу приобрести билеты, либо " +
-                "поставить на него уведомление." +
-                "\nДоступно оповещение о событии за день, за неделю, либо за оба периода сразу." +
-                "\nДля отмены уведомления Вам нужно найти на главном меню кнопку \"Мои мероприятия\" " +
-                "и в появившемся списке выбрать мероприятие, оповещение на которое нужно убрать." +
-                "\nДля полной отмены уведомления на событие, нужно исключить все записи о данном мероприятии из списка" +
-                " \"Мои мероприятия\".");
-        response.setPhotoFile(HelpImageName);
-    }
-
-    private static int getRandomIntegerBetweenRange(int min, int max) {
-        return (int) (Math.random() * ((max - min) + 1)) + min;
+        response.setText(CommandHandlerConstants.helpMessage);
+        response.setPhotoFile(CommandHandlerConstants.HelpImageName);
     }
 
     private void date(Response response, String typeButtons){
-        setMessageAndButtons("Выберите дату", response, typeButtons, null, true);
+        setMessageAndButtons(TimeConstants.chooseDate, response, typeButtons, null, true);
     }
 
     private void today(Response response, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
         String currentDate = formatDate(calendar);
-        setMessageAndButtons(dateText + " сегодня:",
+        setMessageAndButtons(CommandHandlerConstants.dateText + TimeConstants.today,
                 createDatePeriod(response, currentDate, currentDate), typeButtons, null, true);
     }
 
@@ -330,7 +313,7 @@ public class CommandHandler {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 1);
         String tomorrow = formatDate(calendar);
-        setMessageAndButtons(dateText + " завтра:",
+        setMessageAndButtons(CommandHandlerConstants.dateText + TimeConstants.tomorrow,
                 createDatePeriod(response, tomorrow, tomorrow), typeButtons, null, true);
     }
 
@@ -345,7 +328,7 @@ public class CommandHandler {
             calendar.add(Calendar.DATE, 8 - dateWeek);
             dateTo = formatDate(calendar);
         }
-        setMessageAndButtons(dateText + " на этой неделе:",
+        setMessageAndButtons(CommandHandlerConstants.dateText + TimeConstants.thisWeek,
                 createDatePeriod(response, currentDate, dateTo), typeButtons, null, true);
     }
 
@@ -359,7 +342,7 @@ public class CommandHandler {
         String dateFrom = formatDate(calendar);
         calendar.add(Calendar.DATE, 6);
         String dateTo = formatDate(calendar);
-        setMessageAndButtons(dateText + " на следующей неделе:",
+        setMessageAndButtons(CommandHandlerConstants.dateText + TimeConstants.nextWeek,
                 createDatePeriod(response, dateFrom, dateTo), typeButtons, null, true);
     }
 
@@ -375,7 +358,7 @@ public class CommandHandler {
             calendar.add(Calendar.DATE, lastDayMonth - dateMonth);
             dateTo = formatDate(calendar);
         }
-        setMessageAndButtons(dateText + " в этом месяце:",
+        setMessageAndButtons(CommandHandlerConstants.dateText + TimeConstants.thisMonth,
                 createDatePeriod(response, currentDate, dateTo), typeButtons, null, true);
     }
 
@@ -392,7 +375,7 @@ public class CommandHandler {
         dateMonth = calendar.get(Calendar.DATE);
         calendar.add(Calendar.DATE, lastDayMonth - dateMonth);
         String dateTo = formatDate(calendar);
-        setMessageAndButtons( dateText + " в следующем месяце:",
+        setMessageAndButtons( CommandHandlerConstants.dateText + TimeConstants.nextMonth,
                 createDatePeriod(response, dateFrom, dateTo), typeButtons, null, true);
     }
 
@@ -413,7 +396,7 @@ public class CommandHandler {
         }
         else
             start = response.getStartEventNumber();
-        int end = start + MaxEventsCount;
+        int end = start + CommandHandlerConstants.MaxEventsCount;
         countEvent = response.getEvents().size();
         if (end > countEvent)
             end = countEvent;
@@ -426,10 +409,12 @@ public class CommandHandler {
         parsing.parsing(response);
     }
 
-    private void setMessageAndButtons(String message, Response response, String typeButtons, String url, boolean withPhoto) {
+    private void setMessageAndButtons(String message, Response response, String typeButtons,
+                                      String url, boolean withPhoto) {
         response.setText(message);
         if (withPhoto)
-            response.setPhotoFile(getRandomIntegerBetweenRange(StartImageName, EndImageName));
+            response.setPhotoFile(RandomService.getRandomIntegerBetweenRange(CommandHandlerConstants.StartImageName,
+                    CommandHandlerConstants.EndImageName));
         setButtons(typeButtons, response, url);
     }
 
@@ -448,6 +433,6 @@ public class CommandHandler {
     }
 
     private void other(Response response) {
-        response.setText("Введённой команды не существует, вы можете выполнить команду /start, чтобы начать работу с ботом.");
+        response.setText(CommandHandlerConstants.otherCommand);
     }
 }

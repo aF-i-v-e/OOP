@@ -55,6 +55,12 @@ public class Response {
         this.photoFile = superEvent.getPhotoFile();
     }
 
+    public Response(String chatId, String message, String photo) {
+        this.chatId = chatId;
+        this.text = message;
+        setPhotoFile(photo);
+    }
+
     public String getText() {
         return this.text;
     }
@@ -73,10 +79,6 @@ public class Response {
 
     public InlineKeyboardMarkup getKeyboard() {
         return this.keyboard;
-    }
-
-    public void setKeyboard(InlineKeyboardMarkup keyboardMarkup) {
-        this.keyboard = keyboardMarkup;
     }
 
     public InputFile getPhotoFile() {

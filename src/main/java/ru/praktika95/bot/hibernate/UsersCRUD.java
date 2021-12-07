@@ -1,11 +1,16 @@
 package ru.praktika95.bot.hibernate;
 
-import java.util.ArrayList;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import javax.persistence.criteria.*;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.jsoup.nodes.Element;
+import ru.praktika95.bot.handle.response.Event;
+import ru.praktika95.bot.handle.services.timeService.TimeConstants;
 
 public class UsersCRUD {
 
@@ -77,7 +82,13 @@ public class UsersCRUD {
     }
 
     public List<User> getUsersWithLessDateNotice(String dateNotice) {
-        return new ArrayList<>();//надо реализовать
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        CriteriaQuery<User> criteriaQuery = session.getCriteriaBuilder().createQuery(User.class);
+        criteriaQuery.from(User.class);
+        List<User> users = session.createQuery(criteriaQuery).getResultList();
+        session.close();
+        users.removeIf(user -> !checkLessDate(user.getEventDateNotice().split("\\."), dateNotice.split("\\.")));
+        return users;
     }
 
     public List<User> getUsersByDate(String dateNotice) {
@@ -109,5 +120,16 @@ public class UsersCRUD {
             existUser = true;
         }
         return existUser;
+    }
+
+    private boolean checkLessDate(String[] dateLess, String[] date) {
+        ZoneId z = ZoneId.of( TimeConstants.zoneId );
+
+        ZonedDateTime dateLessZ = ZonedDateTime.of(Integer.parseInt(dateLess[2]), Integer.parseInt(dateLess[1]),
+                Integer.parseInt(dateLess[0]), 0, 0, 0, 0, z);
+        ZonedDateTime dateZ = ZonedDateTime.of(Integer.parseInt(date[2]), Integer.parseInt(date[1]),
+                Integer.parseInt(date[0]), 0, 0, 0, 0, z);
+
+        return dateLessZ.isBefore(dateZ);
     }
 }

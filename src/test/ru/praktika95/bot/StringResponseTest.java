@@ -1,6 +1,7 @@
 package ru.praktika95.bot;
 
 import static org.junit.jupiter.api.Assertions.*;
+import ru.praktika95.bot.handle.services.chService.CommandHandlerConstants;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,12 +11,13 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.praktika95.bot.bot.BotRequest;
 import ru.praktika95.bot.handle.CommandHandler;
 import ru.praktika95.bot.handle.response.Response;
+import ru.praktika95.bot.handle.services.chService.CommandHandlerConstants;
+import ru.praktika95.bot.handle.services.timeService.TimeConstants;
 
 class StringResponseTest {
     private CommandHandler commandHandler;
     private Response response;
     private BotRequest botRequest;
-    private final String dateText = "Выберите категорию мероприятия, которое состоится";
 
     @BeforeEach
     public void setUp() {
@@ -30,41 +32,27 @@ class StringResponseTest {
 
     @Test
     void testCorrectHelpMessage() {
-        compareBasicCommandWork("help", "О работе с данным ботом:" +
-                "\nДля того, чтобы выбрать категорию мероприятия и подходящий период времени, " +
-                "используйте соответствующие кнопки.\nПосле, Вам на выбор будет представлено 3 мероприятия." +
-                "\nКогда Вы выберете конкретное мероприятие, Вы сможете сразу приобрести билеты, либо " +
-                "поставить на него уведомление." +
-                "\nДоступно оповещение о событии за день, за неделю, либо за оба периода сразу." +
-                "\nДля отмены уведомления Вам нужно найти на главном меню кнопку \"Мои мероприятия\" " +
-                "и в появившемся списке выбрать мероприятие, оповещение на которое нужно убрать." +
-                "\nДля полной отмены уведомления на событие, нужно исключить все записи о данном мероприятии из списка \"Мои мероприятия\".");
+        compareBasicCommandWork("help", CommandHandlerConstants.helpMessage);
     }
 
     @Test
     void testCorrectStartMessage() {
-        compareBasicCommandWork("start", "Привет!\nЯ бот, которые может показать ближайшие мероприятия. " +
-                "Вы можете поставить уведомление о выбранном событии, и я оповещу Вас о нём!" +
-                "\nДля того, чтобы посмотреть доступные мероприятия, выбрать подходящее время используйте кнопку" +
-                " \"Выбрать\"."
-                + "\nДля того, чтобы узнать больше о работе с данным ботом используйте кнопку \"Помощь\"."
-                + "\nДля того, чтобы посмотреть все выбранные Вами мероприятия используйте кнопку \"Мои мероприятия\".");
+        compareBasicCommandWork("start", CommandHandlerConstants.helloMessage);
     }
 
     @Test
     void testIncorrectMessage() {
-        compareBasicCommandWork("read", "Введённой команды не существует, вы можете выполнить команду " +
-                "/start, чтобы начать работу с ботом.");
+        compareBasicCommandWork("read", CommandHandlerConstants.otherCommand);
     }
 
-    private void setBotRequest(String typeButtons, String botCommand){
+    private void setBotRequest(String typeButtons, String botCommand) {
         Update update = createTestUpdate();
         botRequest = new BotRequest(update);
         botRequest.setTypeButtons(typeButtons);
         botRequest.setBotCommand(botCommand);
     }
 
-    private Message createTestMessage(){
+    private Message createTestMessage() {
         Message message = new Message();
         message.setMessageId(689);
         Chat chat = new Chat(454652745l, "private", null, "UserFirstName", "UserLastName", "userName", null, null, null, null, null, null, null, null, null, null, null, null, null);
@@ -72,13 +60,13 @@ class StringResponseTest {
         return message;
     }
 
-    private Update createTestUpdate(){
+    private Update createTestUpdate() {
         Message message = createTestMessage();
         Update update = new Update(55632457, message, null, null, null, null, null, null, null, null, null, null, null, null);
         return update;
     }
 
-    private void compareStringBotResponse(String correctAnswer){
+    private void compareStringBotResponse(String correctAnswer) {
         commandHandler.commandHandler(botRequest, response);
         assertEquals(correctAnswer, response.getText());
     }
@@ -86,57 +74,55 @@ class StringResponseTest {
     @Test
     void testCorrectShowCommand() {
         setBotRequest("main", "show");
-        compareStringBotResponse("Выберите дату");
+        compareStringBotResponse(TimeConstants.chooseDate);
     }
 
     @Test
     void testCorrectHelpCommand() {
         setBotRequest("main", "help");
-        String correctAns = "О работе с данным ботом:" +
-        "\nДля того, чтобы выбрать категорию мероприятия и подходящий период времени, " +
-                "используйте соответствующие кнопки.\nПосле, Вам на выбор будет представлено 3 мероприятия." +
-                "\nКогда Вы выберете конкретное мероприятие, Вы сможете сразу приобрести билеты, либо " +
-                "поставить на него уведомление." +
-                "\nДоступно оповещение о событии за день, за неделю, либо за оба периода сразу." +
-                "\nДля отмены уведомления Вам нужно найти на главном меню кнопку \"Мои мероприятия\" " +
-                "и в появившемся списке выбрать мероприятие, оповещение на которое нужно убрать." +
-                "\nДля полной отмены уведомления на событие, нужно исключить все записи о данном мероприятии из списка \"Мои мероприятия\".";
+        String correctAns = CommandHandlerConstants.helpMessage;
         compareStringBotResponse(correctAns);
     }
 
     @Test
     void testCorrectTodayCommand() {
         setBotRequest("date", "today");
-        compareStringBotResponse(dateText + " сегодня:");
+        compareStringBotResponse(CommandHandlerConstants.dateText + TimeConstants.today);
     }
 
     @Test
     void testCorrectTomorrowCommand() {
         setBotRequest("date", "tomorrow");
-        compareStringBotResponse( dateText + " завтра:");
+        compareStringBotResponse( CommandHandlerConstants.dateText + TimeConstants.tomorrow);
     }
 
     @Test
     void testCorrectThisWeekCommand() {
         setBotRequest("date", "thisWeek");
-        compareStringBotResponse(dateText + " на этой неделе:");
+        compareStringBotResponse(CommandHandlerConstants.dateText + TimeConstants.thisWeek);
     }
 
     @Test
     void testCorrectNextWeekCommand() {
         setBotRequest("date", "nextWeek");
-        compareStringBotResponse(dateText + " на следующей неделе:");
+        compareStringBotResponse(CommandHandlerConstants.dateText + TimeConstants.nextWeek);
     }
 
     @Test
     void testCorrectThisMonthCommand() {
         setBotRequest("date", "thisMonth");
-        compareStringBotResponse(dateText + " в этом месяце:");
+        compareStringBotResponse(CommandHandlerConstants.dateText + TimeConstants.thisMonth);
     }
 
     @Test
-    void testCorrectNextMonthCommand() {
-        setBotRequest("date", "nextMonth");
-        compareStringBotResponse(dateText + " в следующем месяце:");
+    void testCorrectSubscribeCommand() {
+        setBotRequest("event", "subscribe");
+        compareStringBotResponse(CommandHandlerConstants.choosePeriod);
+    }
+
+    @Test
+    void testCorrectBuyCommand() {
+        setBotRequest("event", "buy");
+        compareStringBotResponse(CommandHandlerConstants.catPolice);
     }
 }

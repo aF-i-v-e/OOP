@@ -1,11 +1,11 @@
-package ru.praktika95.bot.handle.services;
+package ru.praktika95.bot.handle.services.timeService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class TimeService {
     public static String getCurrentTime() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.uuuu");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(TimeConstants.timePatternWithDot);
         LocalDate localDate = LocalDate.now();
         String date = dtf.format(localDate);
         return getTimeInDBFormat(date);

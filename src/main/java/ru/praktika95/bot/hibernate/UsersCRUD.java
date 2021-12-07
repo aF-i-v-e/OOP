@@ -94,7 +94,7 @@ public class UsersCRUD {
     }
 
     public boolean existNote(User user) {
-        Boolean existUser;
+        boolean existUser;
         List<User> usersDB = getEqualsUsersFromDB(user);
         int listSize = usersDB.size();
         if (listSize == 0)

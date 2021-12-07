@@ -81,10 +81,6 @@ public class Response {
         return this.keyboard;
     }
 
-    public void setKeyboard(InlineKeyboardMarkup keyboardMarkup) {
-        this.keyboard = keyboardMarkup;
-    }
-
     public InputFile getPhotoFile() {
         return this.photoFile;
     }

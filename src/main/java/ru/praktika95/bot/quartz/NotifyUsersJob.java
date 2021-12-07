@@ -7,8 +7,8 @@ import org.quartz.JobExecutionException;
 import ru.praktika95.bot.bot.App;
 import ru.praktika95.bot.handle.response.Event;
 import ru.praktika95.bot.handle.response.Response;
-import ru.praktika95.bot.handle.services.DataBaseWorkService;
-import ru.praktika95.bot.handle.services.TimeService;
+import ru.praktika95.bot.handle.services.dbService.DataBaseWorkService;
+import ru.praktika95.bot.handle.services.timeService.TimeService;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;

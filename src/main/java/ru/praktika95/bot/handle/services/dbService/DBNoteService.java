@@ -1,4 +1,4 @@
-package ru.praktika95.bot.handle.services;
+package ru.praktika95.bot.handle.services.dbService;
 
 import ru.praktika95.bot.handle.response.Event;
 import ru.praktika95.bot.hibernate.User;

@@ -168,7 +168,7 @@ public class CommandHandler {
         Event selectedEvent = response.getSelectedEvent();
         String responseNotificationCapability = checkNotificationCapability(selectedEvent, period);
         if (responseNotificationCapability != null) {
-            response.setPhotoFile(YouShallNotPassNoticeImage);
+            response.setPhotoFile(CommandHandlerConstants.YouShallNotPassNoticeImage);
             String[] answer = responseNotificationCapability.split("-");
             response.setText(String.format("Мероприятие через %s дней, мы не можем уведомить Вас за %s!", answer[0], answer[1]));
             return;

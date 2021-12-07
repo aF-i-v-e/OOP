@@ -68,7 +68,7 @@ public class setDataForResponse {
             return days > 7
                     ? null
                     : new String[] {days + CommandHandlerConstants.whitespaces +
-                    getDayAddition(Math.abs(days)), TimeConstants.day};
+                    getDayAddition(Math.abs(days)), TimeConstants.week};
         }
     }
 

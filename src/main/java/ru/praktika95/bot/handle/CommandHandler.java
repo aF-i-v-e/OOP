@@ -170,11 +170,10 @@ public class CommandHandler {
 
     private void setNotification(Response response, String period) {
         Event selectedEvent = response.getSelectedEvent();
-        String responseNotificationCapability = checkNotificationCapability(selectedEvent, period);
-        if (responseNotificationCapability != null) {
+        String[] resNotificationCap = checkNotificationCapability(selectedEvent, period);
+        if (resNotificationCap != null) {
             response.setPhotoFile(YouShallNotPassNoticeImage);
-            String[] answer = responseNotificationCapability.split("-");
-            response.setText(String.format("Мероприятие через %s дней, мы не можем уведомить Вас за %s!", answer[0], answer[1]));
+            response.setText(String.format("Мероприятие через %s дней, мы не можем уведомить Вас за %s!", resNotificationCap[0], resNotificationCap[1]));
             return;
         }
         boolean success = Service.setNotificationInDateBase(period, response.getChatId(), selectedEvent);
@@ -189,7 +188,7 @@ public class CommandHandler {
         }
     }
 
-    private String checkNotificationCapability(Event selectedEvent, String period) {
+    private String[] checkNotificationCapability(Event selectedEvent, String period) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String[] todayDate = sdf.format(new Date()).split("-");
 
@@ -204,10 +203,10 @@ public class CommandHandler {
         long days = ChronoUnit.DAYS.between(today , eventD);
 
         if (Objects.equals(period, "день")) {
-            return days > 1 ? null : days + "-" + "день";
+            return days > 1 ? null : new String[] {Long.toString(days), "день"};
         }
         else {
-            return days > 7 ? null : days + "-" + "неделю";
+            return days > 7 ? null : new String[] {Long.toString(days), "неделю"};
         }
     }
 

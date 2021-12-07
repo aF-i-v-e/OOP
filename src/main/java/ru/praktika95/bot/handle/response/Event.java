@@ -87,7 +87,7 @@ public class Event {
     public String getEventBriefDescription(Boolean needToFormatDate) {
         return needToFormatDate
                 ? "\n✧ Мероприятие: " + name + "\n✧ Дата: " + FormatDate.userFormatDate(date) + ", " + time
-                : "\n✧ Мероприятие: " + name + "\n✧ Дата: " + date + ", " + time + "\n✧ Дата уведомления: " + dateNotice;
+                : "\n✧ Мероприятие: " + name + "\n✧ Дата: " + FormatDate.userFormatDate(date) + ", " + time + "\n✧ Дата уведомления: " + dateNotice;
     }
 
     public String getEventNotification(String period) {

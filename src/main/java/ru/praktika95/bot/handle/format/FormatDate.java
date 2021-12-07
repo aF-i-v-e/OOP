@@ -11,6 +11,8 @@ public class FormatDate {
     public static String userFormatDate(String simpleDate) {
         if (simpleDate == null)
             return "";
+        if (!simpleDate.contains("-"))
+            return simpleDate;
         String[] date = simpleDate.split(CommandHandlerConstants.dashWithWhitespaces);
         String[] dateOne = date[0].split(CommandHandlerConstants.dash);
         if (date.length > 1){

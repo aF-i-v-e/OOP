@@ -12,10 +12,7 @@ import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class setDataForResponse {
     public static void setNotification(Response response, String period) {
@@ -44,7 +41,10 @@ public class setDataForResponse {
         SimpleDateFormat sdf = new SimpleDateFormat(TimeConstants.timePatternWithDash);
         String[] todayDate = sdf.format(new Date()).split(CommandHandlerConstants.dash);
 
-        String[] eventDate = selectedEvent.getDate().split(TimeConstants.dashWithWhitespaces);
+        String eventDateStr = selectedEvent.getDate();
+        if (!eventDateStr.contains("-"))
+            return null;
+        String[] eventDate = eventDateStr.split(TimeConstants.dashWithWhitespaces);
         String[] date = eventDate.length == 1
                 ? eventDate[0].split(CommandHandlerConstants.dash)
                 : eventDate[1].split(CommandHandlerConstants.dash);

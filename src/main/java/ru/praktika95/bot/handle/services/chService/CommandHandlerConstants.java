@@ -11,7 +11,7 @@ public interface CommandHandlerConstants {
     int YouShallNotPassNoticeImage = 410;
     String youCancelNotification = "Вы отменили оповещение на %s. %s";
     String dateText = "Выберите категорию мероприятия, которое состоится";
-    String youCannotSetNotification = "Мероприятие через %s дней, мы не можем уведомить Вас за %s!";
+    String youCannotSetNotification = "Мероприятие через %s, мы не можем уведомить Вас за %s!";
     String cancelButtons = "cancel";
     String existNotification = "Вы уже подписаны на это мероприятие!";
     String choosePeriod = "Выберите период, за который Вы хотите, чтобы бот Вас оповестил о мероприятии: ";
@@ -35,4 +35,8 @@ public interface CommandHandlerConstants {
             " \"Мои мероприятия\".";
     String otherCommand = "Введённой команды не существует, вы можете выполнить команду /start, " +
             "чтобы начать работу с ботом.";
+    String whitespaces = " ";
+    String dash = "-";
+    String dashWithWhitespaces = " - ";
+    String dot = ".";
 }

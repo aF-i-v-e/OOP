@@ -2,6 +2,7 @@ package ru.praktika95.bot.bot;
 
 
 import ru.praktika95.bot.handle.CommandHandler;
+import ru.praktika95.bot.handle.helpers.setDataForResponse;
 import ru.praktika95.bot.handle.response.Response;
 
 import java.util.LinkedList;
@@ -30,14 +31,14 @@ public class BotRequestHandler {
         boolean isNextMyEvent = Objects.equals(botRequest.getBotCommand(), "nextMyEvent");
         LinkedList<Response> listResponses = new LinkedList<>();
         if (Objects.equals(botRequest.getTypeButtons(), "category") || isNextCategoryEvent){
-            listResponses = comH.createEvents(botRequest, response, isNextCategoryEvent, response.getEvents(), false);
+            listResponses = setDataForResponse.createEvents(botRequest, response, isNextCategoryEvent, response.getEvents(), false);
             if (!isNextCategoryEvent) {
                 listResponses.addFirst(getSeparateMessage(botRequest, response));
             }
         }
         else if (isNextMyEvent  || Objects.equals(botRequest.getTypeButtons(), "main")
                 && Objects.equals(botRequest.getBotCommand(), "showMyEvents")) {
-            listResponses = comH.createEvents(botRequest, response, isNextMyEvent, response.getMyEventsList(), true);
+            listResponses = setDataForResponse.createEvents(botRequest, response, isNextMyEvent, response.getMyEventsList(), true);
         }
         return listResponses;
     }

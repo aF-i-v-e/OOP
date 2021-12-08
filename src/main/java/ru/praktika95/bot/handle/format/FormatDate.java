@@ -2,6 +2,8 @@ package ru.praktika95.bot.handle.format;
 
 import ru.praktika95.bot.handle.SeparatorsConst;
 
+import java.util.regex.Pattern;
+
 public class FormatDate {
 
     private static final String[] seasons = new String[] {
@@ -11,7 +13,7 @@ public class FormatDate {
     public static String userFormatDate(String simpleDate) {
         if (simpleDate == null)
             return SeparatorsConst.nullStr;
-        if (!simpleDate.contains(SeparatorsConst.dash))
+        if (!Pattern.matches(".+\\-.+\\-.+", simpleDate))
             return simpleDate;
         String[] date = simpleDate.split(SeparatorsConst.dashWithWhitespaces);
         String[] dateOne = date[0].split(SeparatorsConst.dash);

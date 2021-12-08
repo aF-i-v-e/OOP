@@ -14,6 +14,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class setDataForResponse {
     public static void setNotification(Response response, String period) {
@@ -43,7 +44,7 @@ public class setDataForResponse {
         String[] todayDate = sdf.format(new Date()).split(SeparatorsConst.dash);
 
         String eventDateStr = selectedEvent.getDate();
-        if (!eventDateStr.contains(SeparatorsConst.dash))
+        if (!Pattern.matches(".+\\-.+\\-.+", eventDateStr))
             return null;
         String[] eventDate = eventDateStr.split(SeparatorsConst.dashWithWhitespaces);
         String[] date = eventDate.length == 1

@@ -1,6 +1,10 @@
 package ru.praktika95.bot.handle.parsing;
 
 public interface ParsingConstants {
+    String categoryTheatre = "3009";
+    String categoryMuseum = "4093";
+    String categoryConcert = "3000";
+    String categoryAll = "0";
     int connectionTime = 3000;
     String site = "https://ekb.kassir.ru/category?";
     String agent = "Yandex/21.8.3.614";

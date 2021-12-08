@@ -20,9 +20,9 @@ public class Parsing {
         DatePeriod date = parsingData.getDatePeriod();
 
         Map<String,String> query = Map.of(
-                "main", parsingData.getCodeCategory()/*"3009"*/,
-                "date_from", date.getDateFrom()/*"16.11.2021"*/,
-                "date_to", date.getDateTo()/*"16.11.2021"*/,
+                "main", parsingData.getCodeCategory(),
+                "date_from", date.getDateFrom(),
+                "date_to", date.getDateTo(),
                 "sort", "1",
                 "c", "30"
         );

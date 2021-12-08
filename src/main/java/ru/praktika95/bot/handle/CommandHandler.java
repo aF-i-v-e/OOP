@@ -4,6 +4,7 @@ import ru.praktika95.bot.bot.BotRequest;
 import ru.praktika95.bot.handle.helpers.CreateDate;
 import ru.praktika95.bot.handle.helpers.SetDataForResponse;
 import ru.praktika95.bot.handle.parsing.Parsing;
+import ru.praktika95.bot.handle.parsing.ParsingConstants;
 import ru.praktika95.bot.handle.response.Event;
 import ru.praktika95.bot.handle.response.Response;
 import ru.praktika95.bot.handle.services.chService.RandomService;
@@ -55,19 +56,19 @@ public class CommandHandler {
             case "category" -> {
                 switch (botCommand) {
                     case "theatre" -> {
-                        response.setCategory("3009");
+                        response.setCategory(ParsingConstants.categoryTheatre);
                         events(response, false);
                     }
                     case "museum" -> {
-                        response.setCategory("4093");
+                        response.setCategory(ParsingConstants.categoryMuseum);
                         events(response, false);
                     }
                     case "concert" -> {
-                        response.setCategory("3000");
+                        response.setCategory(ParsingConstants.categoryConcert);
                         events(response, false);
                     }
                     case "allEvents" -> {
-                        response.setCategory("0");
+                        response.setCategory(ParsingConstants.categoryAll);
                         events(response, false);
                     }
                 }

@@ -19,8 +19,8 @@ public class App {
             String token = property.getProperty("bot.token");
             bot = new Bot(name, token);
             bot.botConnect();
-            QuartzJobScheduler.mainQuartzApp();
             DataBaseSettings.setDataBaseSettings(property);
+            QuartzJobScheduler.mainQuartzApp();
         } catch (IOException e) {
             System.err.println(e);
         }

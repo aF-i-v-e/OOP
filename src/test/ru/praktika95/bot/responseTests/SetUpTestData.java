@@ -19,7 +19,7 @@ public class SetUpTestData {
     private static Message createTestMessage(){
         Message message = new Message();
         message.setMessageId(689);
-        Chat chat = new Chat(454652745l, "private", null, "UserFirstName", "UserLastName", "userName", null, null, null, null, null, null, null, null, null, null, null, null, null);
+        Chat chat = new Chat(111111111l, "private", null, "UserFirstName", "UserLastName", "userName", null, null, null, null, null, null, null, null, null, null, null, null, null);
         message.setChat(chat);
         return message;
     }

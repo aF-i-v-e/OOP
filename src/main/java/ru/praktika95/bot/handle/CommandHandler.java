@@ -93,8 +93,8 @@ public class CommandHandler {
             }
             case "period" -> {
                 switch (botCommand) {
-                    case "day" -> setNotification(response, "день");
-                    case "week" -> setNotification(response, "неделю");
+                    case "day" -> setNotification(response, TimeConstants.day);
+                    case "week" -> setNotification(response, TimeConstants.week);
                 }
             }
             case "myevents" -> {
@@ -164,7 +164,7 @@ public class CommandHandler {
                 event.getEventBriefDescription(false)));
     }
 
-    private void setNotification(Response response, String period) {
+    public void setNotification(Response response, String period) {
         Event selectedEvent = response.getSelectedEvent();
         String responseNotificationCapability = checkNotificationCapability(selectedEvent, period);
         if (responseNotificationCapability != null) {

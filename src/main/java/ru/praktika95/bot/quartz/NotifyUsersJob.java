@@ -18,7 +18,7 @@ public class NotifyUsersJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         System.out.println("QuartzNotifyUsersJob run successfully.");
-        String date = TimeService.getCurrentTime();
+        String date = TimeService.getCurrentTimePatternWithDot();
         LinkedHashMap<String, LinkedList<Event>> dictChatIdEvent = DataBaseWorkService.setNotifyDictAndDeleteUsers(date);
         sendNotify(dictChatIdEvent);
     }

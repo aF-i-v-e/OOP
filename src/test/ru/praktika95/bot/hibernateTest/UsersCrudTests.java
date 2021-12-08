@@ -59,7 +59,7 @@ class UsersCrudTests {
     void testGetNotesWithEqualDateNotice() {
         testUserCrud.removeAllInstances();
         testUserCrud.save(testUser);
-        String date = TimeService.getCurrentTime();
+        String date = TimeService.getCurrentTimePatternWithDot();
         List<TestUser> usersList = testUserCrud.getUsersByDate(date);
         for (TestUser user : usersList) {
             assertEquals(date, user.getEventDateNotice());
@@ -111,7 +111,7 @@ class UsersCrudTests {
 
     private TestUser generateTestUser() {
         String chatId ="" + RandomService.getRandomIntegerBetweenRange(1000, 10000);
-        String date = TimeService.getCurrentTime();
+        String date = TimeService.getCurrentTimePatternWithDot();
         String url = "url" + RandomService.getRandomIntegerBetweenRange(0, 2048);
         return new TestUser(chatId, date, url);
     }

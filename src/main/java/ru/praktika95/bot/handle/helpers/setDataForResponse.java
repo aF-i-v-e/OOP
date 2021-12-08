@@ -1,6 +1,7 @@
 package ru.praktika95.bot.handle.helpers;
 
 import ru.praktika95.bot.bot.BotRequest;
+import ru.praktika95.bot.handle.SeparatorsConst;
 import ru.praktika95.bot.handle.response.Event;
 import ru.praktika95.bot.handle.response.Response;
 import ru.praktika95.bot.handle.services.chService.CommandHandlerConstants;
@@ -39,15 +40,15 @@ public class setDataForResponse {
 
     public static String[] checkNotificationCapability(Event selectedEvent, String period) {
         SimpleDateFormat sdf = new SimpleDateFormat(TimeConstants.timePatternWithDash);
-        String[] todayDate = sdf.format(new Date()).split(CommandHandlerConstants.dash);
+        String[] todayDate = sdf.format(new Date()).split(SeparatorsConst.dash);
 
         String eventDateStr = selectedEvent.getDate();
-        if (!eventDateStr.contains("-"))
+        if (!eventDateStr.contains(SeparatorsConst.dash))
             return null;
-        String[] eventDate = eventDateStr.split(TimeConstants.dashWithWhitespaces);
+        String[] eventDate = eventDateStr.split(SeparatorsConst.dashWithWhitespaces);
         String[] date = eventDate.length == 1
-                ? eventDate[0].split(CommandHandlerConstants.dash)
-                : eventDate[1].split(CommandHandlerConstants.dash);
+                ? eventDate[0].split(SeparatorsConst.dash)
+                : eventDate[1].split(SeparatorsConst.dash);
 
         ZoneId z = ZoneId.of( TimeConstants.zoneId );
 
@@ -61,13 +62,13 @@ public class setDataForResponse {
         if (TimeConstants.day.equals(period)) {
             return days > 1
                     ? null
-                    : new String[] {days + CommandHandlerConstants.whitespaces +
+                    : new String[] {days + SeparatorsConst.whitespaces +
                     getDayAddition(Math.abs(days)), TimeConstants.day};
         }
         else {
             return days > 7
                     ? null
-                    : new String[] {days + CommandHandlerConstants.whitespaces +
+                    : new String[] {days + SeparatorsConst.whitespaces +
                     getDayAddition(Math.abs(days)), TimeConstants.week};
         }
     }

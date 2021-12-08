@@ -1,6 +1,6 @@
 package ru.praktika95.bot.handle.format;
 
-import ru.praktika95.bot.handle.services.chService.CommandHandlerConstants;
+import ru.praktika95.bot.handle.SeparatorsConst;
 
 import java.util.Calendar;
 
@@ -9,6 +9,6 @@ public class FormatDateCalendar {
         String date = Integer.toString(calendar.get(Calendar.DATE));
         String month = Integer.toString(calendar.get(Calendar.MONTH) + 1);
         String year = Integer.toString(calendar.get(Calendar.YEAR));
-        return date + CommandHandlerConstants.dot + month + CommandHandlerConstants.dot + year;
+        return date + SeparatorsConst.dot + month + SeparatorsConst.dot + year;
     }
 }

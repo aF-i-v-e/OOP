@@ -35,8 +35,4 @@ public interface CommandHandlerConstants {
             " \"Мои мероприятия\".";
     String otherCommand = "Введённой команды не существует, вы можете выполнить команду /start, " +
             "чтобы начать работу с ботом.";
-    String whitespaces = " ";
-    String dash = "-";
-    String dashWithWhitespaces = " - ";
-    String dot = ".";
 }

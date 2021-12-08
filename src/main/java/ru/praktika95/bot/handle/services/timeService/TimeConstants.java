@@ -3,7 +3,6 @@ package ru.praktika95.bot.handle.services.timeService;
 public interface TimeConstants {
     String day = "день";
     String week = "неделю";
-    String dashWithWhitespaces = " - ";
     String zoneId = "UTC+5";
     String timePatternWithDash = "yyyy-MM-dd";
     String timePatternWithDot = "dd.MM.uuuu";

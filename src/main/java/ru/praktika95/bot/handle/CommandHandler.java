@@ -10,6 +10,8 @@ import ru.praktika95.bot.handle.services.chService.RandomService;
 import ru.praktika95.bot.handle.services.dbService.DataBaseWorkService;
 import ru.praktika95.bot.handle.services.chService.CommandHandlerConstants;
 import ru.praktika95.bot.handle.services.chService.StringFormatService;
+import ru.praktika95.bot.handle.services.timeService.TimeConstants;
+
 import java.util.*;
 
 
@@ -84,8 +86,8 @@ public class CommandHandler {
             }
             case "period" -> {
                 switch (botCommand) {
-                    case "day" -> setDataForResponse.setNotification(response, "день");
-                    case "week" -> setDataForResponse.setNotification(response, "неделю");
+                    case "day" -> setDataForResponse.setNotification(response, TimeConstants.day);
+                    case "week" -> setDataForResponse.setNotification(response, TimeConstants.week);
                 }
             }
             case "myevents" -> {

@@ -5,6 +5,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import ru.praktika95.bot.handle.SeparatorsConst;
 import ru.praktika95.bot.handle.response.DatePeriod;
 import ru.praktika95.bot.handle.response.Event;
 import ru.praktika95.bot.handle.response.Response;
@@ -63,7 +64,7 @@ public class Parsing {
         String dataString = element.attr("data-ec-item");
         dataString = dataString.substring(1, dataString.length() - 1);
 
-        Pattern pattern = Pattern.compile(ParsingConstants.dateReg);
+        Pattern pattern = Pattern.compile(SeparatorsConst.dateReg);
         Matcher matcher = pattern.matcher(dataString);
 
         Event event = new Event();
@@ -75,7 +76,7 @@ public class Parsing {
                 event.setDate(dateTimeAr[0]);
                 event.setTime(dateTimeAr[1]);
             }
-            dataString = String.join(ParsingConstants.nullStr, dataString.split(ParsingConstants.dateReg));
+            dataString = String.join(SeparatorsConst.nullStr, dataString.split(SeparatorsConst.dateReg));
         }
 
         for (int i = 1; i < dataString.length(); i++)
@@ -85,8 +86,8 @@ public class Parsing {
 
         String[] data = dataString.split("\\|,\\|");
 
-        String minPrice = ParsingConstants.nullStr;
-        String maxPrice = ParsingConstants.nullStr;
+        String minPrice = SeparatorsConst.nullStr;
+        String maxPrice = SeparatorsConst.nullStr;
 
         for (String dataElement : data){
             String[] splitDataElement = dataElement.split("\":");
@@ -100,7 +101,7 @@ public class Parsing {
                 case "maxPrice" -> maxPrice = valueDataElement;
                 case "date" -> {
                     String[] dateTime = valueDataElement.substring(1,
-                            valueDataElement.length() - 1).split(ParsingConstants.whitespaces);
+                            valueDataElement.length() - 1).split(SeparatorsConst.whitespaces);
                     event.setDate(dateTime[0]);
                     event.setTime(dateTime[1].substring(0, 5));
                 }
@@ -110,7 +111,7 @@ public class Parsing {
         if (Objects.equals(minPrice, maxPrice))
             event.setPrice(minPrice +  ParsingConstants.rub);
         else
-            event.setPrice(minPrice + ParsingConstants.dashWithWhitespaces + maxPrice + ParsingConstants.rub);
+            event.setPrice(minPrice + SeparatorsConst.dashWithWhitespaces + maxPrice + ParsingConstants.rub);
         event.setUrl(element.attr(ParsingConstants.href));
 
         return event;
@@ -121,16 +122,16 @@ public class Parsing {
         String startString = dateJson.get(ParsingConstants.start_min).toString();
         if (Objects.equals(startString, ParsingConstants.nul))
             return null;
-        String[] start = startString.split(ParsingConstants.whitespaces);
+        String[] start = startString.split(SeparatorsConst.whitespaces);
         String endString = dateJson.get(ParsingConstants.end_max).toString();
-        String[] end = endString.split(ParsingConstants.whitespaces);
+        String[] end = endString.split(SeparatorsConst.whitespaces);
         String startTime = start[1].substring(0, 5);
         String endTime = end[1].substring(0, 5);
         String time;
         if (startTime.equals(endTime))
             time = start[1].substring(0, 5);
         else
-            time = start[1].substring(0, 5) +  ParsingConstants.dashWithWhitespaces + end[1].substring(0, 5);
-        return start[0] + ParsingConstants.dashWithWhitespaces + end[0] + "." + time;
+            time = start[1].substring(0, 5) +  SeparatorsConst.dashWithWhitespaces + end[1].substring(0, 5);
+        return start[0] + SeparatorsConst.dashWithWhitespaces + end[0] + "." + time;
     }
 }

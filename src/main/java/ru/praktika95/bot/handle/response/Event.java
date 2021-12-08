@@ -37,6 +37,10 @@ public class Event {
         return date;
     }
 
+    public String getTime() {
+        return time;
+    }
+
     public String getDateTime() {
         return FormatDate.userFormatDate(date) + ", " + time;
     }

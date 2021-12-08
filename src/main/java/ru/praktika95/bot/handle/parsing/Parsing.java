@@ -114,6 +114,14 @@ public class Parsing {
             event.setPrice(minPrice + SeparatorsConst.dashWithWhitespaces + maxPrice + ParsingConstants.rub);
         event.setUrl(element.attr(ParsingConstants.href));
 
+        if (event.getPhoto() == null || Objects.equals(event.getPhoto(), "null") ||
+                event.getName() == null || Objects.equals(event.getName(), "null") ||
+                event.getDate() == null || Objects.equals(event.getDate(), "null") ||
+                event.getTime() == null || Objects.equals(event.getTime(), "null") ||
+                event.getPlace() == null || Objects.equals(event.getPlace(), "null") ||
+                event.getPrice() == null || Objects.equals(event.getPrice(), "null") ||
+                event.getUrl() == null || Objects.equals(event.getUrl(), "null"))
+            return null;
         return event;
     }
 

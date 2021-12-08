@@ -9,15 +9,15 @@ import java.util.Calendar;
 
 import static ru.praktika95.bot.handle.format.FormatDateCalendar.formatDate;
 
-public class createDate {
+public class CreateDate {
     public static void date(Response response, String typeButtons){
-        setDataForResponse.setMessageAndButtons(TimeConstants.chooseDate, response, typeButtons, null, true);
+        SetDataForResponse.setMessageAndButtons(TimeConstants.chooseDate, response, typeButtons, null, true);
     }
 
     public static void today(Response response, String typeButtons) {
         Calendar calendar = Calendar.getInstance();
         String currentDate = formatDate(calendar);
-        setDataForResponse.setMessageAndButtons(CommandHandlerConstants.dateText + TimeConstants.today,
+        SetDataForResponse.setMessageAndButtons(CommandHandlerConstants.dateText + TimeConstants.today,
                 createDatePeriod(response, currentDate, currentDate), typeButtons, null, true);
     }
 
@@ -25,7 +25,7 @@ public class createDate {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 1);
         String tomorrow = formatDate(calendar);
-        setDataForResponse.setMessageAndButtons(CommandHandlerConstants.dateText + TimeConstants.tomorrow,
+        SetDataForResponse.setMessageAndButtons(CommandHandlerConstants.dateText + TimeConstants.tomorrow,
                 createDatePeriod(response, tomorrow, tomorrow), typeButtons, null, true);
     }
 
@@ -40,7 +40,7 @@ public class createDate {
             calendar.add(Calendar.DATE, 8 - dateWeek);
             dateTo = formatDate(calendar);
         }
-        setDataForResponse.setMessageAndButtons(CommandHandlerConstants.dateText + TimeConstants.thisWeek,
+        SetDataForResponse.setMessageAndButtons(CommandHandlerConstants.dateText + TimeConstants.thisWeek,
                 createDatePeriod(response, currentDate, dateTo), typeButtons, null, true);
     }
 
@@ -54,7 +54,7 @@ public class createDate {
         String dateFrom = formatDate(calendar);
         calendar.add(Calendar.DATE, 6);
         String dateTo = formatDate(calendar);
-        setDataForResponse.setMessageAndButtons(CommandHandlerConstants.dateText + TimeConstants.nextWeek,
+        SetDataForResponse.setMessageAndButtons(CommandHandlerConstants.dateText + TimeConstants.nextWeek,
                 createDatePeriod(response, dateFrom, dateTo), typeButtons, null, true);
     }
 
@@ -70,7 +70,7 @@ public class createDate {
             calendar.add(Calendar.DATE, lastDayMonth - dateMonth);
             dateTo = formatDate(calendar);
         }
-        setDataForResponse.setMessageAndButtons(CommandHandlerConstants.dateText + TimeConstants.thisMonth,
+        SetDataForResponse.setMessageAndButtons(CommandHandlerConstants.dateText + TimeConstants.thisMonth,
                 createDatePeriod(response, currentDate, dateTo), typeButtons, null, true);
     }
 
@@ -87,7 +87,7 @@ public class createDate {
         dateMonth = calendar.get(Calendar.DATE);
         calendar.add(Calendar.DATE, lastDayMonth - dateMonth);
         String dateTo = formatDate(calendar);
-        setDataForResponse.setMessageAndButtons( CommandHandlerConstants.dateText + TimeConstants.nextMonth,
+        SetDataForResponse.setMessageAndButtons( CommandHandlerConstants.dateText + TimeConstants.nextMonth,
                 createDatePeriod(response, dateFrom, dateTo), typeButtons, null, true);
     }
 

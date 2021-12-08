@@ -8,7 +8,7 @@ public class QuartzJobScheduler {
     public static void mainQuartzApp() throws SchedulerException {
         JobDetail notifyJob = new QuartzJobDetail("notify","notifyJob", "group1").getJob();
         Trigger notifyTrigger = new QuartzTrigger("notifyJob", "group1",
-                "triggerN", "group1", "0 6 11 * * ?").getTrigger();
+                "triggerN", "group1", "0 1 20 * * ?").getTrigger();
 
         JobDetail deleteOldNotesJob = new QuartzJobDetail("delete","deleteJob", "group2").getJob();
         Trigger deleteTrigger = new QuartzTrigger("deleteJob", "group2",

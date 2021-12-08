@@ -1,8 +1,4 @@
-package ru.praktika95.bot;
-
-import static org.junit.jupiter.api.Assertions.*;
-
-import ru.praktika95.bot.handle.services.chService.CommandHandlerConstants;
+package ru.praktika95.bot.responseTests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +8,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.praktika95.bot.bot.BotRequest;
 import ru.praktika95.bot.handle.CommandHandler;
 import ru.praktika95.bot.handle.response.Response;
+import ru.praktika95.bot.handle.services.chService.CommandHandlerConstants;
 import ru.praktika95.bot.handle.services.timeService.TimeConstants;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StringResponseTest {
     private CommandHandler commandHandler;
@@ -55,15 +54,14 @@ class StringResponseTest {
     private Message createTestMessage() {
         Message message = new Message();
         message.setMessageId(689);
-        Chat chat = new Chat(454652745l, "private", null, "UserFirstName", "UserLastName", "userName", null, null, null, null, null, null, null, null, null, null, null, null, null);
+        Chat chat = new Chat(454652745L, "private", null, "UserFirstName", "UserLastName", "userName", null, null, null, null, null, null, null, null, null, null, null, null, null);
         message.setChat(chat);
         return message;
     }
 
     private Update createTestUpdate() {
         Message message = createTestMessage();
-        Update update = new Update(55632457, message, null, null, null, null, null, null, null, null, null, null, null, null);
-        return update;
+        return new Update(55632457, message, null, null, null, null, null, null, null, null, null, null, null, null);
     }
 
     private void compareStringBotResponse(String correctAnswer) {

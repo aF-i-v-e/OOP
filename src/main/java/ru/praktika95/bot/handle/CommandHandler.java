@@ -1,8 +1,8 @@
 package ru.praktika95.bot.handle;
 
 import ru.praktika95.bot.bot.BotRequest;
-import ru.praktika95.bot.handle.helpers.createDate;
-import ru.praktika95.bot.handle.helpers.setDataForResponse;
+import ru.praktika95.bot.handle.helpers.CreateDate;
+import ru.praktika95.bot.handle.helpers.SetDataForResponse;
 import ru.praktika95.bot.handle.parsing.Parsing;
 import ru.praktika95.bot.handle.response.Event;
 import ru.praktika95.bot.handle.response.Response;
@@ -36,7 +36,7 @@ public class CommandHandler {
                 response.setNullEvents();
                 response.setNullMyEvents();
                 switch (botCommand) {
-                    case "show" -> createDate.date(response, typeButtons);
+                    case "show" -> CreateDate.date(response, typeButtons);
                     case "help" -> help(response);
                     case "showMyEvents" -> myEvents(response, false);
                 }
@@ -44,12 +44,12 @@ public class CommandHandler {
             case "date" -> {
                 response.setNullEvents();
                 switch (botCommand) {
-                    case "today" -> createDate.today(response, typeButtons);
-                    case "tomorrow" -> createDate.tomorrow(response, typeButtons);
-                    case "thisWeek" -> createDate.thisWeek(response, typeButtons);
-                    case "nextWeek" -> createDate.nextWeek(response, typeButtons);
-                    case "thisMonth" -> createDate.thisMonth(response, typeButtons);
-                    case "nextMonth" -> createDate.nextMonth(response, typeButtons);
+                    case "today" -> CreateDate.today(response, typeButtons);
+                    case "tomorrow" -> CreateDate.tomorrow(response, typeButtons);
+                    case "thisWeek" -> CreateDate.thisWeek(response, typeButtons);
+                    case "nextWeek" -> CreateDate.nextWeek(response, typeButtons);
+                    case "thisMonth" -> CreateDate.thisMonth(response, typeButtons);
+                    case "nextMonth" -> CreateDate.nextMonth(response, typeButtons);
                 }
             }
             case "category" -> {
@@ -86,8 +86,8 @@ public class CommandHandler {
             }
             case "period" -> {
                 switch (botCommand) {
-                    case "day" -> setDataForResponse.setNotification(response, TimeConstants.day);
-                    case "week" -> setDataForResponse.setNotification(response, TimeConstants.week);
+                    case "day" -> SetDataForResponse.setNotification(response, TimeConstants.day);
+                    case "week" -> SetDataForResponse.setNotification(response, TimeConstants.week);
                 }
             }
             case "myevents" -> {
@@ -137,7 +137,7 @@ public class CommandHandler {
     public void showMyFullEvent(Response response, String typeButtons, String selectedMyEventNumber) {
         int eventIndex = Integer.parseInt(selectedMyEventNumber);
         response.setMySelectedEvent(response.getMyEventsList().get(eventIndex));
-        setDataForResponse.setButtons(typeButtons, response, response.getMySelectedEvent().getUrl());
+        SetDataForResponse.setButtons(typeButtons, response, response.getMySelectedEvent().getUrl());
     }
 
     private void cancel(Response response){
@@ -158,7 +158,7 @@ public class CommandHandler {
     }
 
     private void subscribe(Response response, String typeButtons) {
-        setDataForResponse.setMessageAndButtons(
+        SetDataForResponse.setMessageAndButtons(
                 CommandHandlerConstants.choosePeriod, response, typeButtons, null, false);
     }
 
@@ -170,7 +170,7 @@ public class CommandHandler {
     private void showFullEvent(Response response, String typeButtons, String eventNumber) {
         int eventIndex = Integer.parseInt(eventNumber);
         response.setSelectedEvent(response.getEvents().get(eventIndex));
-        setDataForResponse.setButtons(typeButtons, response, response.getSelectedEvent().getUrl());
+        SetDataForResponse.setButtons(typeButtons, response, response.getSelectedEvent().getUrl());
     }
 
     private void hello(Response response) {

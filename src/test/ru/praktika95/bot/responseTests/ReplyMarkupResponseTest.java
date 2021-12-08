@@ -1,12 +1,7 @@
-package ru.praktika95.bot;
+package ru.praktika95.bot.responseTests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.praktika95.bot.bot.BotRequest;
 import ru.praktika95.bot.handle.CommandHandler;
 import ru.praktika95.bot.handle.response.Response;
 
@@ -17,43 +12,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ReplyMarkupResponseTest {
 
     private CommandHandler commandHandler;
-    private BotRequest botRequest;
     private Response response;
 
     @BeforeEach
     public void setUp() {
         commandHandler = new CommandHandler();
         response = new Response();
-    }
-
-    private void setBotRequest(String typeButtons, String botCommand){
-        Update update = createTestUpdate(typeButtons, botCommand);
-        botRequest = new BotRequest(update);
-        botRequest.setTypeButtons(typeButtons);
-        botRequest.setBotCommand(botCommand);
-    }
-
-    private Message createTestMessage(){
-        Message message = new Message();
-        message.setMessageId(689);
-        Chat chat = new Chat(454652745l, "private", null, "UserFirstName", "UserLastName", "userName", null, null, null, null, null, null, null, null, null, null, null, null, null);
-        message.setChat(chat);
-        return message;
-    }
-
-    private CallbackQuery createTestCallBackQuery(String typeButtons, String botCommand){
-        CallbackQuery callbackQuery = new CallbackQuery();
-        callbackQuery.setId("1962727177397599840");
-        Message message = createTestMessage();
-        callbackQuery.setMessage(message);
-        callbackQuery.setData(typeButtons + " " + botCommand);
-        return callbackQuery;
-    }
-
-    private Update createTestUpdate(String typeButtons, String botCommand){
-        CallbackQuery callbackQuery = createTestCallBackQuery(typeButtons, botCommand);
-        Update update = new Update(55632457, null, null, null, callbackQuery, null, null, null, null, null, null, null, null, null);
-        return update;
     }
 
     private Response createCorrectBotResponse(String typeButtons){
@@ -74,55 +38,55 @@ public class ReplyMarkupResponseTest {
 
 
     private void compareReplyMarkupBotResponse(String typeButtons){
-        commandHandler.commandHandler(botRequest, response);
+        commandHandler.commandHandler(SetUpTestData.getBotRequest(), response);
         Response correctBotResponse = createCorrectBotResponse(typeButtons);
         assertEquals(correctBotResponse.getKeyboard(), response.getKeyboard());
     }
 
     @Test
     void testCorrectShowCommand() {
-        setBotRequest("main", "show");
+        SetUpTestData.setBotRequest("main", "show");
         compareReplyMarkupBotResponse("main");
     }
 
     @Test
     void testCorrectTodayCommand() {
-        setBotRequest("date", "today");
+        SetUpTestData.setBotRequest("date", "today");
         compareReplyMarkupBotResponse("date");
     }
 
     @Test
     void testCorrectTomorrowCommand() {
-        setBotRequest("date", "tomorrow");
+        SetUpTestData.setBotRequest("date", "tomorrow");
         compareReplyMarkupBotResponse("date");
     }
 
     @Test
     void testCorrectThisWeekCommand() {
-        setBotRequest("date", "thisWeek");
+        SetUpTestData.setBotRequest("date", "thisWeek");
         compareReplyMarkupBotResponse("date");
     }
     @Test
     void testCorrectNextWeekCommand() {
-        setBotRequest("date", "nextWeek");
+        SetUpTestData.setBotRequest("date", "nextWeek");
         compareReplyMarkupBotResponse("date");
     }
 
     @Test
     void testCorrectThisMonthCommand() {
-        setBotRequest("date", "thisMonth");
+        SetUpTestData.setBotRequest("date", "thisMonth");
         compareReplyMarkupBotResponse("date");
     }
 
     @Test
     void testCorrectNextMonthCommand() {
-        setBotRequest("date", "nextMonth");
+        SetUpTestData.setBotRequest("date", "nextMonth");
         compareReplyMarkupBotResponse("date");
     }
 
     @Test
     void testCorrectEventCommand() {
-        setBotRequest("event", "subscribe");
+        SetUpTestData.setBotRequest("event", "subscribe");
         compareReplyMarkupBotResponse("event");
     }
 }

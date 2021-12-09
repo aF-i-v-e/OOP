@@ -3,7 +3,7 @@ package ru.praktika95.bot.hibernateTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.praktika95.bot.bot.BotConfig;
-import ru.praktika95.bot.handle.services.chService.RandomService;
+import ru.praktika95.bot.handle.services.chUtils.RandomService;
 import ru.praktika95.bot.handle.services.timeService.TimeService;
 import ru.praktika95.bot.hibernate.DataBaseSettings;
 

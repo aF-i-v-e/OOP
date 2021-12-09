@@ -4,8 +4,8 @@ import ru.praktika95.bot.bot.BotRequest;
 import ru.praktika95.bot.handle.SeparatorsConst;
 import ru.praktika95.bot.handle.response.Event;
 import ru.praktika95.bot.handle.response.Response;
-import ru.praktika95.bot.handle.services.chService.CommandHandlerConstants;
-import ru.praktika95.bot.handle.services.chService.RandomService;
+import ru.praktika95.bot.handle.services.chUtils.CommandHandlerConstants;
+import ru.praktika95.bot.handle.services.chUtils.RandomService;
 import ru.praktika95.bot.handle.services.dbService.DataBaseWorkService;
 import ru.praktika95.bot.handle.services.timeService.TimeConstants;
 

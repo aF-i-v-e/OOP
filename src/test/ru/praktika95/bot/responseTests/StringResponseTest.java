@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.praktika95.bot.bot.BotRequest;
 import ru.praktika95.bot.handle.CommandHandler;
 import ru.praktika95.bot.handle.response.Response;
-import ru.praktika95.bot.handle.services.chService.CommandHandlerConstants;
+import ru.praktika95.bot.handle.services.chUtils.CommandHandlerConstants;
 import ru.praktika95.bot.handle.services.timeService.TimeConstants;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

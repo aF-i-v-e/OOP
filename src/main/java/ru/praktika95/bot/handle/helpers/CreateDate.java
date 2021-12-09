@@ -2,7 +2,7 @@ package ru.praktika95.bot.handle.helpers;
 
 import ru.praktika95.bot.handle.response.DatePeriod;
 import ru.praktika95.bot.handle.response.Response;
-import ru.praktika95.bot.handle.services.chService.CommandHandlerConstants;
+import ru.praktika95.bot.handle.services.chUtils.CommandHandlerConstants;
 import ru.praktika95.bot.handle.services.timeService.TimeConstants;
 
 import java.util.Calendar;

@@ -8,10 +8,10 @@ import ru.praktika95.bot.handle.parsing.Parsing;
 import ru.praktika95.bot.handle.parsing.ParsingConstants;
 import ru.praktika95.bot.handle.response.Event;
 import ru.praktika95.bot.handle.response.Response;
-import ru.praktika95.bot.handle.services.chService.RandomService;
+import ru.praktika95.bot.handle.services.chUtils.RandomService;
 import ru.praktika95.bot.handle.services.dbService.DataBaseWorkService;
-import ru.praktika95.bot.handle.services.chService.CommandHandlerConstants;
-import ru.praktika95.bot.handle.services.chService.StringFormatService;
+import ru.praktika95.bot.handle.services.chUtils.CommandHandlerConstants;
+import ru.praktika95.bot.handle.services.chUtils.StringFormatService;
 import ru.praktika95.bot.handle.services.timeService.TimeConstants;
 import ru.praktika95.bot.quartz.QuartzJobScheduler;
 
@@ -156,7 +156,7 @@ public class CommandHandler {
 
     private void deleteEventAndSetMessage(Response response, Event event) {
         String subscriptionDate = DataBaseWorkService.deleteByEvent(event);
-        response.setText(StringFormatService.getString(CommandHandlerConstants.youCancelNotification, subscriptionDate,
+        response.setText(StringFormatService.getStringFormatPatternWithTwoArguments(CommandHandlerConstants.youCancelNotification, subscriptionDate,
                 event.getEventBriefDescription(false)));
     }
 

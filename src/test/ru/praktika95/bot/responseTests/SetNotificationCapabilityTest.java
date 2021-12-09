@@ -6,8 +6,8 @@ import ru.praktika95.bot.bot.BotConfig;
 import ru.praktika95.bot.handle.helpers.SetDataForResponse;
 import ru.praktika95.bot.handle.response.Event;
 import ru.praktika95.bot.handle.response.Response;
-import ru.praktika95.bot.handle.services.chService.CommandHandlerConstants;
-import ru.praktika95.bot.handle.services.chService.StringFormatService;
+import ru.praktika95.bot.handle.services.chUtils.CommandHandlerConstants;
+import ru.praktika95.bot.handle.services.chUtils.StringFormatService;
 import ru.praktika95.bot.handle.services.timeService.TimeConstants;
 import ru.praktika95.bot.handle.services.timeService.TimeService;
 import ru.praktika95.bot.hibernate.DataBaseSettings;
@@ -108,7 +108,7 @@ class SetNotificationCapabilityTest {
         response.setChatId(SetUpTestData.getBotRequest().getChatId());
         SetDataForResponse.setNotification(response, TimeConstants.day);
         assertEquals(CommandHandlerConstants.YouShallNotPassNoticeImage+".jpg", response.getPhotoFile().getMediaName());
-        assertEquals(StringFormatService.getString(CommandHandlerConstants.youCannotSetNotification,
+        assertEquals(StringFormatService.getStringFormatPatternWithTwoArguments(CommandHandlerConstants.youCannotSetNotification,
                "0 дней", TimeConstants.day), response.getText());
     }
 
@@ -123,7 +123,7 @@ class SetNotificationCapabilityTest {
         response.setChatId(SetUpTestData.getBotRequest().getChatId());
         SetDataForResponse.setNotification(response, TimeConstants.week);
         assertEquals(CommandHandlerConstants.YouShallNotPassNoticeImage+".jpg", response.getPhotoFile().getMediaName());
-        assertEquals(StringFormatService.getString(CommandHandlerConstants.youCannotSetNotification,
+        assertEquals(StringFormatService.getStringFormatPatternWithTwoArguments(CommandHandlerConstants.youCannotSetNotification,
                 delta + " " + SetDataForResponse.getDayAddition(delta), TimeConstants.week), response.getText());
     }
 }

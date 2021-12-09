@@ -122,8 +122,8 @@
 
 
 Распределение:
-- Алиса - 2, 4, 5, 6, 7, 8, 10, 14, 15, 16 (setNotification, кнопочки новые)
-- Антон - 1, 3, 7, 8, 9, 10, 11, 12, 13, 15(parsing), 16 (checkNotificationCapability)
+- Алиса - 2, 4, 5, 6, 7, 8, 10, 14, 15, 16 (setNotification, кнопочки новые), 17
+- Антон - 1, 3, 7, 8, 9, 10, 11, 12, 13, 15(parsing), 16 (checkNotificationCapability), 17
 
 ## Задача №6
 

@@ -1,4 +1,4 @@
-package ru.praktika95.bot.handle.services.chService;
+package ru.praktika95.bot.handle.services.chUtils;
 
 public class RandomService {
     public static int getRandomIntegerBetweenRange(int min, int max) {

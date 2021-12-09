@@ -68,4 +68,20 @@ class TimeServiceTest {
         String expected = "13-11-2021";
         assertEquals(expected, actual);
     }
+
+    @Test
+    void test9() {
+        String date = "3.11.2021";
+        String actual = TimeService.getTimeInDBFormat(date);
+        String expected = "3.11.2021";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void test10() {
+        String date = "3.07.2021";
+        String actual = TimeService.getTimeInDBFormat(date);
+        String expected = "3.7.2021";
+        assertEquals(expected, actual);
+    }
 }

@@ -29,7 +29,7 @@ public class TimeService {
         String[] dateToArray;
         String separator = "-";
         if (date.charAt(1) == '.' || date.charAt(2) == '.' ) {
-            dateToArray = date.split("\\.");
+            dateToArray = date.split("[.]");
             separator = ".";
         }
         else

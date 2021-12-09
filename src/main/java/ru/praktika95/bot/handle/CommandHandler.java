@@ -1,5 +1,6 @@
 package ru.praktika95.bot.handle;
 
+import org.quartz.SchedulerException;
 import ru.praktika95.bot.bot.BotRequest;
 import ru.praktika95.bot.handle.helpers.CreateDate;
 import ru.praktika95.bot.handle.helpers.SetDataForResponse;
@@ -12,6 +13,7 @@ import ru.praktika95.bot.handle.services.dbService.DataBaseWorkService;
 import ru.praktika95.bot.handle.services.chService.CommandHandlerConstants;
 import ru.praktika95.bot.handle.services.chService.StringFormatService;
 import ru.praktika95.bot.handle.services.timeService.TimeConstants;
+import ru.praktika95.bot.quartz.QuartzJobScheduler;
 
 import java.util.*;
 
@@ -209,5 +211,9 @@ public class CommandHandler {
 
     private void other(Response response) {
         response.setText(CommandHandlerConstants.otherCommand);
+    }
+
+    public void startEventNotifier() throws SchedulerException {
+        QuartzJobScheduler.startQuartzApp();
     }
 }

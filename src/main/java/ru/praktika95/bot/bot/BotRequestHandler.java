@@ -1,6 +1,7 @@
 package ru.praktika95.bot.bot;
 
 
+import org.quartz.SchedulerException;
 import ru.praktika95.bot.handle.CommandHandler;
 import ru.praktika95.bot.handle.helpers.SetDataForResponse;
 import ru.praktika95.bot.handle.response.Response;
@@ -10,19 +11,20 @@ import java.util.Objects;
 
 public class BotRequestHandler {
 
-    private final CommandHandler comH;
+    private final CommandHandler commandHandler;
 
-    public BotRequestHandler(){
-        comH = new CommandHandler();
+    public BotRequestHandler() throws SchedulerException {
+        commandHandler = new CommandHandler();
+        commandHandler.startEventNotifier();
     }
 
     public void getBotAnswer(BotRequest botRequest, Response response) {
-        comH.commandHandler(botRequest, response);
+        commandHandler.commandHandler(botRequest, response);
         response.setChatId(botRequest.getChatId());
     }
 
     public void getBotAnswer(String command, BotRequest botRequest, Response response) {
-        comH.commandHandler(command, response);
+        commandHandler.commandHandler(command, response);
         response.setChatId(botRequest.getChatId());
     }
 

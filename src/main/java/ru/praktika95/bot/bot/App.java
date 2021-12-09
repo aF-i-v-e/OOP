@@ -2,6 +2,7 @@ package ru.praktika95.bot.bot;
 
 import org.quartz.SchedulerException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.praktika95.bot.handle.CommandHandler;
 import ru.praktika95.bot.hibernate.DataBaseSettings;
 import ru.praktika95.bot.quartz.QuartzJobScheduler;
 
@@ -20,7 +21,6 @@ public class App {
             bot = new Bot(name, token);
             bot.botConnect();
             DataBaseSettings.setDataBaseSettings(property);
-            QuartzJobScheduler.mainQuartzApp();
         } catch (IOException e) {
             System.err.println(e);
         }

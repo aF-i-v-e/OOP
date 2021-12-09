@@ -1,6 +1,7 @@
 package ru.praktika95.bot.bot;
 
 import lombok.SneakyThrows;
+import org.quartz.SchedulerException;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -17,17 +18,18 @@ public class Bot extends TelegramLongPollingBot {
     private final String userName;
     private final String token;
     private final Response response;
+    private final BotRequestHandler botRequestHandler;
 
-    public Bot(String botUserName, String token) {
+    public Bot(String botUserName, String token) throws SchedulerException {
         this.userName = botUserName;
         this.token = token;
         this.response = new Response();
+        this.botRequestHandler = new BotRequestHandler();
     }
 
     @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
-        BotRequestHandler botRequestHandler = new BotRequestHandler();
         BotRequest botRequest = new BotRequest(update);
         if (update.hasMessage() && update.getMessage().hasText())
         {

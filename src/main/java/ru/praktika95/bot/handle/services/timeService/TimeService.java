@@ -28,8 +28,8 @@ public class TimeService {
     public static String getTimeInDBFormat(String date) {
         String[] dateToArray;
         String separator = "-";
-        if (date.charAt(2) == '.') {
-            dateToArray = date.split("\\.");
+        if (date.charAt(1) == '.' || date.charAt(2) == '.' ) {
+            dateToArray = date.split("[.]");
             separator = ".";
         }
         else

@@ -118,6 +118,7 @@
 Все строки с пользовательской информацией в интерфейс. Служебное типа ZoneId вынести в константу.
 Все что желтым в проекте - обратить внимание.
 16. Тесты по новой логике. checkNotificationCapability, setNotification, кнопочки новые.
+17. Переименовать getString в StringFormatService и CommandHandlerService сделать как утилитарные
 
 
 Распределение:

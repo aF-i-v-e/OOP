@@ -5,7 +5,7 @@ import org.quartz.impl.StdSchedulerFactory;
 
 public class QuartzJobScheduler {
 
-    public static void mainQuartzApp() throws SchedulerException {
+    public static void startQuartzApp() throws SchedulerException {
         JobDetail notifyJob = new QuartzJobDetail("notify","notifyJob", "group1").getJob();
         Trigger notifyTrigger = new QuartzTrigger("notifyJob", "group1",
                 "triggerN", "group1", "0 1 20 * * ?").getTrigger();

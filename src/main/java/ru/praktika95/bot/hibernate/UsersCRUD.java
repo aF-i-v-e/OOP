@@ -2,14 +2,11 @@ package ru.praktika95.bot.hibernate;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import javax.persistence.criteria.*;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import org.jsoup.nodes.Element;
-import ru.praktika95.bot.handle.response.Event;
 import ru.praktika95.bot.handle.services.timeService.TimeConstants;
 
 public class UsersCRUD {

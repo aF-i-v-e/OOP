@@ -44,7 +44,7 @@ public class setDataForResponse {
         String[] todayDate = sdf.format(new Date()).split(SeparatorsConst.dash);
 
         String eventDateStr = selectedEvent.getDate();
-        if (!Pattern.matches(".+\\-.+\\-.+", eventDateStr))
+        if (!Pattern.matches(".+-.+-.+", eventDateStr))
             return null;
         String[] eventDate = eventDateStr.split(SeparatorsConst.dashWithWhitespaces);
         String[] date = eventDate.length == 1

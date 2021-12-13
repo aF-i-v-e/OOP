@@ -13,7 +13,7 @@ public class FormatDate {
     public static String userFormatDate(String simpleDate) {
         if (simpleDate == null)
             return SeparatorsConst.nullStr;
-        if (!Pattern.matches(".+\\-.+\\-.+", simpleDate))
+        if (!Pattern.matches(".+-.+-.+", simpleDate))
             return simpleDate;
         String[] date = simpleDate.split(SeparatorsConst.dashWithWhitespaces);
         String[] dateOne = date[0].split(SeparatorsConst.dash);

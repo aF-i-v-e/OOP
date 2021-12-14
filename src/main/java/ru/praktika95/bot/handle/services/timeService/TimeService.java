@@ -25,10 +25,21 @@ public class TimeService {
         return getTimeInDBFormat(date);
     }
 
-
     public static String getTimeInDBFormat(String date) {
-        if (date.charAt(0) == '0')
-            return date.substring(1);
-        return date;
+        String[] dateToArray;
+        String separator = "-";
+        if (date.charAt(2) == '.') {
+            dateToArray = date.split("\\.");
+            separator = ".";
+        }
+        else
+            dateToArray = date.split(separator);
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < dateToArray.length; i++) {
+            sb.append(Integer.parseInt(dateToArray[i]));
+            if (i != dateToArray.length-1)
+                sb.append(separator);
+        }
+        return sb.toString();
     }
 }

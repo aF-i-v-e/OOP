@@ -11,7 +11,7 @@ public class DeleteOldNotesJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         System.out.println("QuartzDeleteOldNotesJob run successfully.");
-        String date = TimeService.getCurrentTime();
+        String date = TimeService.getCurrentTimePatternWithDot();
         DataBaseWorkService.deleteOldNotes(date);
     }
 }

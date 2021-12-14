@@ -26,6 +26,7 @@ class UsersCrudTests {
             Properties property = BotConfig.getProperties();
             assert property != null;
             DataBaseSettings.setDataBaseSettings(property);
+            testUserCrud.removeAllInstances();
         }catch (IOException e) {
             System.err.println(e);
         }
@@ -43,26 +44,34 @@ class UsersCrudTests {
 
     @Test
     void testGetEqualsNote() {
+        testUserCrud.removeAllInstances();
+        testUserCrud.save(testUser);
         List<TestUser> usersList = testUserCrud.getEqualsUsersFromDB(testUser);
         for (TestUser user : usersList) {
             assertEquals(testUser.getChatId(), user.getChatId());
             assertEquals(testUser.getEventDateNotice(),user.getEventDateNotice());
             assertEquals(testUser.getEventUrl(), user.getEventUrl());
         }
+        testUserCrud.delete(testUser);
     }
 
     @Test
     void testGetNotesWithEqualDateNotice() {
-        String date = "07.12.2021";
+        testUserCrud.removeAllInstances();
+        testUserCrud.save(testUser);
+        String date = TimeService.getCurrentTimePatternWithDot();
         List<TestUser> usersList = testUserCrud.getUsersByDate(date);
         for (TestUser user : usersList) {
             assertEquals(date, user.getEventDateNotice());
         }
+        testUserCrud.delete(testUser);
     }
     @Test
     void testExistUser() {
-        TestUser user = createUser("1234", "07.12.2021", "url1");
-        assertTrue(testUserCrud.existNote(user));
+        testUserCrud.removeAllInstances();
+        testUserCrud.save(testUser);
+        assertTrue(testUserCrud.existNote(testUser));
+        testUserCrud.delete(testUser);
     }
 
     @Test
@@ -73,32 +82,36 @@ class UsersCrudTests {
 
     @Test
     void testGetByChatId() {
-        TestUser user = createUser("1234", "08.12.2021", "url2");
-        testUserCrud.save(user);
-        List<TestUser> users = testUserCrud.getByChatId(user.getChatId());
-        assertTrue(users.size() - 2 >= 0);
+        testUserCrud.removeAllInstances();
+        testUserCrud.save(testUser);
+        List<TestUser> users = testUserCrud.getByChatId(testUser.getChatId());
+        assertTrue(users.size() == 1);
+        testUserCrud.delete(testUser);
     }
 
     @Test
     void testCheckLastId() {
-        TestUser user = generateTestUser();
-        testUserCrud.save(user);
+        testUserCrud.removeAllInstances();
+        testUserCrud.save(testUser);
         Integer id = testUserCrud.getLastId();
-        List<TestUser> users = testUserCrud.getAll();
-        assertEquals(users.size(),id);
+        assertTrue(id == 1);
+        testUserCrud.delete(testUser);
     }
 
     @Test
     void getByID() {
+        testUserCrud.removeAllInstances();
+        testUserCrud.save(testUser);
         TestUser user = testUserCrud.getById(1);
-        assertEquals("1234", user.getChatId());
-        assertEquals("07.12.2021", user.getEventDateNotice());
-        assertEquals("url1", user.getEventUrl());
+        assertEquals(testUser.getChatId(), user.getChatId());
+        assertEquals(testUser.getEventDateNotice(), user.getEventDateNotice());
+        assertEquals(testUser.getEventUrl(), user.getEventUrl());
+        testUserCrud.delete(testUser);
     }
 
     private TestUser generateTestUser() {
         String chatId ="" + RandomService.getRandomIntegerBetweenRange(1000, 10000);
-        String date = TimeService.getCurrentTime();
+        String date = TimeService.getCurrentTimePatternWithDot();
         String url = "url" + RandomService.getRandomIntegerBetweenRange(0, 2048);
         return new TestUser(chatId, date, url);
     }

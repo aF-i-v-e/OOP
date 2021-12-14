@@ -1,7 +1,9 @@
 package ru.praktika95.bot.hibernateTest;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import ru.praktika95.bot.hibernate.HibernateUtil;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -106,5 +108,13 @@ public class TestUserCrud {
             existUser = true;
         }
         return existUser;
+    }
+
+    public void removeAllInstances() {
+        Session session = TestHibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        session.createSQLQuery("truncate table test").executeUpdate();
+        session.getTransaction().commit();
+        session.close();
     }
 }

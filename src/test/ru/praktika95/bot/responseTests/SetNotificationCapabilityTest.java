@@ -3,7 +3,7 @@ package ru.praktika95.bot.responseTests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.praktika95.bot.bot.BotConfig;
-import ru.praktika95.bot.handle.CommandHandler;
+import ru.praktika95.bot.handle.helpers.SetDataForResponse;
 import ru.praktika95.bot.handle.response.Event;
 import ru.praktika95.bot.handle.response.Response;
 import ru.praktika95.bot.handle.services.chService.CommandHandlerConstants;
@@ -21,15 +21,13 @@ import java.util.Properties;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class setNotificationCapabilityTest {
-    private CommandHandler commandHandler;
+class SetNotificationCapabilityTest {
     private Response response;
     private Event testEvent;
     private UsersCRUD usersCRUD;
 
     @BeforeEach
     public void setUp() throws FileNotFoundException {
-        commandHandler = new CommandHandler();
         response = new Response();
         usersCRUD = new UsersCRUD();
         testEvent = new Event("https://cdn.kassir.ru/ekb/poster/ad/ad775642fb783dd5d9e212caa504c0e5.jpeg",
@@ -45,7 +43,7 @@ class setNotificationCapabilityTest {
         SetUpTestData.setBotRequest("period", "day");
         response.setSelectedEvent(testEvent);
         response.setChatId(SetUpTestData.getBotRequest().getChatId());
-        commandHandler.setNotification(response, TimeConstants.day);
+        SetDataForResponse.setNotification(response, TimeConstants.day);
         assertEquals(testEvent.getEventNotification(TimeConstants.day), response.getText());
         assertTrue("841.jpg".equals(response.getPhotoFile().getMediaName())
                 || "842.jpg".equals(response.getPhotoFile().getMediaName()));
@@ -60,7 +58,7 @@ class setNotificationCapabilityTest {
         SetUpTestData.setBotRequest("period", "week");
         response.setSelectedEvent(testEvent);
         response.setChatId(SetUpTestData.getBotRequest().getChatId());
-        commandHandler.setNotification(response, TimeConstants.week);
+        SetDataForResponse.setNotification(response, TimeConstants.week);
         assertEquals(testEvent.getEventNotification(TimeConstants.week), response.getText());
         assertTrue("841.jpg".equals(response.getPhotoFile().getMediaName())
                 || "842.jpg".equals(response.getPhotoFile().getMediaName()));
@@ -75,7 +73,7 @@ class setNotificationCapabilityTest {
         SetUpTestData.setBotRequest("period", "day");
         response.setSelectedEvent(testEvent);
         response.setChatId(SetUpTestData.getBotRequest().getChatId());
-        commandHandler.setNotification(response, TimeConstants.day);
+        SetDataForResponse.setNotification(response, TimeConstants.day);
         assertEquals(CommandHandlerConstants.YouShallNotPassNoticeImage + ".jpg", response.getPhotoFile().getMediaName());
         assertEquals(CommandHandlerConstants.existNotification, response.getText());
         rollBack("22.4.2022", SetUpTestData.getBotRequest().getChatId());
@@ -94,7 +92,7 @@ class setNotificationCapabilityTest {
         SetUpTestData.setBotRequest("period", "week");
         response.setSelectedEvent(testEvent);
         response.setChatId(SetUpTestData.getBotRequest().getChatId());
-        commandHandler.setNotification(response, TimeConstants.week);
+        SetDataForResponse.setNotification(response, TimeConstants.week);
         assertEquals(CommandHandlerConstants.YouShallNotPassNoticeImage+".jpg", response.getPhotoFile().getMediaName());
         assertEquals(CommandHandlerConstants.existNotification, response.getText());
         rollBack("16.4.2022", SetUpTestData.getBotRequest().getChatId());
@@ -108,10 +106,10 @@ class setNotificationCapabilityTest {
                 "https://ekb.kassir.ru/koncert/gayazov-brothers#916376");
         response.setSelectedEvent(event);
         response.setChatId(SetUpTestData.getBotRequest().getChatId());
-        commandHandler.setNotification(response, TimeConstants.day);
+        SetDataForResponse.setNotification(response, TimeConstants.day);
         assertEquals(CommandHandlerConstants.YouShallNotPassNoticeImage+".jpg", response.getPhotoFile().getMediaName());
         assertEquals(StringFormatService.getString(CommandHandlerConstants.youCannotSetNotification,
-               "0", TimeConstants.day), response.getText());
+               "0 дней", TimeConstants.day), response.getText());
     }
 
     @Test
@@ -123,9 +121,9 @@ class setNotificationCapabilityTest {
                 "https://ekb.kassir.ru/koncert/gayazov-brothers#916376");
         response.setSelectedEvent(event);
         response.setChatId(SetUpTestData.getBotRequest().getChatId());
-        commandHandler.setNotification(response, TimeConstants.week);
+        SetDataForResponse.setNotification(response, TimeConstants.week);
         assertEquals(CommandHandlerConstants.YouShallNotPassNoticeImage+".jpg", response.getPhotoFile().getMediaName());
         assertEquals(StringFormatService.getString(CommandHandlerConstants.youCannotSetNotification,
-                Integer.toString(delta), TimeConstants.week), response.getText());
+                delta + " " + SetDataForResponse.getDayAddition(delta), TimeConstants.week), response.getText());
     }
 }

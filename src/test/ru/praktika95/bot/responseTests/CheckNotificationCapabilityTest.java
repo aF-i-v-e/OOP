@@ -1,8 +1,8 @@
-package ru.praktika95.bot;
+package ru.praktika95.bot.responseTests;
 
 import org.junit.jupiter.api.Test;
 import ru.praktika95.bot.handle.SeparatorsConst;
-import ru.praktika95.bot.handle.helpers.setDataForResponse;
+import ru.praktika95.bot.handle.helpers.SetDataForResponse;
 import ru.praktika95.bot.handle.response.Event;
 import ru.praktika95.bot.handle.services.timeService.TimeConstants;
 
@@ -18,7 +18,7 @@ class CheckNotificationCapabilityTest {
     void testCheckNotificationCapabilityIncorrect() {
         Event event = new Event(
                 null, null, "19 Дек.", null, null, null, null);
-        assertNull(setDataForResponse.checkNotificationCapability(event, ""));
+        assertNull(SetDataForResponse.checkNotificationCapability(event, ""));
     }
 
     @Test
@@ -30,7 +30,7 @@ class CheckNotificationCapabilityTest {
         Event event = new Event(
                 null, null, year + SeparatorsConst.dash + month + SeparatorsConst.dash + day,
                 null, null, null, null);
-        String[] answer = Objects.requireNonNull(setDataForResponse.checkNotificationCapability(event, TimeConstants.day));
+        String[] answer = Objects.requireNonNull(SetDataForResponse.checkNotificationCapability(event, TimeConstants.day));
         assertEquals("0 дней", answer[0]);
         assertEquals(TimeConstants.day, answer[1]);
     }
@@ -44,7 +44,7 @@ class CheckNotificationCapabilityTest {
         Event event = new Event(
                 null, null, year + SeparatorsConst.dash + month + SeparatorsConst.dash + day,
                 null, null, null, null);
-        String[] answer = Objects.requireNonNull(setDataForResponse.checkNotificationCapability(event, TimeConstants.week));
+        String[] answer = Objects.requireNonNull(SetDataForResponse.checkNotificationCapability(event, TimeConstants.week));
         assertEquals("0 дней", answer[0]);
         assertEquals(TimeConstants.week, answer[1]);
     }

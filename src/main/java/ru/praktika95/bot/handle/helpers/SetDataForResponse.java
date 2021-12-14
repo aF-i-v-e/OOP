@@ -16,7 +16,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.regex.Pattern;
 
-public class setDataForResponse {
+public class SetDataForResponse {
     public static void setNotification(Response response, String period) {
         Event selectedEvent = response.getSelectedEvent();
         String[] responseNotificationCapability = checkNotificationCapability(selectedEvent, period);
@@ -153,7 +153,7 @@ public class setDataForResponse {
         return null;
     }
 
-    private static String getDayAddition(long days) {
+    public static String getDayAddition(long days) {
 
         if (days % 100 / 10 == 1) {
             return "дней";

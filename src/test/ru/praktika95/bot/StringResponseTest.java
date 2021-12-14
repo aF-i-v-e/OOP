@@ -1,12 +1,5 @@
 package ru.praktika95.bot;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import ru.praktika95.bot.handle.SeparatorsConst;
-import ru.praktika95.bot.handle.helpers.setDataForResponse;
-import ru.praktika95.bot.handle.response.Event;
-import ru.praktika95.bot.handle.services.chService.CommandHandlerConstants;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.objects.Chat;
@@ -15,10 +8,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.praktika95.bot.bot.BotRequest;
 import ru.praktika95.bot.handle.CommandHandler;
 import ru.praktika95.bot.handle.response.Response;
+import ru.praktika95.bot.handle.services.chService.CommandHandlerConstants;
 import ru.praktika95.bot.handle.services.timeService.TimeConstants;
 
-import java.util.Calendar;
-import java.util.Objects;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StringResponseTest {
     private CommandHandler commandHandler;
@@ -130,40 +123,5 @@ class StringResponseTest {
     void testCorrectBuyCommand() {
         setBotRequest("event", "buy");
         compareStringBotResponse(CommandHandlerConstants.catPolice);
-    }
-
-    @Test
-    void testCheckNotificationCapabilityIncorrect() {
-        Event event = new Event(
-                null, null, "19 Дек.", null, null, null, null);
-        assertNull(setDataForResponse.checkNotificationCapability(event, ""));
-    }
-
-    @Test
-    void testCheckNotificationCapabilityCorrectDay() {
-        Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DATE);
-        int month = calendar.get(Calendar.MONTH) + 1;
-        int year = calendar.get(Calendar.YEAR);
-        Event event = new Event(
-                null, null, year + SeparatorsConst.dash + month + SeparatorsConst.dash + day,
-                null, null, null, null);
-        String[] answer = Objects.requireNonNull(setDataForResponse.checkNotificationCapability(event, TimeConstants.day));
-        assertEquals("0 дней", answer[0]);
-        assertEquals(TimeConstants.day, answer[1]);
-    }
-
-    @Test
-    void testCheckNotificationCapabilityCorrectWeek() {
-        Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DATE);
-        int month = calendar.get(Calendar.MONTH) + 1;
-        int year = calendar.get(Calendar.YEAR);
-        Event event = new Event(
-                null, null, year + SeparatorsConst.dash + month + SeparatorsConst.dash + day,
-                null, null, null, null);
-        String[] answer = Objects.requireNonNull(setDataForResponse.checkNotificationCapability(event, TimeConstants.week));
-        assertEquals("0 дней", answer[0]);
-        assertEquals(TimeConstants.week, answer[1]);
     }
 }
